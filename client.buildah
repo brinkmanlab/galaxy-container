@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+HERE=`dirname $(realpath "$0")`
+
+podman run -t -a=stdin -a=stdout -a=stderr --mount type=bind,src=$HERE/galaxy,dst=/tmp/galaxy --mount type=bind,src=$HERE/.git,dst=/tmp/.git --entrypoint '/bin/sh' mhart/alpine-node <<CMD
+apk add --no-cache git
+cd /tmp/galaxy/client
+
+# Patch node-sass version
+sed -i 's/"node-sass": "^4.11.0"/"node-sass": "^4.12.0"/' package.json
+yarn install
+yarn run build-production-maps
+exit
+CMD

@@ -1,0 +1,18 @@
+# TODO move to brinkman cloud repo and add this repo as submodule
+FROM nginx:alpine
+ARG BUILD_DATE
+ARG VCS_REF
+ARG BUILD_VERSION
+
+LABEL org.opencontainers.image.created=$BUILD_DATE
+LABEL org.opencontainers.image.title="Brinkman Cloud Webserver"
+LABEL org.opencontainers.image.description="Serves static content and proxies uwsgi services."
+LABEL org.opencontainers.image.url="https://github.com/brinkmanlab/"
+LABEL org.opencontainers.image.source="https://github.com/brinkmanlab/brinkman_cloud"
+LABEL org.opencontainers.image.revision=$VCS_REF
+LABEL org.opencontainers.image.vendor="Brinkman Lab"
+LABEL org.opencontainers.image.version=$BUILD_VERSION
+
+COPY --from=galaxy/client /tmp/galaxy/static /srv/galaxy
+#COPY conf.d/* /etc/nginx/conf.d/
+#COPY nginx.conf /etc/nginx/nginx.conf

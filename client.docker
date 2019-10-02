@@ -1,0 +1,15 @@
+FROM mhart/alpine-node:latest AS galaxy_client
+
+WORKDIR /tmp
+RUN apk add --no-cache git
+
+COPY .git/modules/galaxy/ ./.git/modules/galaxy/
+COPY galaxy/ ./galaxy/
+
+WORKDIR /tmp/galaxy/client
+
+# Patch node-sass version
+RUN sed -i 's/"node-sass": "^4.11.0"/"node-sass": "^4.12.0"/' package.json
+
+RUN yarn install
+RUN yarn run build-production-maps

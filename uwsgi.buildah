@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+HERE=`dirname $(realpath "$0")`
+
+CID=`buildah from docker://continuumio/miniconda3:4.7.10-alpine`
+
+GALAXY_ROOT='/srv/galaxy'
+
+buildah copy $CID $HERE/galaxy/lib $GALAXY_ROOT/lib
+buildah copy $CID $HERE/galaxy/locale $GALAXY_ROOT/locale
+buildah copy $CID $HERE/galaxy/templates $GALAXY_ROOT/templates
+buildah copy $CID $HERE/config/ $GALAXY_ROOT/config/
+
+buildah run $CID pip install --no-cache-dir galaxy/lib/galaxy/dependencies/pinned-requirements.txt
+
+buildah config $CID --author 'nolan_w@sfu.ca' \
+                    --cmd "uwsgi --yaml $GALAXY_ROOT/config/galaxy.yml"
+#TODO               --healthcheck
+
+buildah commit $CID galaxy_uwsgi
+
+#podman run -t -a=stdin -a=stdout -a=stderr --mount type=bind,src=$HERE/galaxy,dst=/tmp/galaxy --mount type=bind,src=$HERE/.git,dst=/tmp/.git --entrypoint '/bin/sh' galaxy_uwsgi <<CMD
+#exit
+#CMD

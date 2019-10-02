@@ -1,0 +1,31 @@
+version: '3'
+services:
+   galaxy-client:
+      build:
+         context: .
+         dockerfile: client.docker
+         args:
+            - GALAXY_DIST
+            - BUILD_DATE
+            - VCS_REF
+            - BUILD_VERSION
+         ports:
+            - 80
+   galaxy-backend:
+      build:
+         context: .
+         dockerfile: backend.docker
+         args:
+            - GALAXY_DIST
+            - BUILD_DATE
+            - VCS_REF
+            - BUILD_VERSION
+   db:
+      image: postgres
+      volumes:
+         - db-data:/var/lib/postgresql/data
+      networks:
+         - backend
+      deploy:
+         placement:
+            constraints: [node.role == manager]
