@@ -1,6 +1,5 @@
 uwsgi:
-  #http: 127.0.0.1:9087
-  socket: $GALAXY_DATA/uwsgi.sock
+  http: 127.0.0.1:9087
   buffer-size: 16384
   processes: 1
   threads: 4
@@ -20,18 +19,16 @@ uwsgi:
   py-call-osafterfork: true
   enable-threads: true
 galaxy:
-  database_connection: postgres://galaxy:galaxy@galaxy_postgres/galaxy
+  database_connection: sqlite:///$GALAXY_ROOT/universe.sqlite?isolation_level=IMMEDIATE
   job_config_file: $GALAXY_CONFIG/job_conf.xml
   file_path: $GALAXY_DATA/database/files
   new_file_path: $GALAXY_DATA/database/tmp
-  tool_config_file: $GALAXY_CONFIG/tool_conf.xml,/galaxydb/local-tools/tool_conf.xml
+  tool_config_file: $GALAXY_CONFIG/tool_conf.xml
   shed_tool_config_file: $GALAXY_CONFIG/shed_tool_conf.xml
   tool_dependency_dir: $GALAXY_DATA/tool-deps
   tool_data_table_config_path: $GALAXY_CONFIG/tool_data_table_conf.xml
   visualization_plugins_directory: $GALAXY_ROOT/visualizations
   datatypes_config_file: $GALAXY_CONFIG/datatypes_conf.xml
-  nginx_upload_store: $GALAXY_DATA/uploads
-  nginx_upload_path: '/_upload'
   watch_tools: 'true'
   legacy_eager_objectstore_initialization: true 
   builds_file_path: $GALAXY_DATA/builds.txt
@@ -40,9 +37,7 @@ galaxy:
   template_cache_path: $GALAXY_DATA/database/compiled_templates
   citation_cache_data_dir: $GALAXY_DATA/database/citations/data
   citation_cache_lock_dir: $GALAXY_DATA/database/citations/lock
-  #smtp_server: ''
-  #smtp_username: ''
-  brand: 'Brinkman Lab'
+  brand: $GALAXY_BRAND
   #pretty_datetime_format: $iso8601
   #remote_user_maildomain: 'external.ca'
   #remote_user_secret:

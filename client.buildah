@@ -12,3 +12,5 @@ yarn install
 yarn run build-production-maps
 exit
 CMD
+
+# TODO build nginx image, copying in resut of above
