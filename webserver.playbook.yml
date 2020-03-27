@@ -1,7 +1,7 @@
 ---
 - name: Galaxy Front-end Webserver Build
   hosts: buildah_server
-  include_vars: vars.yml
+  vars_files: [vars.yml]
   vars:
     container_name: galaxy_web
   pre_tasks:
@@ -10,34 +10,44 @@
       - name: Run Node
         command: podman create --mount type=bind,src={{ playbook_dir }}/galaxy,dst=/tmp/galaxy --mount type=bind,src={{ playbook_dir }}/.git,dst=/tmp/.git mhart/alpine-node
         register: node_handle
+
       - name: Execute Build
+        block:
         - name: Install Git
           command: apk add --no-cache git
+
         - name: Install Dependencies
           command: yarn install --frozen-lockfile
+
         - name: Build Client
           command: yarn run build-production-maps
+
         connection: podman
-        remote_addr: {{ node_handle }}
+        remote_addr: "{{ node_handle }}"
+
       - name: Shutdown Node
         command: podman rm -f {{ node_handle }}
   tasks:
     - name: Create Container
       command: buildah from nginx:alpine
       register: container_handle
+
     - debug:
         var: container_handle
+
     - name: Configure Container
       command: buildah config {{ options | map('format', '--%s') | join(' ') }} {{ container_handle }}
       vars:
         options:
         - author "{{ author }}"
         # TODO - healthcheck command
+
     - name: Populate container
       command: buildah copy {{ container_handle }} '{{ playbook_dir }}/{{ item.from }}' '{{ GALAXY_ROOT }}/{{ item.to }}'
       loop:
       - {from: galaxy/client/static, to: /srv/galaxy}
       # TODO nginx.conf
+
     - name: Commit Container
       command: buildah commit {{ container_handle }} {{ container_name }}
 

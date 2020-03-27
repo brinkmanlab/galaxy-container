@@ -1,7 +1,7 @@
 ---
 - name: Galaxy Application Server Build
   hosts: buildah_server
-  include_vars: vars.yml
+  vars_files: [vars.yml]
   vars:
     GALAXY_ROOT: /srv/galaxy
     container_name: galaxy_app
@@ -10,8 +10,10 @@
     - name: Create Container
       command: buildah from alpine
       register: container_handle
+
     - debug:
         var: container_handle
+
     - name: Configure Container
       command: buildah config {{ options | map('format', '--%s') | join(' ') }} {{ container_handle }}
       vars:
@@ -20,6 +22,7 @@
         - cmd 'uwsgi --yaml {{ GALAXY_ROOT }}/config/galaxy.yml'
         - env GALAXY_ROOT={{ GALAXY_ROOT }}
         # TODO - healthcheck command
+
     - name: Populate Container
       command: buildah copy {{ container_handle }} '{{ playbook_dir }}/{{ item.from }}' '{{ GALAXY_ROOT }}/{{ item.to }}'
       loop:
@@ -28,6 +31,7 @@
       - {from: galaxy/locale, to: locale}
       - {from: galaxy/templates, to: templates}
       - {from: config/, to: config/}
+
     - name: Configure Container Environment
       block:
         - name: Install System Dependencies
@@ -37,16 +41,19 @@
           - add python3
           - add --virtual build-dependencies py3-setuptools build-base gcc linux-headers musl-dev python3-dev libffi-dev zlib-dev
           remote_user: root
+
         - name: Install Python Dependencies
           command: pip3 install -r $GALAXY_ROOT/requirements.txt --index-url https://wheels.galaxyproject.org/simple --extra-index-url https://pypi.python.org/simple --no-cache-dir
+
         - name: Clean Up
           command: apk del build-dependencies
           remote_user: root
+
         - name: Execute Roles
           include_role:
             name: {{ item }}
           loop: {{ roles }}
-        - name: Populate Database
+
       connector: buildah
       remote_addr: {{ container_handle }}
     - name: Commit Container
