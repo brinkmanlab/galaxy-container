@@ -1,27 +1,36 @@
 ---
 - name: Start NodeJS container
   hosts: buildah_server
+  vars_files: [vars.yml]
   tasks:
-    - name: Run Node
-      command: podman create --mount type=bind,src={{ playbook_dir }}/galaxy,dst=/tmp/galaxy --mount type=bind,src={{ playbook_dir }}/.git,dst=/tmp/.git mhart/alpine-node
+    - name: Create NodeJS Instance
+      command: podman run -d --rm --mount type=bind,src={{ playbook_dir }}/galaxy,dst={{ tmp_path }}/galaxy --mount type=bind,src={{ playbook_dir }}/.git,dst={{ tmp_path }}/.git node sleep 1h
       register: node_handle
+
+    - debug:
+        var: node_handle.stdout
 
     - name: Add Podman container to inventory
       add_host:
-        name: "{{ node_handle.stdout }}"
+        name: NodeJS
         ansible_connection: podman
+        remote_user: root
+        remote_tmp: "{{ tmp_path }}/.ansible/"
+        ansible_host: "{{ node_handle.stdout }}"
 
 - name: Build Static Content
-  hosts: "{{ hostvars.buildah_server.node_handle.stdout }}"
+  hosts: NodeJS
+  vars_files: [vars.yml]
+  gather_facts: false
   tasks:
-    - name: Install Git
-      command: apk add --no-cache git
+    - name: Install system dependencies
+      raw: apk add --no-cache git python make g++
 
-    - name: Install Dependencies
-      command: yarn install --frozen-lockfile
+    - name: Install dependencies
+      command: yarn install --frozen-lockfile --cwd='{{ tmp_path }}/galaxy/client'
 
-    - name: Build Client
-      command: yarn run build-production-maps
+    - name: Build client
+      command: yarn run --cwd='{{ tmp_path }}/galaxy/client' build-production-maps
 
 - name: Shutdown NodeJS
   hosts: buildah_server
@@ -37,26 +46,32 @@
     register: container_handle
 
   - debug:
-      var: container_handle
+      var: container_handle.stdout
 
   - name: Configure container
-    command: buildah config {{ options | map('format', '--%s') | join(' ') }} {{ container_handle.stdout }}
+    command: >-
+      buildah config
+      --author '{{ author }}'
+      {{ container_handle.stdout }}
     vars:
       options:
-      - author "{{ author }}"
+      - ""
       # TODO - healthcheck command
 
   - name: Populate container
-    command: buildah copy {{ container_handle }} '{{ playbook_dir }}/{{ item.from }}' '{{ GALAXY_ROOT }}/{{ item.to }}'
+    command: buildah copy {{ container_handle.stdout }} '{{ playbook_dir }}/{{ item.from }}' '{{ GALAXY_ROOT }}/{{ item.to }}'
     loop:
-      - {from: galaxy/client/static, to: /srv/galaxy}
-      # TODO nginx.conf
+      - {from: galaxy/static, to: /srv/galaxy}
+      - {from: client.nginx.conf, to: /etc/nginx/conf.d/}
 
   - name: Add webserver container to inventory
     add_host:
-      name: "{{ container_handle.stdout }}"
+      name: "{{ containers.web.name }}"
       ansible_connection: buildah
+      remote_user: root
+      remote_tmp: "{{ tmp_path }}/.ansible/"
+      ansible_host: "{{ container_handle.stdout }}"
 
   - name: Commit Container
-    command: buildah commit {{ container_handle.stdout }} {{ container_name }}
+    command: buildah commit {{ container_handle.stdout }} {{ containers.web.name }}
 

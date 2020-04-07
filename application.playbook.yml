@@ -3,21 +3,21 @@
   hosts: buildah_server
   vars_files: [vars.yml]
   tasks:
-    - name: Create Container
+    - name: Create container
       command: buildah from alpine
       register: container_handle
 
     - debug:
-        var: container_handle
+        var: container_handle.stdout
 
-    - name: Configure Container
-      command: buildah config {{ options | map('format', '--%s') | join(' ') }} {{ container_handle.stdout }}
-      vars:
-        options:
-        - author "{{ author }}"
-        - cmd 'uwsgi --yaml {{ GALAXY_ROOT }}/config/galaxy.yml'
-        - env GALAXY_ROOT={{ GALAXY_ROOT }}
-        # TODO - healthcheck command
+    - name: Configure container
+      # TODO - healthcheck command
+      command: >-
+        buildah config
+        --author "{{ author }}"
+        --cmd 'uwsgi --yaml {{ GALAXY_ROOT }}/config/galaxy.yml'
+        --env GALAXY_ROOT={{ GALAXY_ROOT }}
+        {{ container_handle.stdout }}
 
     - name: Populate container
       command: buildah copy {{ container_handle.stdout }} '{{ playbook_dir }}/{{ item.from }}' '{{ GALAXY_ROOT }}/{{ item.to }}'
@@ -30,40 +30,39 @@
 
     - name: Add Podman container to inventory
       add_host:
-        name: "{{ container_handle.stdout }}"
-        ansible_connection: podman
+        name: galaxy_app
+        ansible_connection: buildah
+        remote_user: root
+        ansible_host: "{{ container_handle.stdout }}"
+        remote_tmp: "{{ tmp_path }}/.ansible/"
 
 - name: Configure Container Environment
-  hosts: "{{ hostvars.buildah_server.node_handle.stdout }}"
+  hosts: galaxy_app
+  gather_facts: false
   vars_files: [vars.yml]
+  vars:
+    roles: []
   tasks:
-    - name: Install System Dependencies
-      command: apk {{ item }}
+    - name: Install system dependencies
+      raw: apk {{ item }}
       loop:
       - update
       - add python3
-      - add --virtual build-dependencies py3-setuptools build-base gcc linux-headers musl-dev python3-dev libffi-dev zlib-dev
-      remote_user: root
+      - add --virtual build-dependencies -X http://dl-cdn.alpinelinux.org/alpine/edge/testing hdf5-dev py3-setuptools build-base gcc linux-headers musl-dev python3-dev libffi-dev zlib-dev bzip2-dev xz-dev openssl-dev libxml2-dev libxslt-dev
 
-    - name: Install Python Dependencies
+    - name: Install python dependencies
       command: pip3 install -r $GALAXY_ROOT/requirements.txt --index-url https://wheels.galaxyproject.org/simple --extra-index-url https://pypi.python.org/simple --no-cache-dir
 
-    - name: Clean Up
+    - name: Clean up
       command: apk del build-dependencies
-      remote_user: root
 
-    - name: Execute Roles
+    - name: Execute roles
       include_role:
-        name: {{ item }}
-      loop: {{ roles }}
-
-      connector: buildah
-      remote_addr: {{ container_handle }}
+        name: "{{ item }}"
+      loop: "{{ roles }}"
 
 - name: Finish Galaxy Application Container
   hosts: buildah_server
-  vars:
-    container_name: galaxy_app
   tasks:
-    - name: Commit Container
-      command: buildah commit {{ container_handle }} {{ container_name }}
+    - name: Commit container
+      command: buildah commit {{ container_handle.stdout }} {{ containers.app.name }}

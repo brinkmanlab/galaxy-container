@@ -2,4 +2,11 @@ author: Nolan W. <nolan_w@sfu.ca>
 url: https://github.com/brinkmanlab/
 vendor: Brinkman Lab
 
+tmp_path: /tmp
 GALAXY_ROOT: /srv/galaxy
+
+containers:
+  app:
+    name: galaxy_app
+  web:
+    name: galaxy_web

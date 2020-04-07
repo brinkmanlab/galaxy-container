@@ -1,0 +1,3 @@
+---
+- import_tasks: galaxy.yml
+- import_tasks: job_conf.yml

@@ -1,0 +1,58 @@
+---
+galaxy:
+  config:
+    uwsgi:
+      socket: "0.0.0.0:9000"
+      buffer-size: 16384
+      processes: 1
+      threads: 4
+      offload-threads: 2
+      static-map: # TODO duplicate key
+        - /static/style=static/style/blue
+        - /static=static
+        - /favicon.ico=static/favicon.ico
+      master: true
+      virtualenv: venv
+      pythonpath: lib
+      module: galaxy.webapps.galaxy.buildapp:uwsgi_app()
+      manage-script-name: false
+      thunder-lock: true
+      die-on-term: true
+      hook-master-start: # TODO duplicate key
+        - unix_signal:2 gracefully_kill_them_all
+        - unix_signal:15 gracefully_kill_them_all
+      py-call-osafterfork: true
+      enable-threads: true
+    galaxy:
+      database_connection: "{{ hostvars['galaxy_db'].db_scheme }}://{{ hostvars['galaxy_db'].db_user }}:{{ hostvars['galaxy_db'].db_secret }}@{{ hostvars['galaxy_db'].db_host }}/{{ hostvars['galaxy_db'].db_name }}"
+      job_config_file: "{{ galaxy.paths.config }}/job_conf.xml"
+      file_path: "{{ galaxy.paths.data }}/database/files"
+      new_file_path: "{{ galaxy.paths.data }}/database/tmp"
+      tool_config_file: "{{ galaxy.paths.config }}/tool_conf.xml,/galaxydb/local-tools/tool_conf.xml"
+      shed_tool_config_file: "{{ galaxy.paths.config }}/shed_tool_conf.xml"
+      tool_dependency_dir: "{{ galaxy.paths.data }}/tool-deps"
+      tool_data_table_config_path: "{{ galaxy.paths.config }}/tool_data_table_conf.xml"
+      visualization_plugins_directory: "{{ galaxy.paths.root }}/visualizations"
+      datatypes_config_file: "{{ galaxy.paths.config }}/datatypes_conf.xml"
+      nginx_upload_store: "{{ galaxy.paths.data }}/uploads"
+      nginx_upload_path: '/_upload'
+      watch_tools: 'true'
+      legacy_eager_objectstore_initialization: true
+      builds_file_path: "{{ galaxy.paths.data }}/builds.txt"
+      job_working_directory: "{{ galaxy.paths.data }}/database/jobs_directory"
+      cluster_files_directory: "{{ galaxy.paths.data }}/database/slurm"
+      template_cache_path: "{{ galaxy.paths.data }}/database/compiled_templates"
+      citation_cache_data_dir: "{{ galaxy.paths.data }}/database/citations/data"
+      citation_cache_lock_dir: "{{ galaxy.paths.data }}/database/citations/lock"
+      #smtp_server: ''
+      #smtp_username: ''
+      brand: 'Brinkman Lab'
+      #pretty_datetime_format: $iso8601
+      #remote_user_maildomain: 'external.ca'
+      #remote_user_secret:
+      #single_user:
+      admin_users: "{{ galaxy.admins | join(',') }}"
+      allow_user_deletion: True
+      allow_user_impersonation: True
+      master_api_key: "{{ galaxy.master_key }}"
+      cleanup_job: always

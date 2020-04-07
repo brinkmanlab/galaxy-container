@@ -1,0 +1,5 @@
+---
+- name: galaxy.yml
+  copy:
+    content: "{{ galaxy.config | to_pretty_yaml }}" # TODO duplicate keys
+    dest: "{{ galaxy.paths.config }}"
