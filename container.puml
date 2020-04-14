@@ -1,0 +1,135 @@
+@startuml
+title Galaxy Container Architecture
+agent user as "User Agent"
+
+frame "Ansible" {
+  artifact playbook_webserver as "webserver.playbook.yml"
+  artifact playbook_application as "application.playbook.yml"
+  artifact playbook_worker as "worker.playbook.yml"
+}
+
+frame "Container Registry" {
+  artifact image_postgres as "PostGRES"
+  artifact image_slurm as "SLURM"
+  artifact image_minio as "MinIO"
+
+  folder brinkman_containers_registry as "Brinkman Lab"
+  folder "Biocontainers" {
+    artifact tools as "Various analysis tool dependencies"
+  }
+}
+
+rectangle brinkman_containers as "Brinkman Lab Containers" {
+  package container_webserver as "Front end" {
+    component nginx
+    folder "/srv/galaxy" {
+      file "static content"
+    }
+    folder "/etc/nginx/nginx.conf.d/" {
+      file "galaxy.conf"
+    }
+  }
+
+  package container_application as "Galaxy application" {
+    component uwsgi_application as "UWSGI Daemon"
+    folder "/srv/galaxy/lib" {
+      file "Galaxy codebase"
+    }
+    folder "/srv/galaxy/config" {
+      file "galaxy.yml"
+      file "job_conf.xml"
+      file "object_store_conf.xml"
+    }
+  }
+
+  package container_worker as "Galaxy worker" {
+    component uwsgi_worker as "UWSGI Daemon"
+  }
+
+}
+
+cloud cc as "External resource" {
+  queue slurm_cluster as "SLURM Cluster"
+  entity pulsar as "Galaxy Pulsar service"
+}
+
+cloud k8s as "Kubernetes" {
+  storage user_data [
+    User data object store
+    ====
+    ----
+  ]
+  database galaxy_state [
+    Galaxy state
+    ----
+    ----
+  ]
+  database service_registry as "Service Registry"
+  entity kubernetes_controller as "Kubernetes controller"
+
+  entity loadbalancer [
+    Load-balancer replicate 1
+    Load-balancer replicate 2
+  ]
+  node instance_webserver [
+    Web server replicate 1
+    ----
+    Web server replicate 2
+    ----
+    Web server replicate 3
+    ----
+    ...
+    Web server replicate n
+  ]
+  node instance_application [
+    Galaxy application replicate 1
+    ----
+    Galaxy application replicate 2
+    ----
+    Galaxy application replicate 3
+    ----
+    ...
+    Galaxy application replicate n
+  ]
+  node instance_worker [
+    Galaxy worker replicate 1
+    ----
+    Galaxy worker replicate 2
+    ----
+    Galaxy worker replicate 3
+    ----
+    ...
+    Galaxy worker replicate n
+  ]
+  node tool_invocation as "Various tool container invocations"
+}
+
+user -0)-> instance_webserver : "via load-balancer"
+
+playbook_webserver ~~o container_webserver
+playbook_application ~~o container_application
+playbook_worker ~~o container_worker
+
+instance_webserver ..> container_webserver : "instance of"
+instance_webserver --> instance_application : "proxies to"
+instance_application ..> container_application : "instance of"
+instance_application -(0-> galaxy_state
+instance_worker ..> container_worker : "instance of"
+instance_worker -(0-> galaxy_state
+instance_worker --* kubernetes_controller : "schedules jobs"
+instance_worker --* pulsar
+instance_worker -(0-> user_data : "uploads to"
+kubernetes_controller --> tool_invocation
+tool_invocation ..> tools : "instance of"
+tool_invocation -(0-> user_data : "stages from"
+galaxy_state ..> image_postgres : "instance of"
+user_data ..> image_minio : "instance of"
+
+
+brinkman_containers_registry --> brinkman_containers
+container_worker --0 container_application : extends
+
+pulsar --> slurm_cluster : "schedules"
+pulsar --> user_data : "stages from"
+
+@enduml
