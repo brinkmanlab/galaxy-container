@@ -2,11 +2,33 @@ author: Nolan W. <nolan_w@sfu.ca>
 url: https://github.com/brinkmanlab/
 vendor: Brinkman Lab
 
-tmp_path: /tmp
-GALAXY_ROOT: /srv/galaxy
-
 containers:
   app:
     name: galaxy_app
   web:
     name: galaxy_web
+  worker:
+    name: galaxy_worker
+
+volumes:
+  galaxy_root:
+    name: galaxy_root
+  user_data:
+    name: user_data
+
+uwsgi:
+  port: 9000
+
+paths:
+  root: '/srv/galaxy'
+  data: '/data'
+  config: '/srv/galaxy/config'
+
+admins:
+  - brinkman-ws@sfu.ca
+
+nginx:
+  paths:
+    root: '/srv/galaxy'
+
+tmp_path: '/tmp'

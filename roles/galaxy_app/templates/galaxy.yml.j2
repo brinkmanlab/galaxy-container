@@ -1,0 +1,2 @@
+{{ {'uwsgi': galaxy.config.uwsgi} | to_uwsgi_yaml(indent=4) }}
+{{ {'galaxy': galaxy.config.galaxy} | to_nice_yaml(indent=4) }}

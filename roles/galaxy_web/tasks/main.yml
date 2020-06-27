@@ -1,0 +1,7 @@
+---
+- name: Populate container
+  copy:
+    src: 'static/*'
+    dest: '{{ nginx.paths.root }}/'
+
+- import_tasks: nginx.yml

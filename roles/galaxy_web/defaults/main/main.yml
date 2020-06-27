@@ -1,0 +1,5 @@
+---
+nginx:
+  paths:
+    config: '/etc/nginx/conf.d'
+    root: '/srv/'

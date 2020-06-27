@@ -1,22 +1,24 @@
+#!/usr/bin/env -S buildah unshare ansible-playbook
 ---
 - name: Start NodeJS container
   hosts: buildah_server
   vars_files: [vars.yml]
   tasks:
     - name: Create NodeJS Instance
-      command: podman run -d --rm --mount type=bind,src={{ playbook_dir }}/galaxy,dst={{ tmp_path }}/galaxy --mount type=bind,src={{ playbook_dir }}/.git,dst={{ tmp_path }}/.git node sleep 1h
-      register: node_handle
+      docker_container:
+        name: nodejs
+        image: node:alpine
+        command: sleep 1h
+        volumes:
+        - '{{ playbook_dir }}/galaxy:{{ tmp_path }}/galaxy'
+        - '{{ playbook_dir }}/.git:{{ tmp_path }}/.git'
+        auto_remove: yes
 
-    - debug:
-        var: node_handle.stdout
-
-    - name: Add Podman container to inventory
+    - name: Add NodeJS container to inventory
       add_host:
         name: NodeJS
-        ansible_connection: podman
-        remote_user: root
-        remote_tmp: "{{ tmp_path }}/.ansible/"
-        ansible_host: "{{ node_handle.stdout }}"
+        ansible_connection: docker
+        ansible_host: nodejs
 
 - name: Build Static Content
   hosts: NodeJS
@@ -35,43 +37,38 @@
 - name: Shutdown NodeJS
   hosts: buildah_server
   tasks:
-    - command: podman rm -f {{ node_handle.stdout }}
+    - docker_container:
+        name: nodejs
+        state: absent
 
 - name: Create Webserver Container
   hosts: buildah_server
   vars_files: [vars.yml]
-  tasks:
-  - name: Create container
-    command: buildah from nginx:alpine
-    register: container_handle
-
-  - debug:
-      var: container_handle.stdout
-
-  - name: Configure container
-    command: >-
-      buildah config
-      --author '{{ author }}'
-      {{ container_handle.stdout }}
+  roles:
+  - role: new_container
     vars:
-      options:
-      - ""
-      # TODO - healthcheck command
-
-  - name: Populate container
-    command: buildah copy {{ container_handle.stdout }} '{{ playbook_dir }}/{{ item.from }}' '{{ GALAXY_ROOT }}/{{ item.to }}'
-    loop:
-      - {from: galaxy/static, to: /srv/galaxy}
-      - {from: client.nginx.conf, to: /etc/nginx/conf.d/}
-
-  - name: Add webserver container to inventory
-    add_host:
+      base_image: nginx:alpine
       name: "{{ containers.web.name }}"
-      ansible_connection: buildah
-      remote_user: root
-      remote_tmp: "{{ tmp_path }}/.ansible/"
-      ansible_host: "{{ container_handle.stdout }}"
 
+- name: Configure Container Environment
+  hosts: "{{ containers.web.name }}"
+  gather_facts: false
+  vars_files: [vars.yml]
+  vars:
+    roles: [galaxy_web]
+  pre_tasks:
+  - name: Install ansible dependencies
+    raw: apk {{ item }}
+    loop:
+    - update
+    - add --virtual build-dependencies python3
+  post_tasks:
+  - name: Clean up
+    raw: apk del build-dependencies
+
+- name: Finish Galaxy Webserver Container
+  hosts: buildah_server
+  vars_files: [vars.yml]
+  tasks:
   - name: Commit Container
-    command: buildah commit {{ container_handle.stdout }} {{ containers.web.name }}
-
+    command: buildah commit {{ hostvars[containers.web.name]['ansible_host'] }} {{ containers.web.name }}

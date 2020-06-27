@@ -1,0 +1,6 @@
+---
+- name: Generate nginx.conf
+  template:
+    src: galaxy.nginx.conf.j2
+    dest: "{{ nginx.paths.config }}/galaxy.conf"
+    mode: u=rw,g=r,o=r

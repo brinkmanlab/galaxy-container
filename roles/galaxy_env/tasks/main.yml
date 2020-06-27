@@ -1,0 +1,35 @@
+---
+- name: Install system dependencies and extras
+  raw: apk {{ item }}
+  loop:
+  - update
+  - add python3 {{ apk_extra | join('') }}
+  - add --virtual build-dependencies hdf5-dev py3-setuptools build-base gcc linux-headers musl-dev python3-dev libffi-dev zlib-dev bzip2-dev xz-dev openssl-dev libxml2-dev libxslt-dev py3-pip
+
+- name: Install virtualenv and extras
+  pip:
+   name: virtualenv {{ pip_extra | join(' ') }}
+
+- tempfile:
+    state: file
+  register: requirements
+
+- name: Copy in requirements
+  copy:
+    src: requirements.txt
+    dest: '{{ requirements.path }}'
+
+- name: Install Galaxy python dependencies
+  pip:
+    requirements: '{{ requirements.path }}'
+    virtualenv: '{{ venv_path }}'
+    virtualenv_site_packages: yes
+    extra_args: '--index-url https://wheels.galaxyproject.org/simple --extra-index-url https://pypi.python.org/simple --no-cache-dir'
+
+- name: Clean up apk
+  command: apk del build-dependencies
+
+- name: Clean up temp
+  file:
+    path: '{{ requirements.path }}'
+    state: absent

@@ -1,12 +1,6 @@
 ---
-- name: Touch job_conf.xml
-  file:
-    state: touch
+- name: Generate job_conf.xml
+  template:
+    src: job_conf.xml.j2
+    dest: "{{ paths.config }}/job_conf.xml"
     mode: u=rw,g=r,o=r
-    path: "{{ galaxy.paths.config }}/job_conf.xml"
-
-- name: Add properties for plugins
-  xml:
-    xpath: /job_conf/{{ item }}
-    path: "{{ galaxy.paths.config }}/job_conf.xml"
-  loop: "{{ galaxy.config.job_conf.defaults.plugins }}"

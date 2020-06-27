@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-[[ -z "$GALAXY_ROOT" ]] && export GALAXY_ROOT='/srv/galaxy'
-[[ -z "$GALAXY_CONFIG" ]] && export GALAXY_CONFIG='/srv/galaxy/config'
-[[ -z "$GALAXY_DATA" ]] && export GALAXY_DATA='/galaxy_data/'
-[[ -z "$GALAXY_MASTER_API_KEY" ]] && export MASTER_API_KEY='S6cFHz7bEwNMc24QZ9xnMd9q6yNW2gZuQyA9QHaBdXGvb97vHPBabn9NqKM4RsQp'
-[[ -z "$GALAXY_ADMIN_USERS" ]] && export ADMIN_USERS='admin@galaxy.org'
-[[ -z "$GALAXY_BRAND" ]] && export GALAXY_BRAND='Brinkman Lab'

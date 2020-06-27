@@ -1,0 +1,23 @@
+---
+galaxy:
+  config:
+    job_conf:
+      default_workers: 4
+      plugins:
+        local:
+          workers: 1
+          type: runner
+          load: galaxy.jobs.runners.local:LocalJobRunner
+      destinations:
+        docker:
+          runner: local
+          params:
+            docker_enabled: true
+            require_container: true
+            embed_metadata_in_job: true
+            docker_host: 'unix:///var/run/docker.sock'
+            docker_sudo: false
+            docker_default_container_id: "busybox:ubuntu-14.04"
+            docker_volumes: '{{ volumes.galaxy_root.name }}:$galaxy_root:ro,{{ volumes.user_data.name }}:$tool_directory:ro,{{ volumes.user_data.name }}:$job_directory:ro,$working_directory:rw,{{ volumes.user_data.name }}:$default_file_path:ro'
+            docker_auto_rm: true
+            #docker_set_user: '$UID'

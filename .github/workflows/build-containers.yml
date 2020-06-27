@@ -1,0 +1,46 @@
+name: Autobuild
+
+on:
+  create:
+    tags:
+      - 'v*'
+  push:
+    tags:
+      - 'v*'
+  pull_request:
+    branch: '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - name: Install buildah
+      run: |
+        . /etc/os-release
+        sudo sh -c "echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/x${ID^}_${VERSION_ID}/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list"
+        wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/x${ID^}_${VERSION_ID}/Release.key -O Release.key
+        sudo apt-key add - < Release.key
+        sudo apt-get update -qq
+        sudo apt-get -qq -y install buildah ansible
+        sudo pip install docker
+    - name: Build webserver
+      run: ./webserver.playbook.yml
+    - name: Build application
+      run: ./application.playbook.yml
+    - name: Build worker
+      run: ./worker.playbook.yml
+    - run: buildah push galaxy_web docker-daemon:galaxy_web:dev
+    - run: buildah push galaxy_app docker-daemon:galaxy_app:dev
+    - run: buildah push galaxy_worker docker-daemon:galaxy_worker:dev
+
+    - name: Publish application
+      run: "buildah push --creds ${{ secrets.DOCKERHUB_ID }}:${{ secrets.DOCKERHUB_TOKEN }} galaxy_app docker://docker.io/${{ secrets.DOCKERHUB_ID }}/galaxy_app:${{ github.ref }}"
+    - name: Publish webserver
+      run: "buildah push --creds ${{ secrets.DOCKERHUB_ID }}:${{ secrets.DOCKERHUB_TOKEN }} galaxy_web docker://docker.io/${{ secrets.DOCKERHUB_ID }}/galaxy_web:${{ github.ref }}"
+    - name: Publish worker
+      run: "buildah push --creds ${{ secrets.DOCKERHUB_ID }}:${{ secrets.DOCKERHUB_TOKEN }} galaxy_worker docker://docker.io/${{ secrets.DOCKERHUB_ID }}/galaxy_worker:${{ github.ref }}"

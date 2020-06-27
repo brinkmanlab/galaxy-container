@@ -1,1 +1,3 @@
 ---
+galaxy_root: '{{ paths.root }}'
+galaxy_config: '{{ paths.config }}'

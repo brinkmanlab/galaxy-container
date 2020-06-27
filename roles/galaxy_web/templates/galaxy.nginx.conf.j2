@@ -1,0 +1,71 @@
+# allow up to 3 minutes for Galaxy to respond to slow requests before timing out
+uwsgi_read_timeout 180;
+
+# maximum file upload size, defaults to 1MB
+client_max_body_size 10g;
+
+server {
+  listen       80 default_server;
+  listen       [::]:80 default_server;
+  server_name _;
+
+  set $galaxy_root {{ nginx.paths.root }};
+  set $plugin_root /srv/plugins
+
+  # proxy all requests not matching other locations to uWSGI
+  location / {
+    uwsgi_pass uwsgi://{{ containers.app.name }}:{{ galaxy.uwsgi.port }}
+    uwsgi_param UWSGI_SCHEME $scheme;
+    include uwsgi_params;
+  }
+
+  # User download via nginx #TODO verify paths
+  location /_x_accel_redirect/ {
+      internal;
+      alias /;
+  }
+
+  # User file uploads via the upload module
+  location /_upload {
+      upload_store {{ galaxy.paths.data }}/upload;
+      upload_store_access user:rw group:rw;
+      upload_pass_form_field "";
+      upload_set_form_field "__${upload_field_name}__is_composite" "true";
+      upload_set_form_field "__${upload_field_name}__keys" "name path";
+      upload_set_form_field "${upload_field_name}_name" "$upload_file_name";
+      upload_set_form_field "${upload_field_name}_path" "$upload_tmp_path";
+      upload_pass_args on;
+      upload_pass /_upload_done;
+  }
+
+  # once upload is complete, redirect to the proper galaxy path
+  location /_upload_done {
+      set $dst /api/tools;
+      if ($args ~ nginx_redir=([^&]+)) {
+          set $dst $1;
+      }
+      rewrite "" $dst;
+  }
+
+  # serve framework static content
+  location /static {
+    alias $galaxy_root;
+    expires 24h;
+  }
+
+  location /robots.txt {
+    alias $galaxy_root/robots.txt;
+    expires 24h;
+  }
+
+  location /favicon.ico {
+    alias $galaxy_root/favicon.ico;
+    expires 24h;
+  }
+
+  # serve visualization and interactive environment plugin static content
+  #location ~ ^/plugins/(?<plug_type>.+?)/(?<vis_name>.+?)/static/(?<static_file>.*?)$ {
+  #  alias $plugins_root/plugins/$plug_type/$vis_name/static/$static_file;
+  #  expires 24;
+  #}
+}

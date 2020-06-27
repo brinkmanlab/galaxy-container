@@ -1,3 +1,20 @@
 ---
+- name: Ensure config dir exists
+  file: >
+    path={{ galaxy_config }}
+    recurse=yes
+    state=directory
+
+- name: Populate container
+  copy:
+    src: '{{ [role_path,"files",item] | join("/") | realpath }}'
+    dest: '{{ galaxy_root }}'
+    local_follow: no
+  loop:
+    - lib
+    - locale
+    - scripts
+    - templates
+
 - import_tasks: galaxy.yml
 - import_tasks: job_conf.yml

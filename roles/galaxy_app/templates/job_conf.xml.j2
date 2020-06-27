@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<job_conf>
+    <plugins workers="{{ galaxy.config.job_conf.default_workers or 4 }}">
+    {% for plugin, config in galaxy.config.job_conf.get('plugins', {}).items() %}
+        <plugin id="{{ plugin }}"{% for attrib, val in config.items() if attrib not in ('params',) %} {{ attrib }}="{{ val }}"{% endfor %}>
+        {% for param, val in config.get('params', {}).items() %}
+            <param id="{{ param }}">{{ val }}</param>
+        {% endfor %}
+        </plugin>
+    {% endfor %}
+    </plugins>
+    {% if galaxy.config.job_conf.handlers %}
+    <handlers {% if galaxy.config.job_conf.default_handler %} default="{{ galaxy.config.job_conf.default_handler }}"{% endif %}{% if galaxy.config.job_conf.handler_max_grab %} max_grab="{{ galaxy.config.job_conf.handler_max_grab }}"{% endif %}{% if galaxy.config.job_conf.handler_assign_with %} assign_with="{{ galaxy.config.job_conf.handler_assign_with | join(',') }}"{% endif %}>
+    {% for handler, config in galaxy.config.job_conf.handlers %}
+        <handler id="{{ handler }}" tags="{{ config.tags | join(',') }}">
+        {% for plugin in config.plugins %}
+            <plugin id="{{ plugin }}" />
+        {% endfor %}
+        </handler>
+    {% endfor %}
+    </handlers>
+    {% endif %}
+    <destinations default="{{ galaxy.config.job_conf.get('default_destination', (galaxy.config.job_conf.destinations.keys() | list)[0]) }}">
+    {% for destination, config in galaxy.config.job_conf.destinations.items() %}
+        <destination id="{{ destination }}"{% for attrib, val in config.items() if attrib not in ('params','job_metrics','env','source','exec', 'resubmit') %} {{ attrib }}="{{ val }}"{% endfor %}>
+        {% for param, val in config['params'].items() %}
+            <param id="{{ param }}">
+            {% if param in ('container', 'container_overrride') %}
+            {% for type, attribs in val.items() %}
+                <container type="{{ type }}"{% for a,v in attribs.items() if a not in ('image',) %} {{ a }}="{{ v }}"{% endfor %}>{{ attribs.image }}</container>
+            {% endfor %}
+            {% else %}
+                {{ val }}
+            {% endif %}
+            </param>
+        {% endfor %}
+        {% if 'includes' in config %}
+            <job_metrics />
+        {% endif %}
+        {% for env, val in config.get('env', {}).items() %}
+            <env id="{{ env }}">{{ val }}</env>
+        {% endfor %}
+        {% for source in config.get('source', []) %}
+            <env file="{{ source }}" />
+        {% endfor %}
+        {% for exec in config.get('exec', []) %}
+            <env exec="{{ exec }}" />
+        {% endfor %}
+        {% for resubmit in config.get('resubmit', []) %}
+            <resubmit {% for a,v in resubmit.items() %} {{ a }}="{{ v }}"{% endfor %} />
+        {% endfor %}
+        </plugin>
+    {% endfor %}
+    </destinations>
+    <tools>
+    {% for tool, config in galaxy.config.job_conf.get('tools', {}).items() %}
+        <tool id="{{ tool }}" {% for attrib, val in config.items() if attrib not in ('params',) %} {{ attrib }}="{{ val }}"{% endfor %}>
+        {% for param, val in config.get('params', {}).items() %}
+            <param id="{{ param }}">{{ val }}</param>
+        {% endfor %}
+        </tool>
+    {% endfor %}
+    </tools>
+    <limits>
+    {% for limit, config in galaxy.config.job_conf.get('limits', {}).items() %}
+        <limit id="{{ limit }}" {% for attrib, val in config.items() if attrib not in ('value',) %} {{ attrib }}="{{ val }}"{% endfor %}>{{ config['value'] }}</limit>
+    {% endfor %}
+    </limits>
+</job_conf>

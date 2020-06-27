@@ -2,33 +2,37 @@
 galaxy:
   config:
     job_conf:
-      defaults:
-        plugins:
-          workers: 4
-        #handlers:
-        #  assign_with:
-        #    - mem-self	# In-memory Self Assignment
-        #    - db-self	# Database Self Assignment
-        #    - db-preassign	# Database Preassignment
-        #    - uwsgi-mule-message	# uWSGI Mule Messaging
-        #    - db-transaction-isolation	# Database Transaction Isolation
-        #    - db-skip-locked	# Database SKIP LOCKED
-        #  max_grab:
-        #  default:
-        destinations:
-          default: local
-      plugins:
-        local:
-          type: runner
-          load: galaxy.jobs.runners.local:LocalJobRunner
+      default_workers: 4
+      handler_assign_with: db-skip-locked
+      #    (one of)
+      #    - mem-self	# In-memory Self Assignment
+      #    - db-self	# Database Self Assignment
+      #    - db-preassign	# Database Preassignment
+      #    - uwsgi-mule-message	# uWSGI Mule Messaging
+      #    - db-transaction-isolation	# Database Transaction Isolation
+      #    - db-skip-locked	# Database SKIP LOCKED
+      #  handler_max_grab:
+      #  default_handler:
+      #  default_destination: local
+      plugins: {}
+      #  local:
+      #    type: runner
+      #    load: galaxy.jobs.runners.local:LocalJobRunner
       handlers: {}
-      #  - id:
-      #    plugins:
-      #      -
-      destinations:
-        local:
-          runner: local
+      #  id:
+      #    tags: []
+      #    plugins: []
+      destinations: {}
+      #  local:
+      #    runner: local
       #    params:
-      #    job_metrics:
+      #      param: val
+      #      container: {type: image: shell="/bin/sh" resolve_dependencies="false" }
+      #      container_override: {type: image: shell="/bin/sh" resolve_dependencies="false" }
+      #    job_metrics: {}
+      #    env: {}
+      #    source: ['path',]
+      #    exec: ['cmd',]
+      #    resubmit: [{condition: "", destination: "", handler: ""}]
       tools: {}
       limits: {}
