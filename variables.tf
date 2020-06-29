@@ -1,15 +1,17 @@
 locals {
   ansible = yamldecode(file("${path.root}/vars.yml"))
+  object_store_access_key = var.object_store_access_key != "" ? var.object_store_access_key : random_string.object_store_access_key
+  object_store_secret_key = var.object_store_secret_key != "" ? var.object_store_secret_key : random_password.object_store_secret_key
 }
 
 variable "object_store_access_key" {
   type = string
-  default = random_string.object_store_access_key
+  default = ""
 }
 
 variable "object_store_secret_key" {
   type = string
-  default = random_password.object_store_secret_key
+  default = ""
 }
 
 variable "data_dir" {
@@ -20,5 +22,5 @@ variable "data_dir" {
 
 variable "region" {
   type = string
-  default = local.region
+  default = ""
 }

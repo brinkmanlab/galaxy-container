@@ -9,8 +9,8 @@ resource "random_password" "object_store_secret_key" {
 provider "aws" {
   version = "~> 2.0"
   alias = "object_store"
-  access_key = var.object_store_access_key
-  secret_key = var.object_store_secret_key
+  access_key = local.object_store_access_key
+  secret_key = local.object_store_secret_key
   endpoints {
     s3 = "object_store"
   }

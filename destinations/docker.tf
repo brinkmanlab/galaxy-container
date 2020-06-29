@@ -16,7 +16,7 @@ resource "docker_image" "galaxy_web" {
 }
 
 resource "docker_image" "galaxy_worker" {
-  name = "galaxy_worker:latest"
+  name = "galaxy_app:latest"
 }
 
 resource "docker_network" "galaxy_network" {
@@ -59,6 +59,8 @@ resource "docker_container" "galaxy_web" {
 resource "docker_container" "galaxy_worker" {
   name  = "galaxy_worker"
   image = docker_image.galaxy_worker.latest
+  # https://docs.galaxyproject.org/en/master/admin/scaling.html#uwsgi-for-web-serving-and-webless-galaxy-applications-as-job-handlers
+  command = ["python", "${local.ansible.galaxy.paths.root}/scripts/galaxy-main", "-c", "${local.ansible.galaxy.paths.config}/galaxy.yml", "--server-name=$HOSTNAME", "--log-file=/dev/stdout"]
   hostname = "galaxy_worker"
   domainname = "galaxy_worker"
   restart = "unless-stopped"
