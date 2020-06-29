@@ -1,5 +1,5 @@
 locals {
-  region = ""
+  region     = var.region
   containers = {}
 }
 
@@ -24,24 +24,24 @@ resource "docker_network" "galaxy_network" {
 }
 
 resource "docker_container" "galaxy_app" {
-  name  = "galaxy_app"
-  image = docker_image.galaxy_app.latest
-  hostname = "galaxy_app"
+  name       = "galaxy_app"
+  image      = docker_image.galaxy_app.latest
+  hostname   = "galaxy_app"
   domainname = "galaxy_app"
-  restart = "unless-stopped"
-  must_run = true
+  restart    = "unless-stopped"
+  must_run   = true
   networks_advanced {
     name = docker_network.galaxy_network.name
   }
 }
 
 resource "docker_container" "galaxy_web" {
-  name  = "galaxy_web"
-  image = docker_image.galaxy_web.latest
-  hostname = "galaxy_web"
+  name       = "galaxy_web"
+  image      = docker_image.galaxy_web.latest
+  hostname   = "galaxy_web"
   domainname = "galaxy_web"
-  restart = "unless-stopped"
-  must_run = true
+  restart    = "unless-stopped"
+  must_run   = true
   ports {
     external = 80
     internal = 80
@@ -51,8 +51,8 @@ resource "docker_container" "galaxy_web" {
   }
   mounts {
     source = docker_volume.user_data.name
-    target = local.ansible.galaxy.paths.data
-    type = "volume"
+    target = local.ansible.paths.data
+    type   = "volume"
   }
 }
 
@@ -60,25 +60,25 @@ resource "docker_container" "galaxy_worker" {
   name  = "galaxy_worker"
   image = docker_image.galaxy_worker.latest
   # https://docs.galaxyproject.org/en/master/admin/scaling.html#uwsgi-for-web-serving-and-webless-galaxy-applications-as-job-handlers
-  command = ["python", "${local.ansible.galaxy.paths.root}/scripts/galaxy-main", "-c", "${local.ansible.galaxy.paths.config}/galaxy.yml", "--server-name=$HOSTNAME", "--log-file=/dev/stdout"]
-  hostname = "galaxy_worker"
+  command    = ["python", "${local.ansible.paths.root}/scripts/galaxy-main", "-c", "${local.ansible.paths.config}/galaxy.yml", "--server-name=$HOSTNAME", "--log-file=/dev/stdout"]
+  hostname   = "galaxy_worker"
   domainname = "galaxy_worker"
-  restart = "unless-stopped"
-  must_run = true
+  restart    = "unless-stopped"
+  must_run   = true
   mounts {
     target = "/var/run/docker.sock"
     source = "/var/run/docker.sock"
-    type = "bind"
+    type   = "bind"
   }
   mounts {
     source = docker_volume.user_data.name
-    target = local.ansible.galaxy.paths.data
-    type = "volume"
+    target = local.ansible.paths.data
+    type   = "volume"
   }
   mounts {
     source = local.ansible.volumes.galaxy_root.name
-    target = local.ansible.galaxy.paths.root
-    type = "volume"
+    target = local.ansible.paths.root
+    type   = "volume"
   }
   networks_advanced {
     name = docker_network.galaxy_network.name
@@ -118,15 +118,15 @@ resource "docker_volume" "user_data" {
 
 resource "docker_image" "galaxy_images" {
   for_each = local.containers
-  name = each.value
+  name     = each.value
 }
 
 resource "docker_container" "galaxy_containers" {
   for_each = local.containers
-  name  = each.key
-  image = docker_image.galaxy_images[each.key].latest
+  name     = each.key
+  image    = docker_image.galaxy_images[each.key].latest
   hostname = each.key
-  restart = "unless-stopped"
+  restart  = "unless-stopped"
   must_run = true
   networks_advanced {
     name = docker_network.galaxy_network.name

@@ -7,8 +7,9 @@ resource "random_password" "object_store_secret_key" {
 }
 
 provider "aws" {
-  version = "~> 2.0"
-  alias = "object_store"
+  version    = "~> 2.0"
+  alias      = "object_store"
+  region     = local.region
   access_key = local.object_store_access_key
   secret_key = local.object_store_secret_key
   endpoints {
@@ -17,6 +18,6 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "user_data" {
-  provider = aws.object_store
+  provider      = aws.object_store
   bucket_prefix = "user_data"
 }
