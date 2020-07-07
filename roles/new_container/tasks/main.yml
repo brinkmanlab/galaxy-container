@@ -12,6 +12,9 @@
   command: >-
     buildah config
     --author "{{ author }}"
+    {% if entrypoint is defined %}
+    --entrypoint '{{ entrypoint }}'
+    {% endif %}
     {% if cmd is defined %}
     --cmd '{{ cmd }}'
     {% endif %}

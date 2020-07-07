@@ -1,0 +1,6 @@
+---
+- name: Generate tool_conf.xml
+  template:
+    src: tool_conf.xml.j2
+    dest: "{{ paths.config }}/tool_conf.xml"
+    mode: u=rw,g=r,o=r

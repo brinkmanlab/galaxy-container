@@ -1,20 +1,47 @@
 ---
 - name: Ensure config dir exists
-  file: >
-    path={{ galaxy_config }}
-    recurse=yes
-    state=directory
+  file:
+    path: '{{ galaxy_config }}'
+    recurse: yes
+    state: directory
 
-- name: Populate container
-  copy:
-    src: '{{ [role_path,"files",item] | join("/") | realpath }}'
-    dest: '{{ galaxy_root }}'
-    local_follow: no
+- name: Ensure data dir exists with permissions
+  file:
+    path: '{{ paths.data }}'
+    recurse: yes
+    state: directory
+    owner: galaxy
+    group: galaxy
+    mode: ugo+rw
   loop:
-    - lib
-    - locale
-    - scripts
-    - templates
+    - '{{ paths.data }}'
+    - '{{ paths.managed_config }}'
+
+# TODO replace sample configs with galaxy.config.* data structures and templates like tool_conf.yml
+- name: Copy in sample configs
+  copy:
+    src: '{{ item.from }}'
+    dest: '{{ item.to }}'
+  loop:
+  - {from: '{{ playbook_dir }}/galaxy/config/tool_data_table_conf.xml.sample', to: "{{ paths.config }}/tool_data_table_conf.xml" }
+  - {from: '{{ playbook_dir }}/galaxy/config/datatypes_conf.xml.sample', to: "{{ paths.config }}/datatypes_conf.xml" }
+  #- {from: '{{ playbook_dir }}/galaxy/config/shed_tool_conf.xml.sample', to: "{{ paths.managed_config }}/shed_tool_conf.xml" }
+  #- {from: '{{ playbook_dir }}/galaxy/config/migrated_tools_conf.xml.sample', to: "{{ paths.managed_config }}/migrated_tools_conf.xml" }
+  #- {from: '{{ playbook_dir }}/galaxy/config/integrated_tool_panel.xml.sample', to: "{{ paths.managed_config }}/integrated_tool_panel.xml" }
+  #- {from: '{{ playbook_dir }}/galaxy/config/shed_tool_data_table_conf.xml.sample', to: "{{ paths.managed_config }}/shed_tool_data_table_conf.xml" }
+  #- {from: '{{ playbook_dir }}/galaxy/config/shed_data_manager_conf.xml.sample', to: "{{ paths.managed_config }}/shed_data_manager_conf.xml" }
+
+# Don't use copy as it is very very slow when copying lots of files
+- name: Populate container
+  command: buildah copy {{ hostvars[containers.app.name]['ansible_host'] }} '{{ playbook_dir }}/{{ item.from }}' '{{ paths.root }}/{{ item.to }}'
+  delegate_to: buildah_server
+  loop:
+  - {from: galaxy/lib, to: lib}
+  - {from: galaxy/locale, to: locale}
+  - {from: galaxy/templates, to: templates}
+  - {from: galaxy/scripts, to: scripts}
+  - {from: galaxy/tools, to: tools}
 
 - import_tasks: galaxy.yml
 - import_tasks: job_conf.yml
+- import_tasks: tool_conf.yml

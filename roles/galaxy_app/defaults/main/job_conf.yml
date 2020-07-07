@@ -3,14 +3,13 @@ galaxy:
   config:
     job_conf:
       default_workers: 4
-      handler_assign_with: db-skip-locked
-      #    (one of)
-      #    - mem-self	# In-memory Self Assignment
-      #    - db-self	# Database Self Assignment
-      #    - db-preassign	# Database Preassignment
-      #    - uwsgi-mule-message	# uWSGI Mule Messaging
-      #    - db-transaction-isolation	# Database Transaction Isolation
-      #    - db-skip-locked	# Database SKIP LOCKED
+      handler_assign_with:
+      #  - mem-self	# In-memory Self Assignment
+      #  - db-self	# Database Self Assignment
+      #  - db-preassign	# Database Preassignment
+      #  - uwsgi-mule-message	# uWSGI Mule Messaging
+      #  - db-transaction-isolation	# Database Transaction Isolation
+        - db-skip-locked	# Database SKIP LOCKED
       #  handler_max_grab:
       #  default_handler:
       #  default_destination: local

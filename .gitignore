@@ -2,3 +2,5 @@
 /venv
 .terraform
 __pycache__
+*.tfstate
+*.tfstate.backup

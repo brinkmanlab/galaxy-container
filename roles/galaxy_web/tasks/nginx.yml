@@ -1,6 +1,21 @@
 ---
-- name: Generate nginx.conf
+- name: Copy in base conf
+  copy:
+    src: '{{ item.from }}'
+    dest: '{{ item.to }}'
+  loop:
+    - {from: nginx.conf, to: /etc/nginx/ }
+
+- name: Remove base image custom config
+  file:
+    path: '{{ item }}'
+    state: absent
+  loop:
+  - /etc/nginx/conf.d/default.conf
+  - /etc/nginx/conf.d/nginx_upload.default.conf
+
+- name: Generate galaxy.nginx.conf
   template:
-    src: galaxy.nginx.conf.j2
+    src: "galaxy.nginx.conf.j2"
     dest: "{{ nginx.paths.config }}/galaxy.conf"
     mode: u=rw,g=r,o=r

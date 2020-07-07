@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<toolbox monitor="{{ galaxy.config.tool_conf.get('monitor', 'true') }}">
+    {% for section_id, section in galaxy.config.tool_conf.get('sections', {}).items() %}
+    <section id="{{ section_id }}" name="{{ section.get('name', '') }}">
+        {% for item_id, item in section.items() if item_id != 'name' %}
+        {% if 'file' in item %}
+        <tool file="{{ item.file }}" />
+        {% elif 'label' in item %}
+        <label id="{{ item_id }}" text="{{ item.label }}">
+            {% for subitem_id, subitem in item.items() if subitem_id != 'label' %}
+            {% if 'file' in subitem %}
+            <tool file="{{ subitem.file }}"{% if 'labels' in subitem %} labels="{{ subitem.labels }}"{% endif %}/>
+            {% endif %}
+            {% endfor %}
+        </label>
+        {% endif %}
+        {% endfor %}
+    </section>
+    {% endfor %}
+</toolbox>

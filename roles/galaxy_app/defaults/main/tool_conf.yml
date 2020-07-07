@@ -1,0 +1,36 @@
+---
+galaxy:
+  config:
+    tool_conf:
+      monitor: false
+      sections:
+        getext:
+          name: Get Data
+          upload:
+            file: data_source/upload.xml
+          # label: text
+        collection_operations:
+          name: Collection Operations
+          unzip:
+            file: "${model_tools_path}/unzip_collection.xml"
+            labels: "new"
+          zip:
+            file: "${model_tools_path}/zip_collection.xml"
+            labels: "new"
+          failed:
+            file: "${model_tools_path}/filter_failed_collection.xml"
+            labels: "new"
+          flatten:
+            file: "${model_tools_path}/flatten_collection.xml"
+            labels: "new"
+          merge:
+            file: "${model_tools_path}/merge_collection.xml"
+            labels: "new"
+          relabel:
+            file: "${model_tools_path}/relabel_from_file.xml"
+          filter:
+            file: "${model_tools_path}/filter_from_file.xml"
+          sort:
+            file: "${model_tools_path}/sort_collection_list.xml"
+          apply_rules:
+            file: "${model_tools_path}/apply_rules.xml"

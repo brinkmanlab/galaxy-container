@@ -2,6 +2,8 @@ author: Nolan W. <nolan_w@sfu.ca>
 url: https://github.com/brinkmanlab/
 vendor: Brinkman Lab
 
+instance: ''
+
 containers:
   app:
     name: galaxy_app
@@ -9,12 +11,16 @@ containers:
     name: galaxy_web
   worker:
     name: galaxy_worker
+  db:
+    name: galaxy_db
 
 volumes:
   galaxy_root:
     name: galaxy_root
   user_data:
     name: user_data
+  db_data:
+    name: db_data
 
 uwsgi:
   port: 9000
@@ -23,6 +29,7 @@ paths:
   root: '/srv/galaxy'
   data: '/data'
   config: '/srv/galaxy/config'
+  managed_config: '/data/config'
 
 admins:
   - brinkman-ws@sfu.ca
@@ -30,5 +37,6 @@ admins:
 nginx:
   paths:
     root: '/srv/galaxy'
+    config: '/etc/nginx/conf.d'
 
 tmp_path: '/tmp'

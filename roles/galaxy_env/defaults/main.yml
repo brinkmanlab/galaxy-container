@@ -1,4 +1,0 @@
----
-apk_extra: []
-pip_extra: []
-venv_path: '{{ paths.root }}/venv'

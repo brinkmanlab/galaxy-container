@@ -1,33 +1,69 @@
 ---
-- name: Install system dependencies and extras
-  raw: apk {{ item }}
-  loop:
-  - update
-  - add python3 {{ apk_extra | join('') }}
-  - add --virtual build-dependencies hdf5-dev py3-setuptools build-base gcc linux-headers musl-dev python3-dev libffi-dev zlib-dev bzip2-dev xz-dev openssl-dev libxml2-dev libxslt-dev py3-pip
+- name: Install system packages
+  shell: 'apt-get update && apt-get install -y --no-install-recommends {{ build_deps | join(" ") }}'
 
-- name: Install virtualenv and extras
+# name: Install system dependencies and extras
+# apt: python3-apt package is broken for debian
+#   update_cache: yes
+#   name: "{{ item }}"
+# loop:
+# #- [hdf5, libxml2, libxslt, libffi, zlib, xz, bzip2, openssl, musl, pcre, postgresql-libs]
+# - "{{ apt_extra }}"
+# - "{{ build_deps }}"
+
+- name: Install virtualenv, uwsgi and extras
   pip:
-   name: virtualenv {{ pip_extra | join(' ') }}
+   name: "{{ ['virtualenv', 'uwsgi'] + pip_extra }}"
+   extra_args: "--no-cache-dir"
 
 - tempfile:
     state: file
   register: requirements
 
-- name: Copy in requirements
+- name: Copy in files
   copy:
-    src: requirements.txt
-    dest: '{{ requirements.path }}'
+    src: '{{ item.from }}'
+    dest: '{{ item.to }}'
+  loop:
+  - { from: requirements.txt, to: '{{ requirements.path }}' }
+
+- name: env_run
+  template:
+    src: env_run.sh.j2
+    dest: "/env_run.sh"
+    mode: u=rwx,g=rx,o=rx
+
+- name: Add group
+  group:
+    name: galaxy
+    gid: 1000
+
+- name: Add user
+  user:
+    name: galaxy
+    group: galaxy
+    uid: 1000
+    shell: /sbin/nologin
+
+- name: Install additional python dependencies
+  pip:
+    name: [psycopg2, watchdog]
+    virtualenv: '{{ venv_path }}'
+    virtualenv_site_packages: no
+    extra_args: '--index-url https://wheels.galaxyproject.org/simple --extra-index-url https://pypi.python.org/simple --no-cache-dir --upgrade'
 
 - name: Install Galaxy python dependencies
   pip:
     requirements: '{{ requirements.path }}'
     virtualenv: '{{ venv_path }}'
-    virtualenv_site_packages: yes
+    virtualenv_site_packages: no
     extra_args: '--index-url https://wheels.galaxyproject.org/simple --extra-index-url https://pypi.python.org/simple --no-cache-dir'
 
-- name: Clean up apk
-  command: apk del build-dependencies
+- name: Clean up build dependencies
+  shell: "apt purge -y {{ build_deps | join(' ') }}"
+
+- name: Clean up apt
+  command: apt clean
 
 - name: Clean up temp
   file:

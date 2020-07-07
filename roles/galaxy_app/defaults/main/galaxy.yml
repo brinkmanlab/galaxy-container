@@ -12,8 +12,11 @@ galaxy:
       #  - /static=static
       #  - /favicon.ico=static/favicon.ico
       master: true
-      virtualenv: venv
-      pythonpath: lib
+      virtualenv: "{{ paths.root }}/venv"
+      pythonpath: "{{ paths.root }}/lib"
+      force-cwd: "{{ paths.root }}"
+      chdir: "{{ paths.root }}"
+      chdir2: "{{ paths.root }}"
       module: galaxy.webapps.galaxy.buildapp:uwsgi_app()
       manage-script-name: false
       thunder-lock: true
@@ -25,9 +28,17 @@ galaxy:
       enable-threads: true
     galaxy:
       database_connection: "{{ hostvars['galaxy_db'].db_scheme }}://{{ hostvars['galaxy_db'].db_user }}:{{ hostvars['galaxy_db'].db_secret }}@{{ hostvars['galaxy_db'].db_host }}/{{ hostvars['galaxy_db'].db_name }}"
+      database_wait: true
+      data_dir: "{{ paths.data }}"
+      config_dir: "{{ paths.config }}"
+      mutable_config_dir: "{{ paths.managed_config }}"
       job_config_file: "{{ paths.config }}/job_conf.xml"
       tool_config_file: "{{ paths.config }}/tool_conf.xml"
-      shed_tool_config_file: "{{ paths.config }}/shed_tool_conf.xml"
+      #shed_tool_config_file: "{{ paths.managed_config }}/shed_tool_conf.xml"
+      #migrated_tools_config: "{{ paths.managed_config }}/migrated_tools_conf.xml"
+      #integrated_tool_panel_config: "{{ paths.managed_config }}/integrated_tool_panel.xml"
+      #shed_tool_data_table_config: "{{ paths.managed_config }}/shed_tool_data_table_conf.xml"
+      #shed_data_manager_config_file: "{{ paths.managed_config }}/shed_data_manager_conf.xml"
       tool_data_table_config_path: "{{ paths.config }}/tool_data_table_conf.xml"
       visualization_plugins_directory: "{{ paths.root }}/visualizations"
       datatypes_config_file: "{{ paths.config }}/datatypes_conf.xml"
@@ -37,6 +48,8 @@ galaxy:
       nginx_upload_path: "/_upload"
       legacy_eager_objectstore_initialization: true
       tool_dependency_dir: "{{ paths.data }}/tool-deps"
+      tool_data_path: "{{ paths.data }}/tool-data"
+      shed_tool_data_path: "{{ paths.data }}/shed-tool-data"
       file_path: "{{ paths.data }}/database/files"
       new_file_path: "{{ paths.data }}/database/tmp"
       job_working_directory: "{{ paths.data }}/jobs_directory"
@@ -51,10 +64,13 @@ galaxy:
       #remote_user_maildomain: 'external.ca'
       #remote_user_secret:
       #single_user:
-      watch_tools: 'true'
+      watch_tools: true
+      conda_auto_init: false
       admin_users: "{{ admins | join(',') }}"
       allow_user_deletion: True
       allow_user_impersonation: True
       master_api_key: null
       cleanup_job: always
       outputs_to_working_directory: True
+      welcome_url: /static/welcome.html
+      static_enabled: false

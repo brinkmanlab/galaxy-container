@@ -1,0 +1,5 @@
+---
+build_deps: [build-essential, libpq-dev] #, postgresql-dev, hdf5-dev, musl-dev, libffi-dev, zlib-dev, bzip2-dev, xz-dev, openssl-dev, libxml2-dev, libxslt-dev, pcre-dev]
+apt_extra: []
+pip_extra: []
+venv_path: '{{ paths.root }}/venv'
