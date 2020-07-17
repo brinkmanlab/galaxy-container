@@ -9,7 +9,7 @@
     vars:
       name: "{{ containers.app.name }}"
       base_image: python:slim
-      cmd: 'uwsgi --yaml {{ paths.config }}/galaxy.yml --uid=1000'
+      cmd: 'uwsgi --yaml {{ paths.config }}/galaxy.yml --uid={{ uwsgi.uid }}'
 
 - name: Configure Container Environment
   hosts: "{{ containers.app.name }}"

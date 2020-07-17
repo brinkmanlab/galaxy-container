@@ -1,0 +1,5 @@
+image_tag = "dev"
+#region = ""
+#db_password = ""
+#object_store_access_key = ""
+#object_store_secret_key = ""

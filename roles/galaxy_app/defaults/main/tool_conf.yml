@@ -7,7 +7,7 @@ galaxy:
         getext:
           name: Get Data
           upload:
-            file: data_source/upload.xml
+            file: "{{ paths.root }}/tools/data_source/upload.xml"
           # label: text
         collection_operations:
           name: Collection Operations

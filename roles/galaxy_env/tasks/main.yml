@@ -1,15 +1,6 @@
 ---
 - name: Install system packages
-  shell: 'apt-get update && apt-get install -y --no-install-recommends {{ build_deps | join(" ") }}'
-
-# name: Install system dependencies and extras
-# apt: python3-apt package is broken for debian
-#   update_cache: yes
-#   name: "{{ item }}"
-# loop:
-# #- [hdf5, libxml2, libxslt, libffi, zlib, xz, bzip2, openssl, musl, pcre, postgresql-libs]
-# - "{{ apt_extra }}"
-# - "{{ build_deps }}"
+  shell: 'apt-get update && apt-get install -y --no-install-recommends ca-certificates {{ build_deps | join(" ") }}'
 
 - name: Install virtualenv, uwsgi and extras
   pip:

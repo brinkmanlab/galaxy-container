@@ -18,3 +18,9 @@
     group: galaxy
     uid: 1000
     shell: /sbin/nologin
+
+- name: Populate container
+  command: buildah copy {{ hostvars[containers.web.name]['ansible_host'] }} '{{ playbook_dir }}/{{ item.from }}' '{{ item.to }}'
+  delegate_to: buildah_server
+  loop:
+    - {from: galaxy/static, to: '{{ nginx.paths.root }}'}

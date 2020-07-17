@@ -3,15 +3,17 @@ galaxy:
   config:
     job_conf:
       default_workers: 4
+      default_destination: docker
       plugins:
         local:
-          workers: 1
           type: runner
           load: galaxy.jobs.runners.local:LocalJobRunner
       destinations:
-        docker:
+        local:
           runner: local
-          params:
+        docker: &docker
+          runner: local
+          params: &docker_params
             docker_enabled: true
             require_container: true
             embed_metadata_in_job: true
@@ -26,4 +28,29 @@ galaxy:
               default: '{{ volumes.galaxy_root.name }}:$galaxy_root:ro,{{ volumes.user_data.name }}:/data:rw,$working_directory:rw'
             docker_auto_rm: true
             #docker_set_user: '$UID'
+        galaxy_env:
+          <<: *docker
+          params:
+            <<: *docker_params
             docker_run_extra_arguments: '--entrypoint="/env_run.sh" -e "PYTHONPATH={{ paths.root }}/lib"'
+      tools:
+        upload1:
+          destination: local
+        unzip:
+          destination: local
+        zip:
+          destination: local
+        failed:
+          destination: local
+        flatten:
+          destination: local
+        merge:
+          destination: local
+        relabel:
+          destination: local
+        filter:
+          destination: local
+        sort:
+          destination: local
+        apply_rules:
+          destination: local

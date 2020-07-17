@@ -24,6 +24,10 @@ volumes:
 
 uwsgi:
   port: 9000
+  user: galaxy
+  uid: 1000
+  group: galaxy
+  gid: 1000
 
 paths:
   root: '/srv/galaxy'

@@ -49,11 +49,6 @@
     vars:
       base_image: andarius/nginx-upload
       name: "{{ containers.web.name }}"
-  post_tasks:
-  - name: Populate container
-    command: buildah copy {{ hostvars[containers.web.name]['ansible_host'] }} '{{ playbook_dir }}/{{ item.from }}' '{{ item.to }}'
-    loop:
-      - {from: galaxy/static, to: '{{ nginx.paths.root }}'}
 
 - name: Configure Container Environment
   hosts: "{{ containers.web.name }}"

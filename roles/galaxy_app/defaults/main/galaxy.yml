@@ -29,6 +29,8 @@ galaxy:
     galaxy:
       database_connection: "{{ hostvars['galaxy_db'].db_scheme }}://{{ hostvars['galaxy_db'].db_user }}:{{ hostvars['galaxy_db'].db_secret }}@{{ hostvars['galaxy_db'].db_host }}/{{ hostvars['galaxy_db'].db_name }}"
       database_wait: true
+      install_database_connections: "sqlite://{{ paths.managed_config }}/toolshed.sqlite?isolation_level=IMMEDIATE"
+      tool_path: "{{ paths.managed_config }}/tools"
       data_dir: "{{ paths.data }}"
       config_dir: "{{ paths.config }}"
       mutable_config_dir: "{{ paths.managed_config }}"
@@ -74,3 +76,4 @@ galaxy:
       outputs_to_working_directory: True
       welcome_url: /static/welcome.html
       static_enabled: false
+      enable_old_display_applications: false

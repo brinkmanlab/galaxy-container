@@ -41,6 +41,7 @@
   - {from: galaxy/templates, to: templates}
   - {from: galaxy/scripts, to: scripts}
   - {from: galaxy/tools, to: tools}
+  - {from: galaxy/display_applications, to: display_applications}
 
 - import_tasks: galaxy.yml
 - import_tasks: job_conf.yml

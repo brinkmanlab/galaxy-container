@@ -12,16 +12,16 @@
     <handlers{% if 'default_handler' in galaxy.config.job_conf %} default="{{ galaxy.config.job_conf.default_handler }}"{% endif %}{% if 'handler_max_grab' in galaxy.config.job_conf %} max_grab="{{ galaxy.config.job_conf.handler_max_grab }}"{% endif %}{% if 'handler_assign_with' in galaxy.config.job_conf %} assign_with="{{ galaxy.config.job_conf.handler_assign_with | join(',') }}"{% endif %}>
     {% for handler, config in galaxy.config.job_conf.handlers %}
         <handler id="{{ handler }}" tags="{{ config.tags | join(',') }}">
-        {% for plugin in config.plugins %}
+        {% for plugin in config.get('plugins', []) %}
             <plugin id="{{ plugin }}" />
         {% endfor %}
         </handler>
     {% endfor %}
     </handlers>
-    <destinations default="{{ galaxy.config.job_conf.get('default_destination', (galaxy.config.job_conf.destinations.keys() | list)[0]) }}">
-    {% for destination, config in galaxy.config.job_conf.destinations.items() %}
+    <destinations default="{{ galaxy.config.job_conf.get('default_destination', (galaxy.config.job_conf.get('destinations', {'':None}).keys() | list)[0]) }}">
+    {% for destination, config in galaxy.config.job_conf.get('destinations', {}).items() %}
         <destination id="{{ destination }}"{% for attrib, val in config.items() if attrib not in ('params','job_metrics','env','source','exec', 'resubmit') %} {{ attrib }}="{{ val }}"{% endfor %}>
-        {% for param, val in config['params'].items() %}
+        {% for param, val in config.get('params', {}).items() %}
             <param id="{{ param }}"{% if val is mapping and 'from_environ' in val %} from_environ="{{ val['from_environ'] }}"{% endif %}>
             {%- if param in ('container', 'container_overrride') -%}
             {% for type, attribs in val.items() %}
