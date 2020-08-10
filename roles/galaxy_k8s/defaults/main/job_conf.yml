@@ -1,0 +1,65 @@
+---
+# TODO https://github.com/galaxyproject/galaxy-helm/blob/master/galaxy/files/rules/k8s_container_mapper.py
+galaxy:
+  config:
+    job_conf:
+      plugins:
+        k8s:
+          type: runner
+          load: galaxy.jobs.runners.kubernetes:KubernetesJobRunner
+          tags: default
+          params:
+            enabled:
+              from_env: K8S_ENABLED
+              default: False
+            k8s_persistent_volume_claims:
+              from_env: K8S_VOLUMES
+              default: 'galaxy-user-data:/data'
+            k8s_namespace:
+              from_env: K8S_NAMESPACE
+              default: default
+            k8s_use_service_account: True
+            k8s_galaxy_instance_id:
+              from_env: K8S_NAMESPACE
+              default: default
+            # YAML encoded string: https://github.com/galaxyproject/galaxy/blob/540d6904629caedf3d3cc8b5a1492ae60c652b23/lib/galaxy/jobs/runners/kubernetes.py#L243
+            k8s_affinity: |
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                  - matchExpressions:
+                    - key: WorkClass
+                      operator: In
+                      values:
+                      - compute
+            k8s_cleanup_job: always
+            #k8s_pod_priority_class:
+            #k8s_tolerations:
+            #k8s_pod_retrials: 4
+            #k8s_walltime_limit: 172800
+            #k8s_timeout_seconds_job_deletion: 30
+            #k8s_supplemental_group_id: 0
+            #k8s_fs_group_id: 0
+            #requests_cpu:
+            #requests_memory:
+            #limits_cpu:
+            #limits_memory:
+      destinations:
+        local:
+          runner: local
+        k8s:
+          runner: k8s
+          params:
+            docker_enabled: true
+            docker_repo_default:
+              from_environ: K8S_DEFAULT_REPO
+              default: docker.io
+            docker_owner_default:
+              from_environ: K8S_DEFAULT_OWNER
+              default: brinkmanlab
+            docker_image_default:
+              from_environ: K8S_DEFAULT_IMAGE
+              default: '{{ containers.worker.name }}'
+            docker_tag_default:
+              from_environ: K8S_DEFAULT_IMAGE_TAG
+              default: latest

@@ -1,10 +1,23 @@
+{% macro param(id, val) -%}
+<param id="{{ id }}"{% if val is mapping and 'from_environ' in val %} from_environ="{{ val['from_environ'] }}"{% endif %}>
+{%- if id in ('container', 'container_overrride') -%}
+{% for type, attribs in val.items() %}
+    <container type="{{ type }}"{% for a,v in attribs.items() if a not in ('image',) %} {{ a }}="{{ v }}"{% endfor %}>{{ attribs.image }}</container>
+{% endfor %}
+{%- elif val is mapping and 'default' in val -%}
+    {{ val['default'] }}
+{%- else -%}
+    {{ val }}
+{%- endif -%}
+</param>
+{%- endmacro param %}
 <?xml version="1.0"?>
 <job_conf>
     <plugins workers="{{ galaxy.config.job_conf.default_workers or 4 }}">
     {% for plugin, config in galaxy.config.job_conf.get('plugins', {}).items() %}
         <plugin id="{{ plugin }}"{% for attrib, val in config.items() if attrib not in ('params',) %} {{ attrib }}="{{ val }}"{% endfor %}>
         {% for param, val in config.get('params', {}).items() %}
-            <param id="{{ param }}">{{ val }}</param>
+            {{ param(param, val) }}
         {% endfor %}
         </plugin>
     {% endfor %}
@@ -20,19 +33,9 @@
     </handlers>
     <destinations default="{{ galaxy.config.job_conf.get('default_destination', (galaxy.config.job_conf.get('destinations', {'':None}).keys() | list)[0]) }}">
     {% for destination, config in galaxy.config.job_conf.get('destinations', {}).items() %}
-        <destination id="{{ destination }}"{% for attrib, val in config.items() if attrib not in ('params','job_metrics','env','source','exec', 'resubmit') %} {{ attrib }}="{{ val }}"{% endfor %}>
+        <destination id="{{ destination }}"{% for attrib, val in config.items() if attrib not in ('params','job_metrics','env','source','exec', 'resubmit') %} {{ attrib }}="{{ val }}"{% endfor %}{% if 'tags' in config %} tags="{{ config['tags'] if config['tags'] is string else config['tags']|join(',') }}"{% endif %}>
         {% for param, val in config.get('params', {}).items() %}
-            <param id="{{ param }}"{% if val is mapping and 'from_environ' in val %} from_environ="{{ val['from_environ'] }}"{% endif %}>
-            {%- if param in ('container', 'container_overrride') -%}
-            {% for type, attribs in val.items() %}
-                <container type="{{ type }}"{% for a,v in attribs.items() if a not in ('image',) %} {{ a }}="{{ v }}"{% endfor %}>{{ attribs.image }}</container>
-            {% endfor %}
-            {%- elif val is mapping and 'default' in val -%}
-                {{ val['default'] }}
-            {%- else -%}
-                {{ val }}
-            {%- endif -%}
-            </param>
+            {{ param(param, val) }}
         {% endfor %}
         {% if 'job_metrics' in config %}
             <job_metrics />

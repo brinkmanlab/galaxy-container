@@ -1,0 +1,2 @@
+---
+#build_deps: [apt-transport-https, curl, gnupg2, software-properties-common]

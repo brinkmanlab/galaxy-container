@@ -3,6 +3,7 @@ galaxy:
   config:
     job_conf:
       default_workers: 4
+      default_destination: default
       handler_assign_with:
       #  - mem-self	# In-memory Self Assignment
       #  - db-self	# Database Self Assignment
@@ -13,17 +14,17 @@ galaxy:
       #  handler_max_grab:
       #  default_handler:
       #  default_destination: local
-      plugins: {}
-      #  local:
-      #    type: runner
-      #    load: galaxy.jobs.runners.local:LocalJobRunner
+      plugins:
+        local:
+          type: runner
+          load: galaxy.jobs.runners.local:LocalJobRunner
       handlers: {}
       #  id:
       #    tags: []
       #    plugins: []
-      destinations: {}
-      #  local:
-      #    runner: local
+      destinations:
+        local:
+          runner: local
       #    params:
       #      param: val
       #      container: {type: image: shell="/bin/sh" resolve_dependencies="false" }
@@ -33,5 +34,25 @@ galaxy:
       #    source: ['path',]
       #    exec: ['cmd',]
       #    resubmit: [{condition: "", destination: "", handler: ""}]
-      tools: {}
+      tools:
+        upload1:
+          destination: local
+        unzip:
+          destination: local
+        zip:
+          destination: local
+        failed:
+          destination: local
+        flatten:
+          destination: local
+        merge:
+          destination: local
+        relabel:
+          destination: local
+        filter:
+          destination: local
+        sort:
+          destination: local
+        apply_rules:
+          destination: local
       limits: {}

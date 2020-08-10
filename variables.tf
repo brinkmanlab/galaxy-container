@@ -25,6 +25,6 @@ variable "image_tag" {
 }
 
 variable "db_password" {
-  type = string
+  type    = string
   default = ""
 }

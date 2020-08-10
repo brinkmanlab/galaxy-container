@@ -1,3 +1,35 @@
+locals {
+  db_conf = var.db_conf != null ? var.db_conf : {
+    scheme = "postgres"
+    host = var.db_name
+    name = "galaxy${var.name_suffix}"
+    user = "galaxy"
+    pass = random_password.db_password[0].result
+  }
+}
+
+variable "db_conf" {
+  type = object({
+    scheme = string
+    host = string
+    name = string
+    user = string
+    pass = string
+  })
+  default = null
+  description = "Database configuration overrides"
+}
+
+resource "random_password" "db_password" {
+  count = var.db_conf == null ? 1 : 0
+  length = 16
+  special = false
+}
+
+variable "depends" {
+  default = null
+}
+
 variable "object_store_access_key" {
   type        = string
   default     = ""
@@ -17,21 +49,15 @@ variable "data_dir" {
 }
 
 variable "root_dir" {
-  type = string
-  default = "/srv/galaxy"
+  type        = string
+  default     = "/srv/galaxy"
   description = "Path to galaxy root folder within container"
 }
 
 variable "config_dir" {
-  type = string
-  default = "/srv/galaxy/config"
-  description = "Path to galaxy configuration folder within container"
-}
-
-variable "region" {
   type        = string
-  default     = ""
-  description = "Optional region to deploy to within cloud"
+  default     = "/srv/galaxy/config"
+  description = "Path to galaxy configuration folder within container"
 }
 
 variable "image_tag" {
@@ -40,33 +66,39 @@ variable "image_tag" {
   description = "Tag for galaxy_web and galaxy_app image"
 }
 
-variable "name_suffix" {
+variable "instance" {
+  type        = string
+  default = ""
+  description = "Unique deployment instance identifier"
+}
+
+variable "name_suffix" {  # TODO eliminate this variable. Replace with docker network or k8s namespace
   type        = string
   default     = ""
   description = "Suffix to attach to all resource identifiers. This allows multiple instances to be ran without name collisions."
 }
 
 variable "galaxy_web_image" {
-  type = string
-  default = "brinkmanlab/galaxy_web"
+  type        = string
+  default     = "brinkmanlab/galaxy_web"
   description = "Galaxy web server image name"
 }
 
 variable "galaxy_app_image" {
-  type = string
-  default = "brinkmanlab/galaxy_app"
+  type        = string
+  default     = "brinkmanlab/galaxy_app"
   description = "Galaxy app server image name"
 }
 
 variable "db_image" {
-  type = string
-  default = "postgres:alpine"
+  type        = string
+  default     = "postgres:alpine"
   description = "MariaDB image name"
 }
 
 variable "galaxy_root_volume_name" {
-  type = string
-  default = "galaxy_root"
+  type        = string
+  default     = "galaxy_root"
   description = "Galaxy root volume name"
 }
 

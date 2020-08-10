@@ -2,18 +2,14 @@
 galaxy:
   config:
     job_conf:
-      default_workers: 4
-      default_destination: docker
-      plugins:
-        local:
-          type: runner
-          load: galaxy.jobs.runners.local:LocalJobRunner
       destinations:
-        local:
-          runner: local
         docker: &docker
           runner: local
+          tags: default
           params: &docker_params
+            enabled:
+              default: False
+              from_environ: DOCKER_ENABLED
             docker_enabled: true
             require_container: true
             embed_metadata_in_job: true
@@ -33,24 +29,3 @@ galaxy:
           params:
             <<: *docker_params
             docker_run_extra_arguments: '--entrypoint="/env_run.sh" -e "PYTHONPATH={{ paths.root }}/lib"'
-      tools:
-        upload1:
-          destination: local
-        unzip:
-          destination: local
-        zip:
-          destination: local
-        failed:
-          destination: local
-        flatten:
-          destination: local
-        merge:
-          destination: local
-        relabel:
-          destination: local
-        filter:
-          destination: local
-        sort:
-          destination: local
-        apply_rules:
-          destination: local

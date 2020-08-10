@@ -1,0 +1,18 @@
+---
+#- name: Install system packages
+#  shell: 'apt-get update && apt-get install -y --no-install-recommends {{ build_deps | join(" ") }}'
+#
+#- name: Install docker repository certificate
+#  shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+#
+#- name: Add docker repository
+#  shell: '. /etc/os-release && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $VERSION_CODENAME stable"'
+#
+#- name: Install docker-cli
+#  shell: 'apt-get update && apt-get install -y --no-install-recommends docker-ce-cli'
+#
+#- name: Clean up build dependencies
+#  shell: "apt purge -y {{ build_deps | join(' ') }}"
+#
+#- name: Clean up apt
+#  command: apt clean
