@@ -14,12 +14,35 @@ server {
 
   # proxy all requests not matching other locations to uWSGI
   location / {
+    include master_api_key;
+    include uwsgi_params;
+    if ($request_method = POST) {
+        # Limit master api key to only POST requests
+        set $test 1;
+    }
+    if ($uri = '/api/users') {
+        # Limit master api key to only /api/users exactly
+        set $test 1$test;
+    }
+    if ($arg_key = '') {
+        # Do not overwrite a passed api key
+        set $test 1$test;
+    }
+    set $delimeter "";
+    if ($is_args) {
+        set $delimeter "&";
+    }
+    set $modified_query $query_string;
+    if ($test = 111) {
+        # Add master api key to query params if all tests succeed
+        set $modified_query $query_string${delimeter}key=$master_api_key;
+    }
     uwsgi_pass uwsgi://{{ containers.app.name }}:{{ uwsgi.port }};
     uwsgi_param UWSGI_SCHEME $scheme;
-    include uwsgi_params;
+    uwsgi_param QUERY_STRING $modified_query;
   }
 
-  # User download via nginx #TODO verify paths
+  # User download via nginx # TODO verify paths
   location /_x_accel_redirect/ {
       internal;
       alias /;

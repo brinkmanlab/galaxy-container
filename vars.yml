@@ -2,25 +2,23 @@ author: Nolan W. <nolan_w@sfu.ca>
 url: https://github.com/brinkmanlab/
 vendor: Brinkman Lab
 
-instance: ''
-
 containers:
   app:
-    name: galaxy_app
+    name: galaxy-app
   web:
-    name: galaxy_web
+    name: galaxy-web
   worker:
-    name: galaxy_worker
+    name: galaxy-worker
   db:
-    name: galaxy_db
+    name: galaxy-db
 
 volumes:
   galaxy_root:
-    name: galaxy_root
+    name: galaxy-root
   user_data:
-    name: user_data
+    name: user-data
   db_data:
-    name: db_data
+    name: db-data
 
 uwsgi:
   port: 9000

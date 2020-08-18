@@ -1,12 +1,6 @@
 ---
 - import_tasks: nginx.yml
 
-- name: Use default welcome
-  file:
-    path: '{{ nginx.paths.root }}/welcome.html'
-    src: welcome.html.sample
-    state: link
-
 - name: Add group
   group:
     name: galaxy
@@ -24,3 +18,9 @@
   delegate_to: buildah_server
   loop:
     - {from: galaxy/static, to: '{{ nginx.paths.root }}'}
+
+- name: Use default welcome
+  file:
+    path: '{{ nginx.paths.root }}/welcome.html'
+    src: welcome.html.sample
+    state: link

@@ -1,13 +1,3 @@
-variable "object_store_access_key" {
-  type    = string
-  default = ""
-}
-
-variable "object_store_secret_key" {
-  type    = string
-  default = ""
-}
-
 variable "data_dir" {
   description = "Path to store user data"
   type        = string
@@ -24,7 +14,26 @@ variable "image_tag" {
   default = "latest"
 }
 
-variable "db_password" {
-  type    = string
-  default = ""
+variable "email" {
+  type        = string
+  default     = ""
+  description = "Email address to send automated emails from"
+}
+
+variable "db_conf" {
+  type = object({
+    scheme = string
+    host   = string
+    name   = string
+    user   = string
+    pass   = string
+  })
+  default     = null
+  description = "Database configuration overrides"
+}
+
+variable "instance" {
+  type        = string
+  default     = ""
+  description = "Specify a unique instance name for this deployment"
 }

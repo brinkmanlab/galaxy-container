@@ -1,5 +1,3 @@
 image_tag = "dev"
+email     = "nolan_w@sfu.ca"
 #region = ""
-#db_password = ""
-#object_store_access_key = ""
-#object_store_secret_key = ""

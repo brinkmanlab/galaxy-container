@@ -3,8 +3,10 @@
   copy:
     src: '{{ item.from }}'
     dest: '{{ item.to }}'
+    mode: preserve
   loop:
     - {from: nginx.conf, to: /etc/nginx/ }
+    - {from: entry.sh, to: / }
 
 - name: Remove base image custom config
   file:

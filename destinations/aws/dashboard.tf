@@ -1,8 +1,8 @@
 resource "helm_release" "dashboard" {
-  name      = "dashboard-chart"
-  chart     = "kubernetes-dashboard"
+  name       = "dashboard-chart"
+  chart      = "kubernetes-dashboard"
   repository = "https://kubernetes.github.io/dashboard/"
-  namespace = local.k8s_service_account_namespace
+  namespace  = "kube-system"
 
   set {
     name  = "awsRegion"

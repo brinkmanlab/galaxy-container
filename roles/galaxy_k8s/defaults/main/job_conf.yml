@@ -7,10 +7,9 @@ galaxy:
         k8s:
           type: runner
           load: galaxy.jobs.runners.kubernetes:KubernetesJobRunner
-          tags: default
           params:
             enabled:
-              from_env: K8S_ENABLED
+              from_environ: K8S_ENABLED
               default: False
             k8s_persistent_volume_claims:
               from_env: K8S_VOLUMES
@@ -45,11 +44,13 @@ galaxy:
             #limits_cpu:
             #limits_memory:
       destinations:
-        local:
-          runner: local
         k8s:
           runner: k8s
+          tags: default
           params:
+            enabled:
+              from_environ: K8S_ENABLED
+              default: False
             docker_enabled: true
             docker_repo_default:
               from_environ: K8S_DEFAULT_REPO

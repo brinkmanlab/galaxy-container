@@ -1,10 +1,10 @@
-resource "random_string" "object_store_access_key" {
-  length = 16
-}
-
-resource "random_password" "object_store_secret_key" {
-  length = 16
-}
+#resource "random_string" "object_store_access_key" {
+#  length = 16
+#}
+#
+#resource "random_password" "object_store_secret_key" {
+#  length = 16
+#}
 
 #provider "aws" {
 #  version    = "~> 2.0"

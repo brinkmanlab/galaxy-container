@@ -29,6 +29,8 @@ galaxy:
     galaxy:
       #database_connection: "{{ hostvars['galaxy_db'].db_scheme }}://{{ hostvars['galaxy_db'].db_user }}:{{ hostvars['galaxy_db'].db_secret }}@{{ hostvars['galaxy_db'].db_host }}/{{ hostvars['galaxy_db'].db_name }}"
       database_wait: true
+      database_wait_attempts: 60
+      database_wait_sleep: 2.0
       install_database_connections: "sqlite://{{ paths.managed_config }}/toolshed.sqlite?isolation_level=IMMEDIATE"
       tool_path: "{{ paths.managed_config }}/tools"
       data_dir: "{{ paths.data }}"
@@ -36,6 +38,8 @@ galaxy:
       mutable_config_dir: "{{ paths.managed_config }}"
       job_config_file: "{{ paths.config }}/job_conf.xml"
       tool_config_file: "{{ paths.config }}/tool_conf.xml"
+      #tool_cache_data_dir: "{{ paths.data }}/tool_cache"
+      #tool_search_index_dir: "{{ paths.data }}/tool_search_index"
       #shed_tool_config_file: "{{ paths.managed_config }}/shed_tool_conf.xml"
       #migrated_tools_config: "{{ paths.managed_config }}/migrated_tools_conf.xml"
       #integrated_tool_panel_config: "{{ paths.managed_config }}/integrated_tool_panel.xml"
@@ -59,8 +63,10 @@ galaxy:
       template_cache_path: "{{ paths.data }}/compiled_templates"
       citation_cache_data_dir: "{{ paths.data }}/citations/data"
       citation_cache_lock_dir: "{{ paths.data }}/citations/lock"
-      #smtp_server: ''
+      smtp_server: 'mail'
       #smtp_username: ''
+      #smtp_password: ''
+      #smtp_ssl: false
       #brand: 'Brinkman Lab'
       #pretty_datetime_format: $iso8601
       #remote_user_maildomain: 'external.ca'
@@ -68,7 +74,7 @@ galaxy:
       #single_user:
       watch_tools: true
       conda_auto_init: false
-      admin_users: "{{ admins | join(',') }}"
+      #admin_users: "{{ admins | join(',') }}"
       allow_user_deletion: True
       allow_user_impersonation: True
       master_api_key: null

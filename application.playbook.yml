@@ -9,13 +9,13 @@
     vars:
       name: "{{ containers.app.name }}"
       base_image: python:slim
-      cmd: 'uwsgi --yaml {{ paths.config }}/galaxy.yml --uid={{ uwsgi.uid }}'
+      cmd: 'uwsgi --yaml {{ paths.config }}/galaxy.yml --uid={{ uwsgi.uid }} --gid={{ uwsgi.gid }}'
 
 - name: Configure Container Environment
   hosts: "{{ containers.app.name }}"
   gather_facts: false
   vars_files: [vars.yml]
-  roles: [galaxy_env, galaxy_app, galaxy_docker]
+  roles: [galaxy_env, galaxy_app, galaxy_docker, galaxy_k8s]
 
 - name: Finish Galaxy Application Container
   hosts: buildah_server

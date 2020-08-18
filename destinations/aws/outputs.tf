@@ -13,3 +13,7 @@ output "efs_user_data" {
 output "endpoint" {
   value = module.eks.cluster_endpoint
 }
+
+output "smtp_conf" {
+  value = local.smtp_conf
+}

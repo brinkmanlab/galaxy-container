@@ -55,7 +55,7 @@ resource "docker_container" "galaxy_app" {
 }
 
 resource "docker_container" "galaxy_web" {
-  name       = "${var.web_name}${var.name_suffix}"
+  name       = "${var.web_name}${local.name_suffix}"
   image      = docker_image.galaxy_web.latest
   hostname   = "galaxy_web"
   domainname = "galaxy_web"
@@ -76,10 +76,10 @@ resource "docker_container" "galaxy_web" {
 }
 
 resource "docker_container" "galaxy_worker" {
-  name  = "${var.worker_name}${var.name_suffix}"
+  name  = "${var.worker_name}${local.name_suffix}"
   image = docker_image.galaxy_worker.latest
   # https://docs.galaxyproject.org/en/master/admin/scaling.html#uwsgi-for-web-serving-and-webless-galaxy-applications-as-job-handlers
-  command = ["/env_run.sh", "python3", "${var.root_dir}/scripts/galaxy-main", "-c", "${var.config_dir}/galaxy.yml", "--server-name=${var.worker_name}${var.name_suffix}", "--log-file=/dev/stdout", "--attach-to-pool=job-handlers"]
+  command = ["/env_run.sh", "python3", "${var.root_dir}/scripts/galaxy-main", "-c", "${var.config_dir}/galaxy.yml", "--server-name=${var.worker_name}${local.name_suffix}", "--log-file=/dev/stdout", "--attach-to-pool=job-handlers"]
   # /env_run.sh "python3" "/srv/galaxy/scripts/galaxy-main" "-c" "/srv/galaxy/config/galaxy.yml" "--server-name=$HOSTNAME" "--log-file=/dev/stdout" --attach-to-pool=job-handlers
   hostname   = "galaxy_worker"
   domainname = "galaxy_worker"
@@ -88,7 +88,7 @@ resource "docker_container" "galaxy_worker" {
   user       = "galaxy:galaxy"
   group_add  = ["969"]
   env = compact([
-    var.name_suffix == "" ? "" : "DOCKER_VOLUME_MOUNTS='${var.galaxy_root_volume_name}${var.name_suffix}:$galaxy_root:ro,${var.user_data_volume_name}${var.name_suffix}:/data:rw,$working_directory:rw'",
+    local.name_suffix == "" ? "" : "DOCKER_VOLUME_MOUNTS='${var.galaxy_root_volume_name}${local.name_suffix}:$galaxy_root:ro,${var.user_data_volume_name}${local.name_suffix}:/data:rw,$working_directory:rw'",
     "CWD=${var.root_dir}",
     "DEFAULT_CONTAINER_ID=${docker_image.galaxy_worker.latest}",
     "DOCKER_ENABLED=True"
@@ -115,14 +115,14 @@ resource "docker_container" "galaxy_worker" {
 }
 
 resource "docker_container" "galaxy_db" {
-  name       = "${var.db_name}${var.name_suffix}"
+  name       = "${var.db_name}${local.name_suffix}"
   image      = docker_image.galaxy_db.latest
   hostname   = "galaxy_db"
   domainname = "galaxy_db"
   restart    = "unless-stopped"
   must_run   = true
   env = [
-    "POSTGRES_PASSWORD=${var.db_password}",
+    "POSTGRES_PASSWORD=${var.db_conf.pass}",
     "POSTGRES_USER=galaxy",
     "POSTGRES_DB=galaxy",
     "PGDATA=/var/lib/postgresql/data/pgdata"
