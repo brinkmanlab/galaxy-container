@@ -27,4 +27,6 @@ module "galaxy-k8s" {
   worker_name             = var.worker_name
   email                   = var.email
   debug                   = var.debug
+  uwsgi_port              = var.uwsgi_port
+  master_api_key          = local.master_api_key
 }

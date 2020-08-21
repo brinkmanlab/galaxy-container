@@ -46,11 +46,11 @@ module "eks" {
       instance_type        = "c5.2xlarge"
       asg_min_size         = 0
       asg_max_size         = 30
-      asg_desired_capacity = 0
+      asg_desired_capacity = 1
       kubelet_extra_args   = "--node-labels=WorkClass=compute"
       tags = concat(local.autoscaler_tag, [{
         key                 = "WorkClass"
-        propagate_at_launch = "true"
+        propagate_at_launch = "false"
         value               = "compute"
       }, ])
       # spot_price           =

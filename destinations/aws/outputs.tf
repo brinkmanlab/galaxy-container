@@ -11,7 +11,7 @@ output "efs_user_data" {
 }
 
 output "endpoint" {
-  value = module.eks.cluster_endpoint
+  value = module.galaxy-k8s.endpoint
 }
 
 output "smtp_conf" {

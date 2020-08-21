@@ -119,8 +119,8 @@ resource "kubernetes_service" "galaxy_app" {
     }
     port {
       protocol    = "TCP"
-      port        = 80
-      target_port = 80
+      port        = var.uwsgi_port
+      target_port = var.uwsgi_port
     }
 
     type = "ClusterIP" # https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types

@@ -312,6 +312,7 @@ resource "kubernetes_deployment" "autoscaler" {
             "--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/${local.cluster_name}",
             "--balance-similar-node-groups",
             "--skip-nodes-with-system-pods=false",
+            #"--scale-down-unneeded-time=5min",
           ]
 
           env {

@@ -6,8 +6,9 @@ locals {
     user   = "galaxy"
     pass   = random_password.db_password[0].result
   }
+  master_api_key = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key[0].result
   master_api_key_conf = {
-    master_api_key = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key[0].result
+    master_api_key = local.master_api_key
   }
   admin_users_conf = length(var.admin_users) == 0 ? {} : {
     admin_users = join(",", var.admin_users)
@@ -168,4 +169,10 @@ variable "debug" {
   type        = bool
   default     = false
   description = "Enabling will put the deployment into a mode suitable for debugging"
+}
+
+variable "uwsgi_port" {
+  type        = number
+  default     = 9000
+  description = "Port Galaxy UWSGI server is listening from"
 }

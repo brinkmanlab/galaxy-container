@@ -38,11 +38,7 @@ galaxy:
             #k8s_walltime_limit: 172800
             #k8s_timeout_seconds_job_deletion: 30
             #k8s_supplemental_group_id: 0
-            #k8s_fs_group_id: 0
-            #requests_cpu:
-            #requests_memory:
-            #limits_cpu:
-            #limits_memory:
+            k8s_fs_group_id: 1000
       destinations:
         k8s:
           runner: k8s
@@ -64,3 +60,7 @@ galaxy:
             docker_tag_default:
               from_environ: K8S_DEFAULT_IMAGE_TAG
               default: latest
+            requests_cpu: 1
+            requests_memory: 2Gi
+            limits_cpu: 2
+            limits_memory: 4Gi

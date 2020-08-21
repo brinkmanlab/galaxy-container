@@ -5,6 +5,7 @@ locals {
   mail_name   = regex("(?m)^mail.*hostname=(?P<mail_name>[^ ]+)", file("${path.root}/inventory.ini")).mail_name
   mail_port   = regex("(?m)^mail.*port=(?P<mail_port>[^ ]+)", file("${path.root}/inventory.ini")).mail_port
   name_suffix = var.instance != "" ? "-${var.instance}" : ""
+  region = "us-west-2"
 }
 
 ## Docker Config
@@ -16,7 +17,7 @@ provider "docker" {
 ## AWS Config
 
 provider "aws" {
-  region  = var.region
+  region  = local.region
   version = "~> 2.0"
 }
 

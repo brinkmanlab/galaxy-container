@@ -16,9 +16,10 @@ server {
   location / {
     include master_api_key;
     include uwsgi_params;
+    set $test '';
     if ($request_method = POST) {
         # Limit master api key to only POST requests
-        set $test 1;
+        set $test 1$test;
     }
     if ($uri = '/api/users') {
         # Limit master api key to only /api/users exactly
@@ -28,18 +29,12 @@ server {
         # Do not overwrite a passed api key
         set $test 1$test;
     }
-    set $delimeter "";
-    if ($is_args) {
-        set $delimeter "&";
-    }
-    set $modified_query $query_string;
     if ($test = 111) {
         # Add master api key to query params if all tests succeed
-        set $modified_query $query_string${delimeter}key=$master_api_key;
+        uwsgi_param x-api-key $master_api_key;
     }
     uwsgi_pass uwsgi://{{ containers.app.name }}:{{ uwsgi.port }};
     uwsgi_param UWSGI_SCHEME $scheme;
-    uwsgi_param QUERY_STRING $modified_query;
   }
 
   # User download via nginx # TODO verify paths

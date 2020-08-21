@@ -4,11 +4,6 @@ variable "data_dir" {
   default     = "data/"
 }
 
-variable "region" {
-  type    = string
-  default = ""
-}
-
 variable "image_tag" {
   type    = string
   default = "latest"
