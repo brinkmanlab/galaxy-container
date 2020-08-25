@@ -1,4 +1,21 @@
 locals {
+  ansible        = yamldecode(file("${path.module}/vars.yml"))
+
+  data_dir = var.data_dir != null ? var.data_dir : local.ansible.paths.data
+  root_dir = var.root_dir != null ? var.root_dir : local.ansible.paths.root
+  config_dir = var.config_dir != null ? var.config_dir : local.ansible.paths.config
+  galaxy_web_image = var.galaxy_web_image != null ? var.galaxy_web_image : "brinkmanlab/${local.ansible.containers.web.name}"
+  galaxy_app_image = var.galaxy_app_image != null ? var.galaxy_app_image : "brinkmanlab/${local.ansible.containers.app.name}"
+  db_image = var.db_image != null ? var.db_image : "postgres:alpine"
+  galaxy_root_volume_name = var.galaxy_root_volume_name != null ? var.galaxy_root_volume_name : local.ansible.volumes.galaxy_root.name
+  user_data_volume_name = var.user_data_volume_name != null ? var.user_data_volume_name : local.ansible.volumes.user_data.name
+  db_data_volume_name = var.db_data_volume_name != null ? var.db_data_volume_name : local.ansible.volumes.db_data.name
+  web_name = var.web_name != null ? var.web_name : local.ansible.containers.web.name
+  app_name = var.app_name != null ? var.app_name : local.ansible.containers.app.name
+  worker_name = var.worker_name != null ? var.worker_name : local.ansible.containers.worker.name
+  db_name = var.db_name != null ? var.db_name : local.ansible.containers.db.name
+  uwsgi_port = var.uwsgi_port != null ? var.uwsgi_port : local.ansible.uwsgi.port
+
   db_conf = var.db_conf != null ? var.db_conf : {
     scheme = "postgres"
     host   = var.db_name
@@ -52,24 +69,6 @@ variable "galaxy_conf" {
   description = "Galaxy configuration overrides"
 }
 
-variable "data_dir" {
-  type        = string
-  default     = "data/"
-  description = "Path to user data within container"
-}
-
-variable "root_dir" {
-  type        = string
-  default     = "/srv/galaxy"
-  description = "Path to galaxy root folder within container"
-}
-
-variable "config_dir" {
-  type        = string
-  default     = "/srv/galaxy/config"
-  description = "Path to galaxy configuration folder within container"
-}
-
 variable "image_tag" {
   type        = string
   default     = "latest"
@@ -82,64 +81,88 @@ variable "instance" {
   description = "Unique deployment instance identifier"
 }
 
+variable "data_dir" {
+  type        = string
+  default     = null
+  description = "Path to user data within container"
+}
+
+variable "root_dir" {
+  type        = string
+  default     = null
+  description = "Path to galaxy root folder within container"
+}
+
+variable "config_dir" {
+  type        = string
+  default     = null
+  description = "Path to galaxy configuration folder within container"
+}
+
 variable "galaxy_web_image" {
   type        = string
-  default     = "brinkmanlab/galaxy-web"
+  default     = null
   description = "Galaxy web server image name"
 }
 
 variable "galaxy_app_image" {
   type        = string
-  default     = "brinkmanlab/galaxy-app"
+  default     = null
   description = "Galaxy app server image name"
 }
 
 variable "db_image" {
   type        = string
-  default     = "postgres:alpine"
+  default     = null
   description = "MariaDB image name"
 }
 
 variable "galaxy_root_volume_name" {
   type        = string
-  default     = "galaxy-root"
+  default     = null
   description = "Galaxy root volume name"
 }
 
 variable "user_data_volume_name" {
   type        = string
-  default     = "user-data"
+  default     = null
   description = "User data volume name"
 }
 
 variable "db_data_volume_name" {
   type        = string
-  default     = "db-data"
+  default     = null
   description = "Database volume name"
 }
 
 variable "web_name" {
   type        = string
-  default     = "galaxy-web"
+  default     = null
   description = "Galaxy web server container name"
 }
 
 variable "app_name" {
   type        = string
-  default     = "galaxy-app"
+  default     = null
   description = "Galaxy application container name"
 }
 
 variable "worker_name" {
   type        = string
-  default     = "galaxy-worker"
+  default     = null
   description = "Galaxy worker container name"
 }
 
 variable "db_name" {
   type        = string
-  default     = "galaxy-db"
+  default     = null
   description = "Database container name"
+}
+
+variable "uwsgi_port" {
+  type        = number
+  default     = null
+  description = "Port Galaxy UWSGI server is listening from"
 }
 
 variable "mail_name" {
@@ -169,10 +192,4 @@ variable "debug" {
   type        = bool
   default     = false
   description = "Enabling will put the deployment into a mode suitable for debugging"
-}
-
-variable "uwsgi_port" {
-  type        = number
-  default     = 9000
-  description = "Port Galaxy UWSGI server is listening from"
 }
