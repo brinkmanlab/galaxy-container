@@ -9,9 +9,9 @@ resource "kubernetes_job" "init_db" {
       metadata {}
       spec {
         container {
-          name              = "${var.app_name}-init-db"
-          command           = ["/env_run.sh", "python3", "${var.root_dir}/scripts/manage_db.py", "upgrade"]
-          image             = "${var.galaxy_app_image}:${var.image_tag}"
+          name              = "${local.app_name}-init-db"
+          command           = ["/env_run.sh", "python3", "${local.root_dir}/scripts/manage_db.py", "upgrade"]
+          image             = "${local.galaxy_app_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null
           env {
             name  = "GALAXY_CONFIG_OVERRIDE_database_connection"
@@ -19,7 +19,7 @@ resource "kubernetes_job" "init_db" {
           }
           env {
             name  = "CWD"
-            value = var.root_dir
+            value = local.root_dir
           }
         }
         node_selector = {

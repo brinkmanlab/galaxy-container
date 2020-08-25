@@ -3,40 +3,40 @@ locals {
 }
 
 resource "docker_image" "galaxy_app" {
-  name = "${var.galaxy_app_image}:${var.image_tag}"
+  name = "${local.galaxy_app_image}:${var.image_tag}"
 }
 
 resource "docker_image" "galaxy_web" {
-  name = "${var.galaxy_web_image}:${var.image_tag}"
+  name = "${local.galaxy_web_image}:${var.image_tag}"
 }
 
 resource "docker_image" "galaxy_worker" {
-  name = "${var.galaxy_app_image}:${var.image_tag}"
+  name = "${local.galaxy_app_image}:${var.image_tag}"
 }
 
 resource "docker_image" "galaxy_db" {
-  name = var.db_image
+  name = local.db_image
 }
 
 resource "docker_volume" "galaxy_root" {
-  name = "${var.galaxy_root_volume_name}${var.name_suffix}"
+  name = "${local.galaxy_root_volume_name}${local.name_suffix}"
 }
 
 resource "docker_volume" "user_data" {
-  name = "${var.user_data_volume_name}${var.name_suffix}"
+  name = "${local.user_data_volume_name}${local.name_suffix}"
 }
 
 resource "docker_volume" "db_data" {
-  name = "${var.db_data_volume_name}${var.name_suffix}"
+  name = "${local.db_data_volume_name}${local.name_suffix}"
 }
 
 resource "docker_network" "galaxy_network" {
   count = var.network != "" ? 0 : 1
-  name  = "galaxy_network${var.name_suffix}"
+  name  = "galaxy_network${local.name_suffix}"
 }
 
 resource "docker_container" "galaxy_app" {
-  name       = "${var.app_name}${var.name_suffix}"
+  name       = "${local.app_name}${var.name_suffix}"
   image      = docker_image.galaxy_app.latest
   hostname   = "galaxy_app"
   domainname = "galaxy_app"
@@ -48,14 +48,14 @@ resource "docker_container" "galaxy_app" {
   }
   mounts {
     source = docker_volume.user_data.name
-    target = var.data_dir
+    target = local.data_dir
     type   = "volume"
   }
   depends_on = [docker_container.galaxy_db]
 }
 
 resource "docker_container" "galaxy_web" {
-  name       = "${var.web_name}${local.name_suffix}"
+  name       = "${local.web_name}${local.name_suffix}"
   image      = docker_image.galaxy_web.latest
   hostname   = "galaxy_web"
   domainname = "galaxy_web"
@@ -70,16 +70,16 @@ resource "docker_container" "galaxy_web" {
   }
   mounts {
     source = docker_volume.user_data.name
-    target = var.data_dir
+    target = local.data_dir
     type   = "volume"
   }
 }
 
 resource "docker_container" "galaxy_worker" {
-  name  = "${var.worker_name}${local.name_suffix}"
+  name  = "${local.worker_name}${local.name_suffix}"
   image = docker_image.galaxy_worker.latest
   # https://docs.galaxyproject.org/en/master/admin/scaling.html#uwsgi-for-web-serving-and-webless-galaxy-applications-as-job-handlers
-  command = ["/env_run.sh", "python3", "${var.root_dir}/scripts/galaxy-main", "-c", "${var.config_dir}/galaxy.yml", "--server-name=${var.worker_name}${local.name_suffix}", "--log-file=/dev/stdout", "--attach-to-pool=job-handlers"]
+  command = ["/env_run.sh", "python3", "${local.root_dir}/scripts/galaxy-main", "-c", "${local.config_dir}/galaxy.yml", "--server-name=${local.worker_name}${local.name_suffix}", "--log-file=/dev/stdout", "--attach-to-pool=job-handlers"]
   # /env_run.sh "python3" "/srv/galaxy/scripts/galaxy-main" "-c" "/srv/galaxy/config/galaxy.yml" "--server-name=$HOSTNAME" "--log-file=/dev/stdout" --attach-to-pool=job-handlers
   hostname   = "galaxy_worker"
   domainname = "galaxy_worker"
@@ -88,8 +88,8 @@ resource "docker_container" "galaxy_worker" {
   user       = "galaxy:galaxy"
   group_add  = ["969"]
   env = compact([
-    local.name_suffix == "" ? "" : "DOCKER_VOLUME_MOUNTS='${var.galaxy_root_volume_name}${local.name_suffix}:$galaxy_root:ro,${var.user_data_volume_name}${local.name_suffix}:/data:rw,$working_directory:rw'",
-    "CWD=${var.root_dir}",
+    local.name_suffix == "" ? "" : "DOCKER_VOLUME_MOUNTS='${local.galaxy_root_volume_name}${local.name_suffix}:$galaxy_root:ro,${local.user_data_volume_name}${local.name_suffix}:/data:rw,$working_directory:rw'",
+    "CWD=${local.root_dir}",
     "DEFAULT_CONTAINER_ID=${docker_image.galaxy_worker.latest}",
     "DOCKER_ENABLED=True"
   ])
@@ -100,12 +100,12 @@ resource "docker_container" "galaxy_worker" {
   }
   mounts {
     source = docker_volume.user_data.name
-    target = var.data_dir
+    target = local.data_dir
     type   = "volume"
   }
   mounts {
     source = docker_volume.galaxy_root.name #"${local.ansible.volumes.galaxy_root.name}${local.name_suffix}"
-    target = var.root_dir
+    target = local.root_dir
     type   = "volume"
   }
   networks_advanced {
@@ -115,7 +115,7 @@ resource "docker_container" "galaxy_worker" {
 }
 
 resource "docker_container" "galaxy_db" {
-  name       = "${var.db_name}${local.name_suffix}"
+  name       = "${local.db_name}${local.name_suffix}"
   image      = docker_image.galaxy_db.latest
   hostname   = "galaxy_db"
   domainname = "galaxy_db"

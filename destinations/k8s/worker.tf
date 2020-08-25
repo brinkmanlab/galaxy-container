@@ -3,7 +3,7 @@ locals {
   job_conf = {
     K8S_ENABLED   = "True"
     K8S_NAMESPACE = local.instance
-    K8S_VOLUMES   = "${kubernetes_persistent_volume_claim.user_data.metadata.0.name}:${var.data_dir}"
+    K8S_VOLUMES   = "${kubernetes_persistent_volume_claim.user_data.metadata.0.name}:${local.data_dir}"
   }
 }
 
@@ -12,12 +12,12 @@ resource "kubernetes_deployment" "galaxy_worker" {
   depends_on       = [kubernetes_job.init_db]
   wait_for_rollout = ! var.debug
   metadata {
-    name      = var.worker_name
+    name      = local.worker_name
     namespace = local.instance
     labels = {
-      App                          = var.worker_name
-      "app.kubernetes.io/name"     = var.worker_name
-      "app.kubernetes.io/instance" = var.worker_name
+      App                          = local.worker_name
+      "app.kubernetes.io/name"     = local.worker_name
+      "app.kubernetes.io/instance" = local.worker_name
       #"app.kubernetes.io/version" = TODO
       "app.kubernetes.io/component"  = "worker"
       "app.kubernetes.io/part-of"    = "galaxy"
@@ -32,13 +32,13 @@ resource "kubernetes_deployment" "galaxy_worker" {
     }
     selector {
       match_labels = {
-        App = var.worker_name
+        App = local.worker_name
       }
     }
     template {
       metadata {
         labels = {
-          App = var.worker_name
+          App = local.worker_name
         }
       }
       spec {
@@ -48,10 +48,10 @@ resource "kubernetes_deployment" "galaxy_worker" {
         service_account_name            = kubernetes_service_account.galaxy_worker.metadata.0.name
         automount_service_account_token = true
         container {
-          image             = "${var.galaxy_app_image}:${var.image_tag}"
+          image             = "${local.galaxy_app_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null
-          name              = var.worker_name
-          command           = ["sh", "-c", "/env_run.sh python3 ${var.root_dir}/scripts/galaxy-main -c ${var.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
+          name              = local.worker_name
+          command           = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
 
           dynamic "env" {
             for_each = local.galaxy_conf
@@ -71,7 +71,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
 
           env {
             name  = "CWD"
-            value = var.root_dir
+            value = local.root_dir
           }
 
           resources {
@@ -85,7 +85,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
             }
           }
           volume_mount {
-            mount_path = var.data_dir
+            mount_path = local.data_dir
             name       = "data"
           }
         }
@@ -107,7 +107,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
 
 resource "kubernetes_horizontal_pod_autoscaler" "galaxy_worker" {
   metadata {
-    name      = var.worker_name
+    name      = local.worker_name
     namespace = local.instance
   }
 
@@ -118,18 +118,18 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_worker" {
     scale_target_ref {
       api_version = "apps/v1"
       kind        = "Deployment"
-      name        = var.worker_name
+      name        = local.worker_name
     }
   }
 }
 
 resource "kubernetes_service_account" "galaxy_worker" {
   metadata {
-    name      = var.worker_name
+    name      = local.worker_name
     namespace = local.instance
     labels = {
-      "app.kubernetes.io/name"     = var.worker_name
-      "app.kubernetes.io/instance" = var.worker_name
+      "app.kubernetes.io/name"     = local.worker_name
+      "app.kubernetes.io/instance" = local.worker_name
       #"app.kubernetes.io/version" = TODO
       "app.kubernetes.io/component"  = "worker"
       "app.kubernetes.io/part-of"    = "galaxy"
@@ -140,11 +140,11 @@ resource "kubernetes_service_account" "galaxy_worker" {
 
 resource "kubernetes_role" "galaxy_worker" {
   metadata {
-    name      = var.worker_name
+    name      = local.worker_name
     namespace = local.instance
     labels = {
-      "app.kubernetes.io/name"     = var.worker_name
-      "app.kubernetes.io/instance" = var.worker_name
+      "app.kubernetes.io/name"     = local.worker_name
+      "app.kubernetes.io/instance" = local.worker_name
       #"app.kubernetes.io/version" = TODO
       "app.kubernetes.io/component"  = "worker"
       "app.kubernetes.io/part-of"    = "galaxy"
@@ -165,11 +165,11 @@ resource "kubernetes_role" "galaxy_worker" {
 
 resource "kubernetes_role_binding" "galaxy_worker" {
   metadata {
-    name      = var.worker_name
+    name      = local.worker_name
     namespace = local.instance
     labels = {
-      "app.kubernetes.io/name"     = var.worker_name
-      "app.kubernetes.io/instance" = var.worker_name
+      "app.kubernetes.io/name"     = local.worker_name
+      "app.kubernetes.io/instance" = local.worker_name
       #"app.kubernetes.io/version" = TODO
       "app.kubernetes.io/component"  = "worker"
       "app.kubernetes.io/part-of"    = "galaxy"

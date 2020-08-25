@@ -11,9 +11,9 @@ resource "kubernetes_job" "init_nfs" {
         container {
           name    = "init-nfs-galaxy"
           image   = "alpine"
-          command = ["install", "-d", "-m", "0777", "-o", "1000", "-g", "1000", "${var.data_dir}/${local.instance}/galaxy/"]
+          command = ["install", "-d", "-m", "0777", "-o", "1000", "-g", "1000", "${local.data_dir}/${local.instance}/galaxy/"]
           volume_mount {
-            mount_path = var.data_dir
+            mount_path = local.data_dir
             name       = "data"
           }
         }
@@ -51,10 +51,10 @@ resource "kubernetes_storage_class" "nfs" {
 resource "kubernetes_persistent_volume" "user_data" {
   depends_on = [kubernetes_job.init_nfs]
   metadata {
-    name = "galaxy-${var.user_data_volume_name}"
+    name = "galaxy-${local.user_data_volume_name}"
     labels = {
-      "app.kubernetes.io/name"     = "galaxy-${var.user_data_volume_name}"
-      "app.kubernetes.io/instance" = "galaxy-${var.user_data_volume_name}"
+      "app.kubernetes.io/name"     = "galaxy-${local.user_data_volume_name}"
+      "app.kubernetes.io/instance" = "galaxy-${local.user_data_volume_name}"
       #"app.kubernetes.io/version" = TODO
       "app.kubernetes.io/component"  = "pv"
       "app.kubernetes.io/part-of"    = "galaxy"
@@ -81,11 +81,11 @@ resource "kubernetes_persistent_volume" "user_data" {
 
 resource "kubernetes_persistent_volume_claim" "user_data" {
   metadata {
-    name      = "galaxy-${var.user_data_volume_name}"
+    name      = "galaxy-${local.user_data_volume_name}"
     namespace = local.instance
     labels = {
-      "app.kubernetes.io/name"     = "galaxy-${var.user_data_volume_name}"
-      "app.kubernetes.io/instance" = "galaxy-${var.user_data_volume_name}"
+      "app.kubernetes.io/name"     = "galaxy-${local.user_data_volume_name}"
+      "app.kubernetes.io/instance" = "galaxy-${local.user_data_volume_name}"
       #"app.kubernetes.io/version" = TODO
       "app.kubernetes.io/component"  = "pvc"
       "app.kubernetes.io/part-of"    = "galaxy"

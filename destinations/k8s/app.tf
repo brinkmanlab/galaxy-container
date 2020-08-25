@@ -4,12 +4,12 @@ resource "kubernetes_deployment" "galaxy_app" {
   depends_on       = [kubernetes_job.init_db]
   wait_for_rollout = ! var.debug
   metadata {
-    name      = var.app_name
+    name      = local.app_name
     namespace = local.instance
     labels = {
-      App                          = var.app_name
-      "app.kubernetes.io/name"     = var.app_name
-      "app.kubernetes.io/instance" = var.app_name
+      App                          = local.app_name
+      "app.kubernetes.io/name"     = local.app_name
+      "app.kubernetes.io/instance" = local.app_name
       #"app.kubernetes.io/version" = TODO
       "app.kubernetes.io/component"  = "app"
       "app.kubernetes.io/part-of"    = "galaxy"
@@ -24,13 +24,13 @@ resource "kubernetes_deployment" "galaxy_app" {
     }
     selector {
       match_labels = {
-        App = var.app_name
+        App = local.app_name
       }
     }
     template {
       metadata {
         labels = {
-          App = var.app_name
+          App = local.app_name
         }
       }
       spec {
@@ -38,8 +38,8 @@ resource "kubernetes_deployment" "galaxy_app" {
           fs_group = 1000
         }
         container {
-          name              = var.app_name
-          image             = "${var.galaxy_app_image}:${var.image_tag}"
+          name              = local.app_name
+          image             = "${local.galaxy_app_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null
 
           dynamic "env" {
@@ -69,7 +69,7 @@ resource "kubernetes_deployment" "galaxy_app" {
             }
           }
           volume_mount {
-            mount_path = var.data_dir
+            mount_path = local.data_dir
             name       = "data"
           }
         }
@@ -91,7 +91,7 @@ resource "kubernetes_deployment" "galaxy_app" {
 
 resource "kubernetes_horizontal_pod_autoscaler" "galaxy_app" {
   metadata {
-    name      = var.app_name
+    name      = local.app_name
     namespace = local.instance
   }
 
@@ -102,7 +102,7 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_app" {
     scale_target_ref {
       api_version = "apps/v1"
       kind        = "Deployment"
-      name        = var.app_name
+      name        = local.app_name
     }
   }
 }
@@ -110,17 +110,17 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_app" {
 # Register internal dns for web to discover app
 resource "kubernetes_service" "galaxy_app" {
   metadata {
-    name      = var.app_name
+    name      = local.app_name
     namespace = local.instance
   }
   spec {
     selector = {
-      App = var.app_name
+      App = local.app_name
     }
     port {
       protocol    = "TCP"
-      port        = var.uwsgi_port
-      target_port = var.uwsgi_port
+      port        = local.uwsgi_port
+      target_port = local.uwsgi_port
     }
 
     type = "ClusterIP" # https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types

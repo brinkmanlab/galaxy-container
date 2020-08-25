@@ -4,12 +4,12 @@ resource "kubernetes_deployment" "galaxy_web" {
   depends_on       = [kubernetes_service.galaxy_app]
   wait_for_rollout = ! var.debug
   metadata {
-    name      = var.web_name
+    name      = local.web_name
     namespace = local.instance
     labels = {
-      App                          = var.web_name
-      "app.kubernetes.io/name"     = var.web_name
-      "app.kubernetes.io/instance" = var.web_name
+      App                          = local.web_name
+      "app.kubernetes.io/name"     = local.web_name
+      "app.kubernetes.io/instance" = local.web_name
       #"app.kubernetes.io/version" = TODO
       "app.kubernetes.io/component"  = "web"
       "app.kubernetes.io/part-of"    = "galaxy"
@@ -24,13 +24,13 @@ resource "kubernetes_deployment" "galaxy_web" {
     }
     selector {
       match_labels = {
-        App = var.web_name
+        App = local.web_name
       }
     }
     template {
       metadata {
         labels = {
-          App = var.web_name
+          App = local.web_name
         }
       }
       spec {
@@ -42,9 +42,9 @@ resource "kubernetes_deployment" "galaxy_web" {
           #  run_as_user = 1000
           #  run_as_group = 1000
           #}
-          image             = "${var.galaxy_web_image}:${var.image_tag}"
+          image             = "${local.galaxy_web_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null
-          name              = var.web_name
+          name              = local.web_name
           dynamic "env" {
             for_each = local.master_api_key_conf
             content {
@@ -64,7 +64,7 @@ resource "kubernetes_deployment" "galaxy_web" {
             }
           }
           volume_mount {
-            mount_path = var.data_dir
+            mount_path = local.data_dir
             name       = "data"
           }
         }
@@ -86,7 +86,7 @@ resource "kubernetes_deployment" "galaxy_web" {
 
 resource "kubernetes_horizontal_pod_autoscaler" "galaxy_web" {
   metadata {
-    name      = var.web_name
+    name      = local.web_name
     namespace = local.instance
   }
 
@@ -97,7 +97,7 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_web" {
     scale_target_ref {
       api_version = "apps/v1"
       kind        = "Deployment"
-      name        = var.web_name
+      name        = local.web_name
     }
   }
 }
@@ -105,12 +105,12 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_web" {
 
 resource "kubernetes_service" "galaxy_web" {
   metadata {
-    name      = var.web_name
+    name      = local.web_name
     namespace = local.instance
   }
   spec {
     selector = {
-      App = var.web_name
+      App = local.web_name
     }
     port {
       protocol    = "TCP"
