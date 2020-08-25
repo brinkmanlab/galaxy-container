@@ -16,6 +16,9 @@ locals {
   db_name = var.db_name != null ? var.db_name : local.ansible.containers.db.name
   uwsgi_port = var.uwsgi_port != null ? var.uwsgi_port : local.ansible.uwsgi.port
 
+  mail_name   = var.mail_name != null ? var.mail_name : regex("(?m)^mail.*hostname=(?P<mail_name>[^ ]+)", file("${path.root}/galaxy/inventory.ini")).mail_name
+  mail_port   = var.mail_port != null ? var.mail_port : regex("(?m)^mail.*port=(?P<mail_port>[^ ]+)", file("${path.root}/inventory.ini")).mail_port
+
   db_conf = var.db_conf != null ? var.db_conf : {
     scheme = "postgres"
     host   = var.db_name

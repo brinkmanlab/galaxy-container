@@ -1,7 +1,7 @@
 locals {
   create_smtp = lookup(var.galaxy_conf, "email_from", "") != "" && lookup(var.galaxy_conf, "smtp_server", "") == "" ? 1 : 0
   smtp_conf = local.create_smtp == 1 ? {
-    smtp_server   = "${var.mail_name}:${var.mail_port}"
+    smtp_server   = "${local.mail_name}:${local.mail_port}"
     smtp_username = aws_iam_user.mail[0].name
     smtp_password = aws_iam_access_key.mail[0].ses_smtp_password_v4
   } : {}
@@ -53,7 +53,7 @@ resource "aws_ses_email_identity" "mail" {
 ## Register smtp in internal DNS
 resource "kubernetes_service" "galaxy_mail" {
   metadata {
-    name      = var.mail_name
+    name      = local.mail_name
     namespace = local.instance
   }
   spec {
