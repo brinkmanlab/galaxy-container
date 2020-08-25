@@ -1,9 +1,9 @@
 output "eks" {
-  value = module.eks
+  value = local.cloud.eks
 }
 
 output "vpc" {
-  value = module.vpc
+  value = local.cloud.vpc
 }
 
 output "efs_user_data" {
@@ -16,4 +16,8 @@ output "endpoint" {
 
 output "smtp_conf" {
   value = local.smtp_conf
+}
+
+output "nfs_server" {
+  value = aws_efs_file_system.user_data.dns_name
 }

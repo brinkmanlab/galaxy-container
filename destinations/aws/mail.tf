@@ -52,7 +52,6 @@ resource "aws_ses_email_identity" "mail" {
 
 ## Register smtp in internal DNS
 resource "kubernetes_service" "galaxy_mail" {
-  depends_on = [module.eks.cluster_id]
   metadata {
     name      = var.mail_name
     namespace = local.instance
