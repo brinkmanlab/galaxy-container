@@ -21,7 +21,7 @@ locals {
 
   db_conf = var.db_conf != null ? var.db_conf : {
     scheme = "postgres"
-    host   = var.db_name
+    host   = local.db_name
     name   = "galaxy${local.name_suffix}"
     user   = "galaxy"
     pass   = random_password.db_password[0].result
