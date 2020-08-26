@@ -26,7 +26,7 @@ locals {
     user   = "galaxy"
     pass   = random_password.db_password[0].result
   }
-  master_api_key = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key[0].result
+  master_api_key = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key.result
   master_api_key_conf = {
     master_api_key = local.master_api_key
   }
@@ -61,7 +61,6 @@ variable "master_api_key" {
 }
 
 resource "random_password" "master_api_key" {
-  count   = var.master_api_key != "" ? 0 : 1
   length  = 32
   special = false
 }
