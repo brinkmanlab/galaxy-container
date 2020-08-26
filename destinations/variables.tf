@@ -1,5 +1,5 @@
 locals {
-  ansible        = yamldecode(file("${path.module}/vars.yml"))
+  ansible        = yamldecode(file("${path.module}/../../vars.yml"))
 
   data_dir = var.data_dir != null ? var.data_dir : local.ansible.paths.data
   root_dir = var.root_dir != null ? var.root_dir : local.ansible.paths.root
