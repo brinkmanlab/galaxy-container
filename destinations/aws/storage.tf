@@ -2,7 +2,7 @@
 # TODO Convert https://github.com/DrFaust92/terraform-kubernetes-ebs-csi-driver to EFS and also use for S3 CSI
 resource "aws_efs_file_system" "user_data" {
   tags = {
-    Name     = "${var.user_data_volume_name}${local.name_suffix}"
+    Name     = "${local.user_data_volume_name}${local.name_suffix}"
     Instance = local.instance
   }
   lifecycle_policy {
