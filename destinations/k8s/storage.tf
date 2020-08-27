@@ -81,7 +81,7 @@ resource "kubernetes_persistent_volume" "user_data" {
 
 resource "kubernetes_persistent_volume_claim" "user_data" {
   metadata {
-    name      = "galaxy-${local.user_data_volume_name}"
+    name      = local.user_data_volume_name
     namespace = local.instance
     labels = {
       "app.kubernetes.io/name"     = "galaxy-${local.user_data_volume_name}"
