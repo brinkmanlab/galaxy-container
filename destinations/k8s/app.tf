@@ -35,8 +35,7 @@ resource "kubernetes_deployment" "galaxy_app" {
       }
       spec {
         security_context {
-          run_as_user = local.uwsgi_uid
-          run_as_group = local.uwsgi_gid
+          fs_group = local.uwsgi_gid
         }
         container {
           name              = local.app_name
