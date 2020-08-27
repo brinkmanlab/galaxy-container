@@ -47,6 +47,11 @@ resource "kubernetes_job" "init_install_db" {
     template {
       metadata {}
       spec {
+        security_context {
+          run_as_user = 1000
+          run_as_group = 1000
+          fs_group = 1000
+        }
         container {
           name              = "${local.app_name}-init-db"
           command           = ["/env_run.sh", "python3", "${local.root_dir}/scripts/create_db.py", "-c", "${local.config_dir}/galaxy.yml", "install"]
@@ -86,7 +91,7 @@ resource "kubernetes_job" "init_install_db" {
 }
 
 resource "kubernetes_job" "upgrade_db" {
-  depends_on = [kubernetes_job.init_db]
+  depends_on = [kubernetes_job.init_db, kubernetes_job.init_install_db]
   # Update galaxy database
   metadata {
     generate_name = "upgrade-db-galaxy-"
