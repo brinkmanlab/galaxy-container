@@ -51,7 +51,7 @@ resource "kubernetes_storage_class" "nfs" {
 resource "kubernetes_persistent_volume" "user_data" {
   depends_on = [kubernetes_job.init_nfs]
   metadata {
-    name = "galaxy-${local.user_data_volume_name}"
+    name = "galaxy-${local.user_data_volume_name}${local.name_suffix}"
     labels = {
       "app.kubernetes.io/name"     = "galaxy-${local.user_data_volume_name}"
       "app.kubernetes.io/instance" = "galaxy-${local.user_data_volume_name}"

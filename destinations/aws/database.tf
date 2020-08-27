@@ -18,7 +18,7 @@ resource "aws_db_instance" "galaxy_db" {
   vpc_security_group_ids    = [var.eks.worker_security_group_id]
   db_subnet_group_name      = var.vpc.database_subnet_group
   publicly_accessible       = false
-  skip_final_snapshot       = true # TODO temporary, don't need to make snapshots while debugging
+  skip_final_snapshot       = var.debug
   final_snapshot_identifier = local.db_conf.name
 }
 
