@@ -9,7 +9,7 @@ locals {
 
 
 resource "kubernetes_deployment" "galaxy_worker" {
-  depends_on       = [kubernetes_job.init_db]
+  depends_on       = [kubernetes_job.upgrade_db]
   wait_for_rollout = ! var.debug
   metadata {
     name      = local.worker_name
