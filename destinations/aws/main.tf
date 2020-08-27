@@ -4,7 +4,7 @@ data "aws_region" "current" {}
 
 module "galaxy-k8s" {
   source                  = "../k8s"
-  depends_on              = [var.eks, kubernetes_service.galaxy_db, kubernetes_service.galaxy_mail, aws_efs_mount_target.user_data.*]
+  depends_on              = [var.eks, kubernetes_service.galaxy_db, kubernetes_service.galaxy_mail, aws_efs_mount_target.user_data]
   instance                = var.instance
   nfs_server              = aws_efs_file_system.user_data.dns_name
   db_conf                 = local.db_conf
