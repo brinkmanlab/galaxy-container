@@ -1,5 +1,5 @@
 locals {
-  name_suffix = ""
+  name_suffix = var.instance == "" ? "" : "-${var.instance}"
   instance    = var.instance == "" ? "default" : var.instance
 }
 
