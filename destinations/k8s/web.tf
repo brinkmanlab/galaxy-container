@@ -39,8 +39,8 @@ resource "kubernetes_deployment" "galaxy_web" {
         }
         container {
           #security_context {
-          #  run_as_user = 1000
-          #  run_as_group = 1000
+          #  run_as_user = local.uwsgi_uid
+          #  run_as_group = local.uwsgi_gid
           #}
           image             = "${local.galaxy_web_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null

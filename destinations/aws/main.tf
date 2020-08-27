@@ -28,5 +28,7 @@ module "galaxy-k8s" {
   email                   = var.email
   debug                   = var.debug
   uwsgi_port              = var.uwsgi_port
+  uwsgi_uid               = var.uwsgi_uid
+  uwsgi_gid               = var.uwsgi_gid
   master_api_key          = local.master_api_key
 }

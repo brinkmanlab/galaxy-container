@@ -43,7 +43,8 @@ resource "kubernetes_deployment" "galaxy_worker" {
       }
       spec {
         security_context {
-          fs_group = 1000
+          run_as_user = local.uwsgi_uid
+          run_as_group = local.uwsgi_gid
         }
         service_account_name            = kubernetes_service_account.galaxy_worker.metadata.0.name
         automount_service_account_token = true

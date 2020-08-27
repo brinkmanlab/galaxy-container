@@ -48,9 +48,8 @@ resource "kubernetes_job" "init_install_db" {
       metadata {}
       spec {
         security_context {
-          run_as_user = 1000
-          run_as_group = 1000
-          fs_group = 1000
+          run_as_user = local.uwsgi_uid
+          run_as_group = local.uwsgi_gid
         }
         container {
           name              = "${local.app_name}-init-db"

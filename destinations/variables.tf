@@ -15,6 +15,8 @@ locals {
   worker_name = var.worker_name != null ? var.worker_name : local.ansible.containers.worker.name
   db_name = var.db_name != null ? var.db_name : local.ansible.containers.db.name
   uwsgi_port = var.uwsgi_port != null ? var.uwsgi_port : local.ansible.uwsgi.port
+  uwsgi_uid = var.uwsgi_uid != null ? var.uwsgi_uid : local.ansible.uwsgi.uid
+  uwsgi_gid = var.uwsgi_gid != null ? var.uwsgi_gid : local.ansible.uwsgi.gid
 
   mail_name   = var.mail_name != null ? var.mail_name : regex("(?m)^mail.*hostname=(?P<mail_name>[^ ]+)", file("${path.root}/galaxy/inventory.ini")).mail_name
   mail_port   = var.mail_port != null ? var.mail_port : regex("(?m)^mail.*port=(?P<mail_port>[^ ]+)", file("${path.root}/inventory.ini")).mail_port
@@ -165,6 +167,18 @@ variable "uwsgi_port" {
   type        = number
   default     = null
   description = "Port Galaxy UWSGI server is listening from"
+}
+
+variable "uwsgi_uid" {
+  type        = number
+  default     = null
+  description = "UID of Galaxy process"
+}
+
+variable "uwsgi_gid" {
+  type        = number
+  default     = null
+  description = "GID of Galaxy process"
 }
 
 variable "mail_name" {

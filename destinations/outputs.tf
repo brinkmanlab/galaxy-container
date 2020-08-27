@@ -16,3 +16,5 @@ output "app_name" { value = local.app_name }
 output "worker_name" { value = local.worker_name }
 output "db_name" { value = local.db_name }
 output "uwsgi_port" { value = local.uwsgi_port }
+output "uwsgi_uid" { value = local.uwsgi_uid }
+output "uwsgi_gid" { value = local.uwsgi_gid }
