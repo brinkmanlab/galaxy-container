@@ -15,7 +15,7 @@
   hosts: "{{ containers.app.name }}"
   gather_facts: false
   vars_files: [vars.yml]
-  roles: [galaxy_env, galaxy_app, galaxy_docker, galaxy_k8s]
+  roles: [galaxy_env, galaxy_app, galaxy_docker, galaxy_k8s, galaxy_text_tools]
 
 - name: Finish Galaxy Application Container
   hosts: buildah_server

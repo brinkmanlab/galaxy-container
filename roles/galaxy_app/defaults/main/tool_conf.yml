@@ -20,6 +20,8 @@ galaxy:
           failed:
             file: "${model_tools_path}/filter_failed_collection.xml"
             labels: "new"
+          empty:
+            file: "${model_tools_path}/filter_empty_collection.xml"
           flatten:
             file: "${model_tools_path}/flatten_collection.xml"
             labels: "new"
@@ -34,3 +36,7 @@ galaxy:
             file: "${model_tools_path}/sort_collection_list.xml"
           apply_rules:
             file: "${model_tools_path}/apply_rules.xml"
+          build_list:
+            file: "${model_tools_path}/build_list.xml"
+          extract_dataset:
+            file: "${model_tools_path}/extract_dataset.xml"

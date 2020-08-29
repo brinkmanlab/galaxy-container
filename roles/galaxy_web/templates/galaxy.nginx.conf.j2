@@ -17,6 +17,7 @@ server {
     include master_api_key;
     include uwsgi_params;
     set $test '';
+    set $api_key '';
     if ($request_method = POST) {
         # Limit master api key to only POST requests
         set $test 1$test;
@@ -31,8 +32,9 @@ server {
     }
     if ($test = 111) {
         # Add master api key to query params if all tests succeed
-        uwsgi_param x-api-key $master_api_key;
+        set $api_key $master_api_key;
     }
+    uwsgi_param HTTP_X-API-KEY $api_key if_not_empty;
     uwsgi_pass uwsgi://{{ containers.app.name }}:{{ uwsgi.port }};
     uwsgi_param UWSGI_SCHEME $scheme;
   }

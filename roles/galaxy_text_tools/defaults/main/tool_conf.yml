@@ -1,0 +1,41 @@
+---
+galaxy:
+  config:
+    tool_conf:
+      sections:
+        textutil:
+          name: Text Manipulation
+          fixedvalcol:
+            file: "filters/fixedValueColumn.xml"
+          cat:
+            file: "filters/catWrapper.xml"
+            hidden: true
+          condense:
+            file: "filters/condense_characters.xml"
+          convert:
+            file: "filters/convert_characters.xml"
+          merge_cols:
+            file: "filters/mergeCols.xml"
+          create_interval:
+            file: "filters/CreateInterval.xml"
+          cut:
+            file: "filters/cutWrapper.xml"
+            hidden: true
+          change_case:
+            file: "filters/changeCase.xml"
+          paste:
+            file: "filters/pasteWrapper.xml"
+          remove_beginning:
+            file: "filters/remove_beginning.xml"
+          random_lines:
+            file: "filters/randomlines.xml"
+          head:
+            file: "filters/headWrapper.xml"
+          tail:
+            file: "filters/tailWrapper.xml"
+          trimmer:
+            file: "filters/trimmer.xml"
+          wc:
+            file: "filters/wc_gnu.xml"
+          hash:
+            file: "filters/secure_hash_message_digest.xml"
