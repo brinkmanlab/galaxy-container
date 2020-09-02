@@ -12,14 +12,14 @@ galaxy:
               from_environ: K8S_ENABLED
               default: False
             k8s_persistent_volume_claims:
-              from_env: K8S_VOLUMES
+              from_environ: K8S_VOLUMES
               default: 'galaxy-user-data:/data'
             k8s_namespace:
-              from_env: K8S_NAMESPACE
+              from_environ: K8S_NAMESPACE
               default: default
             k8s_use_service_account: True
             k8s_galaxy_instance_id:
-              from_env: K8S_NAMESPACE
+              from_environ: K8S_NAMESPACE
               default: default
             # YAML encoded string: https://github.com/galaxyproject/galaxy/blob/540d6904629caedf3d3cc8b5a1492ae60c652b23/lib/galaxy/jobs/runners/kubernetes.py#L243
             k8s_affinity: |
