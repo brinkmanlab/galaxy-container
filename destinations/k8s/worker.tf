@@ -4,6 +4,7 @@ locals {
     K8S_ENABLED   = "True"
     K8S_NAMESPACE = local.instance
     K8S_VOLUMES   = "${kubernetes_persistent_volume_claim.user_data.metadata.0.name}:${local.data_dir}"
+    K8S_DEFAULT_IMAGE_TAG = var.image_tag
   }
 }
 
@@ -89,6 +90,11 @@ resource "kubernetes_deployment" "galaxy_worker" {
             mount_path = local.data_dir
             name       = "data"
           }
+          volume_mount {
+            mount_path = "${local.config_dir}/macros"
+            name = "config"
+            read_only = true
+          }
         }
         node_selector = {
           WorkClass = "service"
@@ -97,6 +103,12 @@ resource "kubernetes_deployment" "galaxy_worker" {
           name = "data"
           persistent_volume_claim {
             claim_name = kubernetes_persistent_volume_claim.user_data.metadata.0.name
+          }
+        }
+        volume {
+          name = "config"
+          secret {
+            secret_name = kubernetes_secret.galaxy_config.metadata.0.name
           }
         }
         # TODO Configure

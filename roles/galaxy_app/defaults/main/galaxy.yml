@@ -32,7 +32,7 @@ galaxy:
       database_wait_attempts: 60
       database_wait_sleep: 2.0
       install_database_connection: "sqlite:///{{ paths.managed_config }}/toolshed.sqlite?isolation_level=IMMEDIATE"
-      tool_path: "{{ paths.managed_config }}/tools"
+      tool_path: "{{ paths.root }}/tools"
       data_dir: "{{ paths.data }}"
       config_dir: "{{ paths.config }}"
       mutable_config_dir: "{{ paths.managed_config }}"

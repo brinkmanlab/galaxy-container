@@ -13,6 +13,9 @@
 {%- endmacro %}
 <?xml version="1.0"?>
 <job_conf>
+    <macros>
+        <import>{{ paths.config }}/macros/tool_mapping.xml</import>
+    </macros>
     <plugins workers="{{ galaxy.config.job_conf.default_workers or 4 }}">
     {% for plugin, config in galaxy.config.job_conf.get('plugins', {}).items() %}
         <plugin id="{{ plugin }}"{% for attrib, val in config.items() if attrib not in ('params',) %} {{ attrib }}="{{ val }}"{% endfor %}>
@@ -56,6 +59,7 @@
     {% endfor %}
     </destinations>
     <tools>
+        <expand macro="tool_mapping" />
     {% for tool, config in galaxy.config.job_conf.get('tools', {}).items() %}
         <tool id="{{ tool }}"{% for attrib, val in config.items() if attrib not in ('params',) %} {{ attrib }}="{{ val }}"{% endfor %}>
         {% for param, val in config.get('params', {}).items() %}

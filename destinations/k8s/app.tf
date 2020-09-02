@@ -72,6 +72,11 @@ resource "kubernetes_deployment" "galaxy_app" {
             mount_path = local.data_dir
             name       = "data"
           }
+          volume_mount {
+            mount_path = "${local.config_dir}/macros"
+            name = "config"
+            read_only = true
+          }
         }
         node_selector = {
           WorkClass = "service"
@@ -80,6 +85,12 @@ resource "kubernetes_deployment" "galaxy_app" {
           name = "data"
           persistent_volume_claim {
             claim_name = kubernetes_persistent_volume_claim.user_data.metadata.0.name
+          }
+        }
+        volume {
+          name = "config"
+          secret {
+            secret_name = kubernetes_secret.galaxy_config.metadata.0.name
           }
         }
         # TODO Configure

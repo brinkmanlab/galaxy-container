@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<workflow_schedulers default="core">
+  <macros>
+    <import>{{ paths.config }}/macros/workflow_schedulers.xml</import>
+  </macros>
+  <core id="core" />
+  <handlers assign_with="db-preassign" default="schedulers">
+    <expand macro="workflow_schedulers" />
+  </handlers>
+</workflow_schedulers>

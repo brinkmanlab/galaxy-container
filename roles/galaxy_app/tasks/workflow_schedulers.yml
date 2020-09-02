@@ -1,0 +1,17 @@
+- name: Ensure macro dir exists
+  file:
+    path: '{{ galaxy_config }}/macros'
+    recurse: yes
+    state: directory
+
+- name: Copy workflow_schedulers_conf.xml
+  copy:
+    src: workflow_schedulers_conf.xml
+    dest: "{{ paths.config }}/workflow_schedulers_conf.xml"
+    mode: u=rw,g=r,o=r
+
+- name: Copy workflow_schedulers.xml
+  copy:
+    src: workflow_schedulers.xml
+    dest: "{{ paths.config }}/macros/workflow_schedulers.xml"
+    mode: u=rw,g=r,o=r

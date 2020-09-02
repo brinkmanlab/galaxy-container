@@ -1,0 +1,8 @@
+<macros>
+    <xml name="workflow_schedulers">
+    <!--
+    List workflow scheduler handlers here to be included in the workflow_schedulers_conf.xml
+    <handler id="" tags="schedulers" />
+    -->
+    </xml>
+</macros>

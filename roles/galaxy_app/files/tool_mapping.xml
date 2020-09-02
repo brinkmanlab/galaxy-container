@@ -1,0 +1,9 @@
+<macros>
+    <xml name="tool_mapping">
+    <!--
+    List tool mappings here to be included in the job_conf.xml
+    Destinations include: default and big
+    <tool id="" destination="" />
+    -->
+    </xml>
+</macros>

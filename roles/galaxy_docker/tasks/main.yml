@@ -1,6 +1,6 @@
 ---
 - name: Install system packages
-  shell: 'apt-get update && apt-get install -y --no-install-recommends {{ build_deps | join(" ") }}'
+  shell: 'apt update && apt install -y --no-install-recommends {{ build_deps | join(" ") }}'
 
 - name: Install docker repository certificate
   shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -

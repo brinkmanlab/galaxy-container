@@ -43,7 +43,7 @@ galaxy:
         k8s:
           runner: k8s
           tags: default
-          params:
+          params: &k8s_params
             enabled:
               from_environ: K8S_ENABLED
               default: False
@@ -64,3 +64,12 @@ galaxy:
             requests_memory: 2Gi
             limits_cpu: 2
             limits_memory: 4Gi
+        k8s_big:
+          runner: k8s
+          tags: big
+          params:
+            <<: *k8s_params
+            requests_cpu: 8
+            requests_memory: 16Gi
+            limits_cpu: 10
+            limits_memory: 20Gi

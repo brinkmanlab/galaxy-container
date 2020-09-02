@@ -39,3 +39,11 @@ galaxy:
             file: "filters/wc_gnu.xml"
           hash:
             file: "filters/secure_hash_message_digest.xml"
+        filtersort:
+          name: Filter and Sort
+          filter:
+            file: "stats/filtering.xml"
+          sort:
+            file: "filters/sorter.xml"
+          grep:
+            file: "filters/grep.xml"

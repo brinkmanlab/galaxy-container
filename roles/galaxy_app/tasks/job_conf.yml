@@ -4,3 +4,15 @@
     src: job_conf.xml.j2
     dest: "{{ paths.config }}/job_conf.xml"
     mode: u=rw,g=r,o=r
+
+- name: Ensure macro dir exists
+  file:
+    path: '{{ galaxy_config }}/macros'
+    recurse: yes
+    state: directory
+
+- name: Copy tool_mapping.xml
+  copy:
+    src: tool_mapping.xml
+    dest: "{{ paths.config }}/macros/tool_mapping.xml"
+    mode: u=rw,g=r,o=r
