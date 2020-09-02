@@ -3,7 +3,7 @@
 resource "kubernetes_pod" "scheduler" {
   count = var.scheduler_replicas
   metadata {
-    generate_name = "galaxy-workflow-scheduler-"
+    name = "galaxy-workflow-scheduler${count.index}"
     namespace = local.instance
     labels = {
       App                          = "galaxy-workflow-scheduler"
@@ -24,12 +24,20 @@ resource "kubernetes_pod" "scheduler" {
       name              = "galaxy-workflow-scheduler${count.index}"
       image             = "${local.galaxy_app_image}:${var.image_tag}"
       image_pull_policy = var.debug ? "Always" : null
-      command           = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name='workflow-scheduler${count.index}' --attach-to-pool job-handlers.schedulers --log-file=/dev/stdout --attach-to-pool=job-handlers"]
+      command           = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name='workflow-scheduler${count.index}' --log-file=/dev/stdout"]
 
       dynamic "env" {
         for_each = local.galaxy_conf
         content {
           name  = "GALAXY_CONFIG_OVERRIDE_${env.key}"
+          value = env.value
+        }
+      }
+
+      dynamic "env" {
+        for_each = local.job_conf
+        content {
+          name  = env.key
           value = env.value
         }
       }
