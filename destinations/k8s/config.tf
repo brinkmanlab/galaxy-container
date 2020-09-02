@@ -5,17 +5,15 @@ resource "kubernetes_secret" "galaxy_config" {
   }
   data = {
     "workflow_schedulers.xml" = <<-EOF
-      <macros>
-          <xml name="workflow_schedulers">
-          <!--
-          List workflow scheduler handlers here to be included in the workflow_schedulers_conf.xml
-          <handler id="" tags="schedulers" />
-          -->
+      <?xml version="1.0"?>
+      <workflow_schedulers default="core">
+        <core id="core" />
+        <handlers assign_with="db-preassign" default="schedulers">
           %{ for i in range(var.scheduler_replicas) }
             <handler id="workflow-scheduler${i}" tags="schedulers" />
           %{ endfor }
-          </xml>
-      </macros>
+        </handlers>
+      </workflow_schedulers>
     EOF
     "tool_mapping.xml" = <<-EOF
       <macros>

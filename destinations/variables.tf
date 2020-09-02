@@ -35,7 +35,10 @@ locals {
   admin_users_conf = length(var.admin_users) == 0 ? {} : {
     admin_users = join(",", var.admin_users)
   }
-  galaxy_conf = merge(var.galaxy_conf, local.master_api_key_conf, local.admin_users_conf)
+  temp_workflow_scheduler_hack = {
+    workflow_schedulers_config_file = "${local.config_dir}/macros/workflow_schedulers.xml"
+  }
+  galaxy_conf = merge(var.galaxy_conf, local.master_api_key_conf, local.admin_users_conf, local.temp_workflow_scheduler_hack)
 }
 
 variable "db_conf" {
