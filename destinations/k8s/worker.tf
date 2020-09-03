@@ -122,7 +122,7 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_worker" {
   depends_on = [kubernetes_deployment.galaxy_worker]
   metadata {
     name      = local.worker_name
-    namespace = local.instance
+    namespace = kubernetes_deployment.galaxy_worker.metadata.0.namespace
   }
 
   spec {
@@ -140,7 +140,7 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_worker" {
 resource "kubernetes_service_account" "galaxy_worker" {
   metadata {
     name      = local.worker_name
-    namespace = local.instance
+    namespace = kubernetes_deployment.galaxy_worker.metadata.0.namespace
     labels = {
       "app.kubernetes.io/name"     = local.worker_name
       "app.kubernetes.io/instance" = local.worker_name
@@ -155,7 +155,7 @@ resource "kubernetes_service_account" "galaxy_worker" {
 resource "kubernetes_role" "galaxy_worker" {
   metadata {
     name      = local.worker_name
-    namespace = local.instance
+    namespace = kubernetes_service_account.galaxy_worker.metadata.0.namespace
     labels = {
       "app.kubernetes.io/name"     = local.worker_name
       "app.kubernetes.io/instance" = local.worker_name
@@ -180,7 +180,7 @@ resource "kubernetes_role" "galaxy_worker" {
 resource "kubernetes_role_binding" "galaxy_worker" {
   metadata {
     name      = local.worker_name
-    namespace = local.instance
+    namespace = kubernetes_role.galaxy_worker.metadata.0.namespace
     labels = {
       "app.kubernetes.io/name"     = local.worker_name
       "app.kubernetes.io/instance" = local.worker_name
@@ -198,6 +198,7 @@ resource "kubernetes_role_binding" "galaxy_worker" {
   subject {
     kind      = "ServiceAccount"
     name      = kubernetes_service_account.galaxy_worker.metadata.0.name
-    api_group = "" #"rbac.authorization.k8s.io"
+    namespace = kubernetes_service_account.galaxy_worker.metadata.0.namespace
+    #api_group = "rbac.authorization.k8s.io"
   }
 }

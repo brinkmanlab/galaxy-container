@@ -5,12 +5,16 @@ vendor: Brinkman Lab
 containers:
   app:
     name: galaxy-app
+    image: galaxy-app
   web:
     name: galaxy-web
+    image: gaalxy-web
   worker:
     name: galaxy-worker
+    image: galaxy-app
   db:
     name: galaxy-db
+    image: postgresql
 
 volumes:
   galaxy_root:

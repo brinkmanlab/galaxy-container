@@ -56,7 +56,7 @@ galaxy:
               default: brinkmanlab
             docker_image_default:
               from_environ: K8S_DEFAULT_IMAGE
-              default: '{{ containers.worker.name }}'
+              default: '{{ containers.worker.image }}'
             docker_tag_default:
               from_environ: K8S_DEFAULT_IMAGE_TAG
               default: latest
