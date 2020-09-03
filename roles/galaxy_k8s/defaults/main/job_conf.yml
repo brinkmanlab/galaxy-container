@@ -40,7 +40,7 @@ galaxy:
             #k8s_walltime_limit: 172800
             #k8s_timeout_seconds_job_deletion: 30
             #k8s_supplemental_group_id: 0
-            k8s_fs_group_id: {{ uwsgi.gid }}
+            k8s_fs_group_id: '{{ uwsgi.gid }}'
       destinations:
         k8s:
           runner: k8s
