@@ -31,14 +31,16 @@ galaxy:
                       operator: In
                       values:
                       - compute
-            k8s_cleanup_job: always
+            k8s_cleanup_job:
+              from_environ: K8S_CLEANUP_JOB
+              default: always
             #k8s_pod_priority_class:
             #k8s_tolerations:
             #k8s_pod_retrials: 4
             #k8s_walltime_limit: 172800
             #k8s_timeout_seconds_job_deletion: 30
             #k8s_supplemental_group_id: 0
-            k8s_fs_group_id: 1000
+            k8s_fs_group_id: {{ uwsgi.gid }}
       destinations:
         k8s:
           runner: k8s

@@ -14,7 +14,7 @@ containers:
     image: galaxy-app
   db:
     name: galaxy-db
-    image: postgresql
+    image: postgres:alpine
 
 volumes:
   galaxy_root:

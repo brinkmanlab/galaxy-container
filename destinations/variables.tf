@@ -4,9 +4,9 @@ locals {
   data_dir = var.data_dir != null ? var.data_dir : local.ansible.paths.data
   root_dir = var.root_dir != null ? var.root_dir : local.ansible.paths.root
   config_dir = var.config_dir != null ? var.config_dir : local.ansible.paths.config
-  galaxy_web_image = var.galaxy_web_image != null ? var.galaxy_web_image : "brinkmanlab/${local.ansible.containers.web.name}"
-  galaxy_app_image = var.galaxy_app_image != null ? var.galaxy_app_image : "brinkmanlab/${local.ansible.containers.app.name}"
-  db_image = var.db_image != null ? var.db_image : "postgres:alpine"
+  galaxy_web_image = var.galaxy_web_image != null ? var.galaxy_web_image : "brinkmanlab/${local.ansible.containers.web.image}"
+  galaxy_app_image = var.galaxy_app_image != null ? var.galaxy_app_image : "brinkmanlab/${local.ansible.containers.app.image}"
+  db_image = var.db_image != null ? var.db_image : local.ansible.containers.db.image
   galaxy_root_volume_name = var.galaxy_root_volume_name != null ? var.galaxy_root_volume_name : local.ansible.volumes.galaxy_root.name
   user_data_volume_name = var.user_data_volume_name != null ? var.user_data_volume_name : local.ansible.volumes.user_data.name
   db_data_volume_name = var.db_data_volume_name != null ? var.db_data_volume_name : local.ansible.volumes.db_data.name
