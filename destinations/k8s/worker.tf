@@ -140,7 +140,7 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_worker" {
 resource "kubernetes_service_account" "galaxy_worker" {
   metadata {
     name      = local.worker_name
-    namespace = kubernetes_deployment.galaxy_worker.metadata.0.namespace
+    namespace = local.instance
     labels = {
       "app.kubernetes.io/name"     = local.worker_name
       "app.kubernetes.io/instance" = local.worker_name
