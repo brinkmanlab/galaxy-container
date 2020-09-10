@@ -109,6 +109,7 @@ resource "kubernetes_service" "galaxy_web" {
   metadata {
     name      = local.web_name
     namespace = local.instance
+    annotations = var.lb_annotations
   }
   spec {
     selector = {
