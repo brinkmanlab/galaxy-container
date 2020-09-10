@@ -85,10 +85,9 @@ resource "kubernetes_deployment" "galaxy_web" {
 }
 
 resource "kubernetes_horizontal_pod_autoscaler" "galaxy_web" {
-  depends_on = [kubernetes_deployment.galaxy_web]
   metadata {
     name      = local.web_name
-    namespace = local.instance
+    namespace = kubernetes_deployment.galaxy_web.metadata.0.namespace
   }
 
   spec {
@@ -105,10 +104,9 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_web" {
 
 
 resource "kubernetes_service" "galaxy_web" {
-  depends_on = [kubernetes_deployment.galaxy_web]
   metadata {
     name      = local.web_name
-    namespace = local.instance
+    namespace = kubernetes_deployment.galaxy_web.metadata.0.namespace
     annotations = var.lb_annotations
   }
   spec {

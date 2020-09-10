@@ -103,7 +103,7 @@ resource "kubernetes_deployment" "galaxy_app" {
 resource "kubernetes_horizontal_pod_autoscaler" "galaxy_app" {
   metadata {
     name      = local.app_name
-    namespace = local.instance
+    namespace = kubernetes_deployment.galaxy_app.metadata.0.namespace
   }
 
   spec {
@@ -120,10 +120,9 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_app" {
 
 # Register internal dns for web to discover app
 resource "kubernetes_service" "galaxy_app" {
-  depends_on = [kubernetes_deployment.galaxy_app]
   metadata {
     name      = local.app_name
-    namespace = local.instance
+    namespace = kubernetes_deployment.galaxy_app.metadata.0.namespace
   }
   spec {
     selector = {
