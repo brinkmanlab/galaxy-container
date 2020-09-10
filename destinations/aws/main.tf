@@ -32,4 +32,5 @@ module "galaxy-k8s" {
   uwsgi_gid               = var.uwsgi_gid
   master_api_key          = local.master_api_key
   scheduler_replicas      = var.scheduler_replicas
+  lb_annotations          = var.lb_annotations
 }
