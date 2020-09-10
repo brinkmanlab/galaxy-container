@@ -83,3 +83,5 @@ galaxy:
       welcome_url: /static/welcome.html
       static_enabled: false
       enable_old_display_applications: false
+      involucro_auto_init: false
+      involucro_path: '{{ paths.root }}/involucro'
