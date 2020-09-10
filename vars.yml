@@ -8,7 +8,7 @@ containers:
     image: galaxy-app
   web:
     name: galaxy-web
-    image: gaalxy-web
+    image: galaxy-web
   worker:
     name: galaxy-worker
     image: galaxy-app
