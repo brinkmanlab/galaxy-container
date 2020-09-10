@@ -31,7 +31,7 @@ galaxy:
                       operator: In
                       values:
                       - compute
-            k8s_cleanup_job:
+            k8s_cleanup_job:  # always, onsuccess, never
               from_environ: K8S_CLEANUP_JOB
               default: always
             #k8s_pod_priority_class:
