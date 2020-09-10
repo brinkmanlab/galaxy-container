@@ -28,13 +28,13 @@
 - name: Add group
   group:
     name: galaxy
-    gid: 1000
+    gid: '{{ uwsgi.gid }}'
 
 - name: Add user
   user:
     name: galaxy
     group: galaxy
-    uid: 1000
+    uid: '{{ uwsgi.uid }}'
     shell: /sbin/nologin
 
 - name: Install additional python dependencies
