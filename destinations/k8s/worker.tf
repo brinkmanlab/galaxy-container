@@ -122,7 +122,7 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_worker" {
   depends_on = [kubernetes_deployment.galaxy_worker]
   metadata {
     name      = local.worker_name
-    namespace = kubernetes_deployment.galaxy_worker.metadata.0.namespace
+    namespace = local.instance
   }
 
   spec {
