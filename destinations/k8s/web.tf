@@ -116,8 +116,15 @@ resource "kubernetes_service" "galaxy_web" {
       App = local.web_name
     }
     port {
+      name = "http"
       protocol    = "TCP"
       port        = 80
+      target_port = 80
+    }
+    port {
+      name = "https"
+      protocol = "TCP"
+      port = 443
       target_port = 80
     }
 
