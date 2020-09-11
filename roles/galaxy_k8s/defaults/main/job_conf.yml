@@ -39,6 +39,12 @@ galaxy:
             #k8s_pod_retrials: 4
             #k8s_walltime_limit: 172800
             #k8s_timeout_seconds_job_deletion: 30
+            k8s_run_as_user_id:
+              from_environ: K8S_RUN_AS_UID
+              default: '{{ uwsgi.uid }}'
+            k8s_run_as_group_id:
+              from_environ: K8S_RUN_AS_GID
+              default: '{{ uwsgi.gid }}'
             #k8s_supplemental_group_id: 0
             k8s_fs_group_id: '{{ uwsgi.gid }}'
       destinations:
