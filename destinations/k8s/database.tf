@@ -52,7 +52,7 @@ resource "kubernetes_job" "init_install_db" {
           run_as_group = local.uwsgi_gid
         }
         container {
-          name              = "${local.app_name}-init-db"
+          name              = "${local.app_name}-init-install-db"
           command           = ["/env_run.sh", "python3", "${local.root_dir}/scripts/create_db.py", "-c", "${local.config_dir}/galaxy.yml", "install"]
           image             = "${local.galaxy_app_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null
@@ -101,7 +101,7 @@ resource "kubernetes_job" "upgrade_db" {
       metadata {}
       spec {
         container {
-          name              = "${local.app_name}-init-db"
+          name              = "${local.app_name}-upgrade-db"
           command           = ["/env_run.sh", "python3", "${local.root_dir}/scripts/manage_db.py", "upgrade", "-c", "${local.config_dir}/galaxy.yml"]
           image             = "${local.galaxy_app_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null

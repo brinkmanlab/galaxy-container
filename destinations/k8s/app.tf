@@ -77,6 +77,11 @@ resource "kubernetes_deployment" "galaxy_app" {
             name = "config"
             read_only = true
           }
+          volume_mount {
+            mount_path = "${local.root_dir}/visualizations"
+            name = "data"
+            sub_path = "visualizations"
+          }
         }
         node_selector = {
           WorkClass = "service"

@@ -18,7 +18,8 @@ resource "kubernetes_pod" "scheduler" {
   spec {
     restart_policy = "Always"
     security_context {
-      fs_group = local.uwsgi_gid
+      run_as_user = local.uwsgi_uid
+      run_as_group = local.uwsgi_gid
     }
     container {
       name              = "galaxy-workflow-scheduler${count.index}"

@@ -1,4 +1,3 @@
-# TODO https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/docs/spot-instances.md
 locals {
   job_conf = {
     K8S_ENABLED   = "True"
