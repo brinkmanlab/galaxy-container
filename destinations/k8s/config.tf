@@ -23,6 +23,9 @@ resource "kubernetes_secret" "galaxy_config" {
           Destinations include: default and big
           <tool id="" destination="" />
           -->
+          %{ for k, v in var.tool_mappings }
+            <tool id="${k}" destination="${v}" />
+          %{ endfor }
           </xml>
       </macros>
     EOF
