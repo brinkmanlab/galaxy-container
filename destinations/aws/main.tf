@@ -33,4 +33,5 @@ module "galaxy-k8s" {
   master_api_key          = local.master_api_key
   scheduler_replicas      = var.scheduler_replicas
   lb_annotations          = var.lb_annotations
+  tool_mappings           = var.tool_mappings
 }
