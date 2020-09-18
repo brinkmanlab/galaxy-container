@@ -1,45 +1,45 @@
 #!/usr/bin/env -S buildah unshare ansible-playbook
 ---
-#- name: Start NodeJS container
-#  hosts: buildah_server
-#  vars_files: [vars.yml]
-#  tasks:
-#    - name: Create NodeJS Instance
-#      docker_container:
-#        name: nodejs
-#        image: node:alpine
-#        command: sleep 1h
-#        volumes:
-#        - '{{ playbook_dir }}/galaxy:{{ tmp_path }}/galaxy'
-#        - '{{ playbook_dir }}/.git:{{ tmp_path }}/.git'
-#        auto_remove: yes
-#
-#    - name: Add NodeJS container to inventory
-#      add_host:
-#        name: NodeJS
-#        ansible_connection: docker
-#        ansible_host: nodejs
-#
-#- name: Build Static Content
-#  hosts: NodeJS
-#  vars_files: [vars.yml]
-#  gather_facts: false
-#  tasks:
-#    - name: Install system dependencies
-#      raw: apk add --no-cache git python make g++
-#
-#    - name: Install dependencies
-#      command: yarn install --frozen-lockfile --cwd='{{ tmp_path }}/galaxy/client'
-#
-#    - name: Build client
-#      command: yarn run --cwd='{{ tmp_path }}/galaxy/client' build-production-maps
-#
-#- name: Shutdown NodeJS
-#  hosts: buildah_server
-#  tasks:
-#    - docker_container:
-#        name: nodejs
-#        state: absent
+- name: Start NodeJS container
+  hosts: buildah_server
+  vars_files: [vars.yml]
+  tasks:
+    - name: Create NodeJS Instance
+      docker_container:
+        name: nodejs
+        image: node:alpine
+        command: sleep 1h
+        volumes:
+        - '{{ playbook_dir }}/galaxy:{{ tmp_path }}/galaxy'
+        - '{{ playbook_dir }}/.git:{{ tmp_path }}/.git'
+        auto_remove: yes
+
+    - name: Add NodeJS container to inventory
+      add_host:
+        name: NodeJS
+        ansible_connection: docker
+        ansible_host: nodejs
+
+- name: Build Static Content
+  hosts: NodeJS
+  vars_files: [vars.yml]
+  gather_facts: false
+  tasks:
+    - name: Install system dependencies
+      raw: apk add --no-cache git python make g++
+
+    - name: Install dependencies
+      command: yarn install --frozen-lockfile --cwd='{{ tmp_path }}/galaxy/client'
+
+    - name: Build client
+      command: yarn run --cwd='{{ tmp_path }}/galaxy/client' build-production-maps
+
+- name: Shutdown NodeJS
+  hosts: buildah_server
+  tasks:
+    - docker_container:
+        name: nodejs
+        state: absent
 
 - name: Create Webserver Container
   hosts: buildah_server
