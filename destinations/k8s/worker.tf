@@ -124,8 +124,8 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_worker" {
   }
 
   spec {
-    max_replicas = 10
-    min_replicas = 1
+    max_replicas = 3 #10 TODO https://github.com/galaxyproject/galaxy/issues/10243
+    min_replicas = 3 #1
 
     scale_target_ref {
       api_version = "apps/v1"
