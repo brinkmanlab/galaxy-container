@@ -29,5 +29,11 @@ resource "kubernetes_secret" "galaxy_config" {
           </xml>
       </macros>
     EOF
+    "job_destinations.xml" = <<-EOF
+      <macros>
+          <xml name="job_destinations">
+          </xml>
+      </macros>
+    EOF
   }
 }
