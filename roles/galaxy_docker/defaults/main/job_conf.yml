@@ -5,7 +5,9 @@ galaxy:
       destinations:
         docker: &docker
           runner: local
-          tags: default
+          resource_keys:
+            requests_cpu: docker_cpu
+            requests_memory: docker_memory
           params: &docker_params
             enabled:
               default: False

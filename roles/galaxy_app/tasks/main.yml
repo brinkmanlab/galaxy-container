@@ -7,7 +7,7 @@
 
 - name: Ensure data dir exists with permissions
   file:
-    path: '{{ paths.data }}'
+    path: '{{ item }}'
     recurse: yes
     state: directory
     owner: galaxy

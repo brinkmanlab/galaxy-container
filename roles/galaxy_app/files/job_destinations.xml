@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<macros>
+    <xml name="job_destinations">
+    <!--
+    List job destinations here to be included in the job_conf.xml
+    Runners are k8s, docker, local
+    <destination id="" runner=""></destination>
+    -->
+    </xml>
+</macros>

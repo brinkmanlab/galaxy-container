@@ -2,6 +2,33 @@
 galaxy:
   config:
     job_conf:
+      oversubscribe_factor: 2
+      job_profiles:
+        tiny:
+          cpu: 0.5
+          memory: 500m
+        c1m1: &default
+          cpu: 1
+          memory: 1G
+        c1m2:
+          cpu: 1
+          memory: 2G
+        c2m2:
+          cpu: 2
+          memory: 2G
+        c2m4:
+          cpu: 2
+          memory: 4G
+        c4m8:
+          cpu: 4
+          memory: 8G
+        c8m16:
+          cpu: 8
+          memory: 16G
+        c16m32:
+          cpu: 16
+          memory: 32G
+        default: *default
       default_workers: 4
       default_destination: default
       handler_assign_with:

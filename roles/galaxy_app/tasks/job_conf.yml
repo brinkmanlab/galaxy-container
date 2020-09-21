@@ -11,8 +11,11 @@
     recurse: yes
     state: directory
 
-- name: Copy tool_mapping.xml
+- name: Copy macro defaults
   copy:
-    src: tool_mapping.xml
-    dest: "{{ paths.config }}/macros/tool_mapping.xml"
+    src: "{{ item }}"
+    dest: "{{ paths.config }}/macros/{{ item }}"
     mode: u=rw,g=r,o=r
+  loop:
+    - tool_mapping.xml
+    - job_destinations.xml

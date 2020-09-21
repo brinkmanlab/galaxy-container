@@ -50,7 +50,9 @@ galaxy:
       destinations:
         k8s:
           runner: k8s
-          tags: default
+          resource_keys:
+            limits_cpu: limits_cpu
+            limits_memory: limits_memory
           params: &k8s_params
             enabled:
               from_environ: K8S_ENABLED
@@ -68,16 +70,3 @@ galaxy:
             docker_tag_default:
               from_environ: K8S_DEFAULT_IMAGE_TAG
               default: latest
-            requests_cpu: 1
-            requests_memory: 2Gi
-            limits_cpu: 2
-            limits_memory: 4Gi
-        k8s_big:
-          runner: k8s
-          tags: big
-          params:
-            <<: *k8s_params
-            requests_cpu: 8
-            requests_memory: 16Gi
-            limits_cpu: 10
-            limits_memory: 20Gi

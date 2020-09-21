@@ -3,7 +3,7 @@
     <xml name="tool_mapping">
     <!--
     List tool mappings here to be included in the job_conf.xml
-    Destinations include: default and big
+    Destinations include: default, tiny, c1m1, c1m2, c2m2, c2m4, c4m8, c8m16, c16m32
     <tool id="" destination="" />
     -->
     </xml>
