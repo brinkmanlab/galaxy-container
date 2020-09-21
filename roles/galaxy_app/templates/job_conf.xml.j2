@@ -38,15 +38,15 @@
     <destinations default="{{ galaxy.config.job_conf.get('default_destination', (galaxy.config.job_conf.get('destinations', {'':None}).keys() | list)[0]) }}">
         <expand macro="job_destinations" />
     {% for destination, config in galaxy.config.job_conf.get('destinations', {}).items() %}
-        {% for profile_name, profile in galaxy.config.job_conf.get('job_profiles', {default: {cpus: 1, memory: '1G'}}) %}
-        <destination id="{{ destination }}-{{ profile_name }}"{% for attrib, val in config.items() if attrib not in ('params','job_metrics','env','source','exec', 'resubmit', 'tags') %} {{ attrib }}="{{ val }}"{% endfor %} tags="{{ profile_name }}{% if 'tags' in config %},{{ config['tags'] if config['tags'] is string else config['tags']|join(',') }}{% endif %}">
+        {% for profile_name, profile in galaxy.config.job_conf.get('job_profiles', {'default': {'cpus': 1, 'memory': 1}}).items() if destination != 'local' or profile_name != 'default' %}
+        <destination id="{{ destination }}-{{ profile_name }}"{% for attrib, val in config.items() if attrib not in ('params','job_metrics','env','source','exec', 'resubmit', 'tags') %} {{ attrib }}="{{ val }}"{% endfor %} tags="{{ profile_name if destination != 'local' else 'local-' + profile_name }}{% if 'tags' in config %},{{ config['tags'] if config['tags'] is string else config['tags']|join(',') }}{% endif %}">
             {{ param_template(config.get('resource_keys', {}).get('requests_cpu', 'requests_cpu'), profile.get('cpus', 1)) }}
-            {{ param_template(config.get('resource_keys', {}).get('requests_memory', 'requests_memory'), profile.get('memory', '1G')) }}
+            {{ param_template(config.get('resource_keys', {}).get('requests_memory', 'requests_memory'), profile.get('memory', 1) ~ 'G') }}
         {% if 'limits_cpu' in config.get('resource_keys', {}) %}
             {{ param_template(config.get('resource_keys', {}).get('limits_cpu'), profile.get('cpus', 1) * galaxy.config.job_conf.get('oversubscribe_factor', 1)) }}
         {% endif %}
         {% if 'limits_memory' in config.get('resource_keys', {}) %}
-            {{ param_template(config.get('resource_keys', {}).get('limits_memory'), profile.get('memory', 1) * galaxy.config.job_conf.get('oversubscribe_factor', 1)) }}
+            {{ param_template(config.get('resource_keys', {}).get('limits_memory'), (profile.get('memory', 1) * galaxy.config.job_conf.get('oversubscribe_factor', 1)) ~ 'G') }}
         {% endif %}
         {% for param, val in config.get('params', {}).items() %}
             {{ param_template(param, val) }}
