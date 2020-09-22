@@ -6,28 +6,28 @@ galaxy:
       job_profiles:
         tiny:
           cpu: 0.5
-          memory: 500m
+          memory: 0.5
         c1m1: &default
           cpu: 1
-          memory: 1G
+          memory: 1
         c1m2:
           cpu: 1
-          memory: 2G
+          memory: 1
         c2m2:
           cpu: 2
-          memory: 2G
+          memory: 2
         c2m4:
           cpu: 2
-          memory: 4G
+          memory: 4
         c4m8:
           cpu: 4
-          memory: 8G
+          memory: 8
         c8m16:
           cpu: 8
-          memory: 16G
+          memory: 16
         c16m32:
           cpu: 16
-          memory: 32G
+          memory: 32
         default: *default
       default_workers: 4
       default_destination: default
@@ -51,6 +51,7 @@ galaxy:
       #    plugins: []
       destinations:
         local:
+          profiles: [tiny]
           runner: local
       #    params:
       #      param: val
@@ -63,23 +64,23 @@ galaxy:
       #    resubmit: [{condition: "", destination: "", handler: ""}]
       tools:
         upload1:
-          destination: local
+          destination: local-tiny
         unzip:
-          destination: local
+          destination: local-tiny
         zip:
-          destination: local
+          destination: local-tiny
         failed:
-          destination: local
+          destination: local-tiny
         flatten:
-          destination: local
+          destination: local-tiny
         merge:
-          destination: local
+          destination: local-tiny
         relabel:
-          destination: local
+          destination: local-tiny
         filter:
-          destination: local
+          destination: local-tiny
         sort:
-          destination: local
+          destination: local-tiny
         apply_rules:
-          destination: local
+          destination: local-tiny
       limits: {}

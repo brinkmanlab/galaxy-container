@@ -28,6 +28,7 @@ galaxy:
             #docker_set_user: '$UID'
         galaxy_env:
           <<: *docker
+          profiles: [tiny]
           params:
             <<: *docker_params
             docker_run_extra_arguments: '--entrypoint="/env_run.sh" -e "PYTHONPATH={{ paths.root }}/lib"'
