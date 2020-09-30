@@ -227,12 +227,6 @@ variable "debug" {
   description = "Enabling will put the deployment into a mode suitable for debugging"
 }
 
-variable "scheduler_replicas" {
-  type = number
-  default = 1
-  description = "Galaxy workflow scheduler replica count"
-}
-
 variable "lb_annotations" {
   type = map(string)
   default = {}
