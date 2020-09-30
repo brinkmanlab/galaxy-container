@@ -26,7 +26,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
   }
   spec {
     replicas          = 1
-    min_ready_seconds = 1
+    min_ready_seconds = 10
     strategy {
       type = "Recreate"
     }
