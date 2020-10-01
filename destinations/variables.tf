@@ -40,7 +40,7 @@ locals {
   temp_workflow_scheduler_hack = {
     workflow_schedulers_config_file = "${local.config_dir}/macros/workflow_schedulers.xml"
   }
-  galaxy_conf = merge(var.galaxy_conf, local.master_api_key_conf, local.admin_users_conf, local.temp_workflow_scheduler_hack)
+  galaxy_conf = merge(local.master_api_key_conf, local.admin_users_conf, local.temp_workflow_scheduler_hack, var.galaxy_conf)
 }
 
 variable "db_conf" {
