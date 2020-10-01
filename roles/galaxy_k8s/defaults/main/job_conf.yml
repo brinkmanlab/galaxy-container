@@ -70,3 +70,4 @@ galaxy:
             docker_tag_default:
               from_environ: K8S_DEFAULT_IMAGE_TAG
               default: latest
+            #max_pod_retries: 0
