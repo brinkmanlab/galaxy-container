@@ -37,7 +37,7 @@ locals {
   admin_users_conf = length(var.admin_users) == 0 ? {} : {
     admin_users = join(",", var.admin_users)
   }
-  galaxy_conf = merge(var.galaxy_conf, local.master_api_key_conf, local.admin_users_conf, local.destination_galaxy_conf)
+  galaxy_conf = merge(local.master_api_key_conf, local.admin_users_conf, local.destination_galaxy_conf, var.galaxy_conf)
 }
 
 variable "db_conf" {
