@@ -47,4 +47,3 @@
 - import_tasks: galaxy.yml
 - import_tasks: job_conf.yml
 - import_tasks: tool_conf.yml
-- import_tasks: workflow_schedulers.yml
