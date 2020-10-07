@@ -88,3 +88,39 @@ galaxy:
       enable_old_display_applications: false
       involucro_auto_init: false
       involucro_path: '{{ paths.root }}/involucro'
+      logging:
+        disable_existing_loggers: false
+        filters:
+          stack:
+            (): galaxy.web_stack.application_stack_log_filter
+        formatters:
+          stack:
+            (): galaxy.web_stack.application_stack_log_formatter
+        handlers:
+          console:
+            class: logging.StreamHandler
+            filters:
+              - stack
+            formatter: stack
+            level: DEBUG
+            stream: ext://sys.stderr
+        loggers:
+          amqp:
+            level: INFO
+            qualname: amqp
+          dogpile:
+            level: WARN
+            qualname: dogpile
+          paste.httpserver.ThreadPool:
+            level: WARN
+            qualname: paste.httpserver.ThreadPool
+          routes.middleware:
+            level: WARN
+            qualname: routes.middleware
+          urllib3:
+            level: WARN
+        root:
+          handlers:
+            - console
+          level: DEBUG
+        version: 1
