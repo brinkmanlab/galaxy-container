@@ -12,7 +12,13 @@ galaxy:
           memory: 1
         c1m2:
           cpu: 1
-          memory: 1
+          memory: 2
+        c1m4:
+          cpu: 1
+          memory: 4
+        c1m8:  # Single threaded high memory applications
+          cpu: 1
+          memory: 8
         c2m2:
           cpu: 2
           memory: 2
