@@ -83,6 +83,9 @@ galaxy:
       master_api_key: null
       cleanup_job: always
       outputs_to_working_directory: True
+      # TODO metadata_strategy: extended
+      retry_job_output_collection: 5
+      retry_metadata_internally: false
       welcome_url: /static/welcome.html
       static_enabled: false
       enable_old_display_applications: false
