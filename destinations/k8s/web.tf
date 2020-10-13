@@ -19,6 +19,7 @@ resource "kubernetes_deployment" "galaxy_web" {
   spec {
     replicas          = 1
     min_ready_seconds = 1
+    revision_history_limit = 0
     strategy {
       type = "Recreate"
     }
