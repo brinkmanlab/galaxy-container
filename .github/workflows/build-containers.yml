@@ -32,15 +32,10 @@ jobs:
       run: ./webserver.playbook.yml
     - name: Build application
       run: ./application.playbook.yml
-    - name: Build worker
-      run: ./worker.playbook.yml
-    - run: buildah push galaxy_web docker-daemon:galaxy_web:dev
-    - run: buildah push galaxy_app docker-daemon:galaxy_app:dev
-    - run: buildah push galaxy_worker docker-daemon:galaxy_worker:dev
+    #- run: buildah push galaxy_web docker-daemon:galaxy_web:dev
+    #- run: buildah push galaxy_app docker-daemon:galaxy_app:dev
 
     - name: Publish application
       run: "buildah push --creds ${{ secrets.DOCKERHUB_ID }}:${{ secrets.DOCKERHUB_TOKEN }} galaxy_app docker://docker.io/${{ secrets.DOCKERHUB_ID }}/galaxy_app:${{ github.ref }}"
     - name: Publish webserver
       run: "buildah push --creds ${{ secrets.DOCKERHUB_ID }}:${{ secrets.DOCKERHUB_TOKEN }} galaxy_web docker://docker.io/${{ secrets.DOCKERHUB_ID }}/galaxy_web:${{ github.ref }}"
-    - name: Publish worker
-      run: "buildah push --creds ${{ secrets.DOCKERHUB_ID }}:${{ secrets.DOCKERHUB_TOKEN }} galaxy_worker docker://docker.io/${{ secrets.DOCKERHUB_ID }}/galaxy_worker:${{ github.ref }}"
