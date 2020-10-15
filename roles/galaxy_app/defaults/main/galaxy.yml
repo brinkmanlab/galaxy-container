@@ -91,6 +91,9 @@ galaxy:
       enable_old_display_applications: false
       involucro_auto_init: false
       involucro_path: '{{ paths.root }}/involucro'
+      mulled_resolution_cache_type: file # TODO https://github.com/galaxyproject/galaxy/pull/10436
+      mulled_resolution_cache_data_dir: mulled/data
+      mulled_resolution_cache_lock_dir: mulled/locks
       logging:
         disable_existing_loggers: false
         filters:
