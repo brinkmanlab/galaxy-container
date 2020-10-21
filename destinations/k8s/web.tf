@@ -54,6 +54,14 @@ resource "kubernetes_deployment" "galaxy_web" {
             }
           }
 
+          liveness_probe {
+            http_get {
+              path = "/health"
+              port = "80"
+              scheme = "http"
+            }
+          }
+
           resources {
             limits {
               cpu    = "2"

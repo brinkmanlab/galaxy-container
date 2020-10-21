@@ -88,4 +88,6 @@ server {
   #  alias $plugins_root/plugins/$plug_type/$vis_name/static/$static_file;
   #  expires 24;
   #}
+
+  location /health { return 200 "OK\n"; }
 }

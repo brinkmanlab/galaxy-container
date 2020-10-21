@@ -57,6 +57,17 @@
     dest: '{{ paths.root }}/involucro'
     mode: u=rwx,g=rwx,o=rx
 
+- name: Download uwping
+  get_url:
+    url: https://github.com/che0/uwping/releases/download/14.0/uwping
+    dest: '/usr/local/bin/uwping'
+    mode: u=rwx,g=rwx,o=rx
+
+- name: Download handler probe script
+  get_url:
+    url: https://raw.githubusercontent.com/galaxyproject/galaxy-helm/master/galaxy/scripts/probedb.py
+    dest: '{{ paths.root }}/probedb.py'
+
 - name: Clean up build dependencies
   shell: "apt purge -y {{ build_deps | join(' ') }}"
 

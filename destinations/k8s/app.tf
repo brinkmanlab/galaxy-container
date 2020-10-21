@@ -48,6 +48,26 @@ resource "kubernetes_deployment" "galaxy_app" {
           image             = "${local.galaxy_app_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null
 
+          readiness_probe {
+            exec {
+              command = ["uwping", "uwsgi://localhost:${local.uwsgi_port}/api/version"]
+            }
+            initial_delay_seconds = 2
+            timeout_seconds = 2
+            period_seconds = 2
+          }
+
+          liveness_probe {
+            exec {
+              command = ["uwping", "uwsgi://localhost:${local.uwsgi_port}/api/version"]
+            }
+            initial_delay_seconds = 2
+            failure_threshold = 3
+            timeout_seconds = 2
+            success_threshold = 1
+            period_seconds = 10
+          }
+
           dynamic "env" {
             for_each = local.galaxy_conf
             content {
