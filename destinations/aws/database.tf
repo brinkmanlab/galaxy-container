@@ -1,9 +1,3 @@
-locals {
-  galaxy_db_conf = {
-    database_connection = "${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
-  }
-}
-
 resource "aws_db_instance" "galaxy_db" {
   identifier            = "${local.db_name}${local.name_suffix}"
   allocated_storage     = 20

@@ -8,7 +8,7 @@ module "galaxy-k8s" {
   instance                = var.instance
   nfs_server              = aws_efs_file_system.user_data.dns_name
   db_conf                 = local.db_conf
-  galaxy_conf             = merge(local.galaxy_conf, local.smtp_conf, local.galaxy_db_conf)
+  galaxy_conf             = merge(local.galaxy_conf, local.smtp_conf)
   admin_users             = var.admin_users
   app_name                = var.app_name
   config_dir              = var.config_dir
