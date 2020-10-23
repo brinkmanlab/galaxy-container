@@ -4,4 +4,4 @@
 __pycache__
 *.tfstate
 *.tfstate.backup
-/galaxy/*
+/roles/galaxy_app/files/*/*
