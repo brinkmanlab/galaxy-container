@@ -77,6 +77,7 @@ galaxy:
       #single_user:
       watch_tools: true
       conda_auto_init: false
+      #id_secret: USING THE DEFAULT IS NOT SECURE!
       #admin_users: "{{ admins | join(',') }}"
       allow_user_deletion: True
       allow_user_impersonation: True

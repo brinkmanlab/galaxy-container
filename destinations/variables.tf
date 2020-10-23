@@ -40,7 +40,10 @@ locals {
   admin_users_conf = length(var.admin_users) == 0 ? {} : {
     admin_users = join(",", var.admin_users)
   }
-  galaxy_conf = merge(local.master_api_key_conf, local.admin_users_conf, local.destination_galaxy_conf, local.galaxy_db_conf, var.galaxy_conf)
+  id_secret_conf = {
+    id_secret = length(random_password.id_secret) == 0 ? "" : random_password.id_secret[0].result
+  }
+  galaxy_conf = merge(local.master_api_key_conf, local.admin_users_conf, local.destination_galaxy_conf, local.galaxy_db_conf, local.id_secret_conf, var.galaxy_conf)
 }
 
 variable "db_conf" {
@@ -76,6 +79,11 @@ variable "galaxy_conf" {
   type        = map(string)
   default     = {}
   description = "Galaxy configuration overrides"
+}
+
+resource "random_password" "id_secret" {
+  count = lookup(var.galaxy_conf, "id_secret", "") == "" ? 1 : 0
+  length  = 32
 }
 
 variable "image_tag" {
