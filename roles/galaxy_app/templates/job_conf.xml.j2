@@ -18,71 +18,72 @@
         <import>{{ paths.config }}/macros/job_destinations.xml</import>
     </macros>
     <plugins workers="{{ galaxy.config.job_conf.default_workers or 4 }}">
-    {% for plugin, config in galaxy.config.job_conf.get('plugins', {}).items() %}
+    {%- for plugin, config in galaxy.config.job_conf.get('plugins', {}).items() %}
         <plugin id="{{ plugin }}"{% for attrib, val in config.items() if attrib not in ('params',) %} {{ attrib }}="{{ val }}"{% endfor %}>
-        {% for param, val in config.get('params', {}).items() %}
+        {%- for param, val in config.get('params', {}).items() %}
             {{ param_template(param, val) }}
-        {% endfor %}
+        {%- endfor %}
         </plugin>
-    {% endfor %}
+    {%- endfor %}
     </plugins>
     <handlers{% if 'default_handler' in galaxy.config.job_conf %} default="{{ galaxy.config.job_conf.default_handler }}"{% endif %}{% if 'handler_max_grab' in galaxy.config.job_conf %} max_grab="{{ galaxy.config.job_conf.handler_max_grab }}"{% endif %}{% if 'handler_assign_with' in galaxy.config.job_conf %} assign_with="{{ galaxy.config.job_conf.handler_assign_with | join(',') }}"{% endif %}>
-    {% for handler, config in galaxy.config.job_conf.handlers %}
+    {%- for handler, config in galaxy.config.job_conf.handlers %}
         <handler id="{{ handler }}" tags="{{ config.tags | join(',') }}">
-        {% for plugin in config.get('plugins', []) %}
+        {%- for plugin in config.get('plugins', []) %}
             <plugin id="{{ plugin }}" />
-        {% endfor %}
+        {%- endfor %}
         </handler>
-    {% endfor %}
+    {%- endfor %}
     </handlers>
     <destinations default="{{ galaxy.config.job_conf.get('default_destination', (galaxy.config.job_conf.get('destinations', {'':None}).keys() | list)[0]) }}">
         <expand macro="job_destinations" />
-    {% for destination, config in galaxy.config.job_conf.get('destinations', {}).items() %}
-        {% for profile_name, profile in galaxy.config.job_conf.get('job_profiles', {'default': {'cpus': 1, 'memory': 1}}).items() if profile_name in config.get('profiles', [profile_name]) %}
+    {%- set job_profiles = galaxy.config.job_conf.get('job_profiles', {'default': {'cpus': 1, 'memory': 1}}) %}
+    {%- for destination, config in galaxy.config.job_conf.get('destinations', {}).items() %}
+        {%- for profile_name, profile in job_profiles.items() if profile_name in config.get('profiles', [profile_name]) %}
         <destination id="{{ destination }}-{{ profile_name }}"{% for attrib, val in config.items() if attrib not in ('params','job_metrics','env','source','exec', 'resubmit', 'tags', 'resource_keys', 'profiles') %} {{ attrib }}="{{ val }}"{% endfor %} tags="{{ profile_name + ',' if destination != 'local' else '' }}{% if 'tags' in config %}{{ config['tags'] if config['tags'] is string else config['tags']|join(',') }}{% endif %}">
             {{ param_template(config.get('resource_keys', {}).get('requests_cpu', 'requests_cpu'), profile.get('cpu', 1)) }}
             {{ param_template(config.get('resource_keys', {}).get('requests_memory', 'requests_memory'), profile.get('memory', 1) ~ 'G') }}
-        {% if 'limits_cpu' in config.get('resource_keys', {}) %}
+        {%- if 'limits_cpu' in config.get('resource_keys', {}) %}
             {{ param_template(config.get('resource_keys', {}).get('limits_cpu'), profile.get('cpu', 1) * galaxy.config.job_conf.get('oversubscribe_factor', 1)) }}
-        {% endif %}
-        {% if 'limits_memory' in config.get('resource_keys', {}) %}
+        {%- endif %}
+        {%- if 'limits_memory' in config.get('resource_keys', {}) %}
             {{ param_template(config.get('resource_keys', {}).get('limits_memory'), (profile.get('memory', 1) * galaxy.config.job_conf.get('oversubscribe_factor', 1)) ~ 'G') }}
-        {% endif %}
-        {% for param, val in config.get('params', {}).items() %}
+        {%- endif %}
+        {%- for param, val in config.get('params', {}).items() %}
             {{ param_template(param, val) }}
-        {% endfor %}
-        {% if 'job_metrics' in config %}
+        {%- endfor %}
+        {%- if 'job_metrics' in config %}
             <job_metrics />
-        {% endif %}
-        {% for env, val in config.get('env', {}).items() %}
+        {%- endif %}
+        {%- for env, val in config.get('env', {}).items() %}
             <env id="{{ env }}">{{ val }}</env>
-        {% endfor %}
-        {% for source in config.get('source', []) %}
+        {%- endfor %}
+        {%- for source in config.get('source', []) %}
             <env file="{{ source }}" />
-        {% endfor %}
-        {% for exec in config.get('exec', []) %}
+        {%- endfor %}
+        {%- for exec in config.get('exec', []) %}
             <env exec="{{ exec }}" />
-        {% endfor %}
-        {% for resubmit in config.get('resubmit', []) %}
-            <resubmit {% for a,v in resubmit.items() %} {{ a }}="{{ v }}"{% endfor %} />
-        {% endfor %}
+        {%- endfor %}
+        {%- for resubmit in config.get('resubmit', []) %}
+            <resubmit {% for a,v in resubmit.items() if a != 'destination' %} {{ a }}="{{ v }}"{% endfor %}{% if 'destination' in resubmit %} destination="{% if resubmit.get('destination') == 'next_profile' %}{% set i = job_profiles.items().index(profile_name) %}{% job_profiles.items()[i+1][1] if job_profiles|length > i+1 else '' %}{% else %}{% resubmit.get('destination', '') %}"{% endif %} />
+        {%- endfor %}
         </destination>
-        {% endfor %}
-    {% endfor %}
+        {%- endfor %}
+    {%- endfor %}
     </destinations>
     <tools>
         <expand macro="tool_mapping" />
-    {% for tool, config in galaxy.config.job_conf.get('tools', {}).items() %}
+    {%- for tool, config in galaxy.config.job_conf.get('tools', {}).items() %}
         <tool id="{{ tool }}"{% for attrib, val in config.items() if attrib not in ('params',) %} {{ attrib }}="{{ val }}"{% endfor %}>
-        {% for param, val in config.get('params', {}).items() %}
+        {%- for param, val in config.get('params', {}).items() %}
             <param id="{{ param }}">{{ val }}</param>
-        {% endfor %}
+        {%- endfor %}
         </tool>
-    {% endfor %}
+    {%- endfor %}
     </tools>
     <limits>
-    {% for limit, config in galaxy.config.job_conf.get('limits', {}).items() %}
+    {%- for limit, config in galaxy.config.job_conf.get('limits', {}).items() %}
         <limit id="{{ limit }}" {% for attrib, val in config.items() if attrib not in ('value',) %} {{ attrib }}="{{ val }}"{% endfor %}>{{ config['value'] }}</limit>
-    {% endfor %}
+    {%- endfor %}
     </limits>
 </job_conf>

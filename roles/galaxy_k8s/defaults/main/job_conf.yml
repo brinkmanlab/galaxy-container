@@ -71,3 +71,8 @@ galaxy:
               from_environ: K8S_DEFAULT_IMAGE_TAG
               default: latest
             #max_pod_retries: 0
+          resubmit:
+            - condition: "unknown_error and attempt &lt;= 4"
+              delay: "attempt * 15"
+            - condition: memory_limit_reached
+              destination: next_profile
