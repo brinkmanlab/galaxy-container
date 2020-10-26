@@ -81,6 +81,7 @@ galaxy:
       #admin_users: "{{ admins | join(',') }}"
       allow_user_deletion: True
       allow_user_impersonation: True
+      allow_path_paste: true
       master_api_key: null
       cleanup_job: always
       outputs_to_working_directory: True
