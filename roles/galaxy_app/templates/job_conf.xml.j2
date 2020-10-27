@@ -65,7 +65,7 @@
             <env exec="{{ exec }}" />
         {%- endfor %}
         {%- for resubmit in config.get('resubmit', []) %}
-            <resubmit {% for a,v in resubmit.items() if a != 'destination' %} {{ a }}="{{ v }}"{% endfor %}{% if 'destination' in resubmit %} destination="{% if resubmit.get('destination') == 'next_profile' %}{% set i = job_profiles.items().index(profile_name) %}{% job_profiles.items()[i+1][1] if job_profiles|length > i+1 else '' %}{% else %}{% resubmit.get('destination', '') %}"{% endif %} />
+            <resubmit {% for a,v in resubmit.items() if a != 'destination' %} {{ a }}="{{ v }}"{% endfor %}{% if 'destination' in resubmit %} destination="{% if resubmit.get('destination') == 'next_profile' %}{% set i = (job_profiles.keys()|list).index(profile_name) %}{{ (job_profiles.values()|list)[i+1] if job_profiles|length > i+1 else '' }}{% else %}{{ resubmit.get('destination', '') }}{% endif %}"{% endif %} />
         {%- endfor %}
         </destination>
         {%- endfor %}
