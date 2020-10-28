@@ -1,5 +1,5 @@
 resource "random_password" "admin_user" {
-  count = var.password == nil ? 1 : 0
+  count = var.password == "" ? 1 : 0
   length  = 16
   special = false
 }

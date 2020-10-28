@@ -15,7 +15,7 @@ variable "email" {
 
 variable "password" {
   type = string
-  default = nil
+  default = ""
   description = "Password of admin user"
 }
 
