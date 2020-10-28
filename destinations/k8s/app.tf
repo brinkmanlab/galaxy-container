@@ -120,8 +120,8 @@ resource "kubernetes_deployment" "galaxy_app" {
         }
         volume {
           name = "config"
-          secret {
-            secret_name = kubernetes_secret.galaxy_config.metadata.0.name
+          config_map {
+            name = kubernetes_configmap.galaxy_config.metadata.0.name
           }
         }
         # TODO Configure

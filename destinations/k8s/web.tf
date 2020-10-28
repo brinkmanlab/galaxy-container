@@ -46,12 +46,9 @@ resource "kubernetes_deployment" "galaxy_web" {
           image             = "${local.galaxy_web_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null
           name              = local.web_name
-          dynamic "env" {
-            for_each = local.master_api_key_conf
-            content {
-              name  = env.key
-              value = env.value
-            }
+          env {
+            name = "master_api_key"
+            value = local.master_api_key
           }
 
           liveness_probe {

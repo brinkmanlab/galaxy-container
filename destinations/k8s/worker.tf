@@ -127,8 +127,8 @@ resource "kubernetes_deployment" "galaxy_worker" {
         }
         volume {
           name = "config"
-          secret {
-            secret_name = kubernetes_secret.galaxy_config.metadata.0.name
+          config_map {
+             name = kubernetes_config_map.galaxy_config.metadata.0.name
           }
         }
         # TODO Configure

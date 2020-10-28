@@ -42,6 +42,27 @@ locals {
     admin_users = join(",", var.admin_users)
   }
   galaxy_conf = merge(local.common_galaxy_conf, local.admin_users_conf, local.destination_galaxy_conf, var.galaxy_conf)
+  configs = {
+    "tool_mapping.xml" = <<-EOF
+      <macros>
+          <xml name="tool_mapping">
+          <!--
+          List tool mappings here to be included in the job_conf.xml
+          <tool id="" destination="" />
+          -->
+          %{ for k, v in var.tool_mappings }
+            <tool id="${k}" destination="${v}" />
+          %{ endfor }
+          </xml>
+      </macros>
+    EOF
+    "job_destinations.xml" = <<-EOF
+      <macros>
+          <xml name="job_destinations">
+          </xml>
+      </macros>
+    EOF
+  }
 }
 
 variable "db_conf" {
