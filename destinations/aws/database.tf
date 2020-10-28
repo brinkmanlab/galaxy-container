@@ -20,7 +20,7 @@ resource "aws_db_instance" "galaxy_db" {
 resource "kubernetes_service" "galaxy_db" {
   metadata {
     name      = local.db_conf.host
-    namespace = local.instance
+    namespace = local.namespace.metadata.0.name
   }
   spec {
     type          = "ExternalName"

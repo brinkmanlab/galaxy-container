@@ -5,7 +5,7 @@ resource "kubernetes_deployment" "galaxy_app" {
   wait_for_rollout = ! var.debug
   metadata {
     name      = local.app_name
-    namespace = local.instance
+    namespace = local.namespace.metadata.0.name
     labels = {
       App                          = local.app_name
       "app.kubernetes.io/name"     = local.app_name

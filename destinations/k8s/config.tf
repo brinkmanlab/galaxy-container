@@ -1,7 +1,7 @@
 resource "kubernetes_secret" "galaxy_config" {
   metadata {
     name = "galaxy-config"
-    namespace = local.instance
+    namespace = local.namespace.metadata.0.name
   }
   data = {
     "tool_mapping.xml" = <<-EOF

@@ -55,7 +55,7 @@ resource "kubernetes_service" "galaxy_mail" {
   depends_on = [var.eks]
   metadata {
     name      = local.mail_name
-    namespace = local.instance
+    namespace = local.namespace.metadata.0.name
   }
   spec {
     type          = "ExternalName"

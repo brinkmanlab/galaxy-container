@@ -13,3 +13,7 @@ output "smtp_conf" {
 output "nfs_server" {
   value = aws_efs_file_system.user_data.dns_name
 }
+
+output "namespace" {
+  value = module.galaxy-k8s.namespace
+}

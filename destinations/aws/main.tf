@@ -1,6 +1,17 @@
+locals {
+  namespace = var.namespace != null ? var.namespace : kubernetes_namespace.instance[0]
+}
+
 data "aws_availability_zones" "available" {}
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
+
+resource "kubernetes_namespace" "instance" {
+  count = var.namespace == null ? 1 : 0
+  metadata {
+    name = local.instance
+  }
+}
 
 module "galaxy-k8s" {
   source                  = "../k8s"
@@ -33,4 +44,5 @@ module "galaxy-k8s" {
   master_api_key          = local.master_api_key
   lb_annotations          = var.lb_annotations
   tool_mappings           = var.tool_mappings
+  namespace               = local.namespace
 }
