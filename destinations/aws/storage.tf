@@ -18,7 +18,7 @@ resource "aws_efs_mount_target" "user_data" {
 }
 
 resource "aws_security_group" "efs" {
-  name        = "efs${local.name_suffix}"
+  name_prefix = "efs${local.name_suffix}-"
   description = "EFS security group"
   vpc_id      = var.vpc.vpc_id
   ingress {
