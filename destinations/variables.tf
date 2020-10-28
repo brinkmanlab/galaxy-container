@@ -30,20 +30,18 @@ locals {
     user   = "galaxy"
     pass   = random_password.db_password[0].result
   }
-  galaxy_db_conf = {
-    database_connection = "${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
-  }
   master_api_key = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key.result
-  master_api_key_conf = {
+  common_galaxy_conf = {
+    database_connection = "${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
     master_api_key = local.master_api_key
+    id_secret = length(random_password.id_secret) == 0 ? "" : random_password.id_secret[0].result  # Will be overridden in merge if empty
+    email_from = var.email
+    error_email_to      = var.email
   }
   admin_users_conf = length(var.admin_users) == 0 ? {} : {
     admin_users = join(",", var.admin_users)
   }
-  id_secret_conf = {
-    id_secret = length(random_password.id_secret) == 0 ? "" : random_password.id_secret[0].result
-  }
-  galaxy_conf = merge(local.master_api_key_conf, local.admin_users_conf, local.destination_galaxy_conf, local.galaxy_db_conf, local.id_secret_conf, var.galaxy_conf)
+  galaxy_conf = merge(local.common_galaxy_conf, local.admin_users_conf, local.destination_galaxy_conf, var.galaxy_conf)
 }
 
 variable "db_conf" {
