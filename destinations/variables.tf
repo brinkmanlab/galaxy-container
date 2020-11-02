@@ -30,11 +30,12 @@ locals {
     user   = "galaxy"
     pass   = random_password.db_password[0].result
   }
-  master_api_key = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key.result
+  master_api_key = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key.0.result
+  id_secret = var.id_secret != "" ? var.id_secret : random_password.id_secret.0.result
   common_galaxy_conf = {
     database_connection = "${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
     master_api_key = local.master_api_key
-    id_secret = length(random_password.id_secret) == 0 ? "" : random_password.id_secret[0].result  # Will be overridden in merge if empty
+    id_secret = local.id_secret
     email_from = var.email
     error_email_to      = var.email
   }
@@ -90,6 +91,7 @@ variable "master_api_key" {
 }
 
 resource "random_password" "master_api_key" {
+  count = var.master_api_key == "" ? 1 : 0
   length  = 32
   special = false
 }
@@ -101,8 +103,14 @@ variable "galaxy_conf" {
 }
 
 resource "random_password" "id_secret" {
-  count = lookup(var.galaxy_conf, "id_secret", "") == "" ? 1 : 0
+  count = var.id_secret == "" ? 1 : 0
   length  = 32
+}
+
+variable "id_secret" {
+  type = string
+  default = ""
+  description = "Salt used to make Galaxy Ids unpredictable"
 }
 
 variable "image_tag" {

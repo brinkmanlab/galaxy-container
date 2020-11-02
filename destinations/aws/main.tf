@@ -45,4 +45,5 @@ module "galaxy-k8s" {
   lb_annotations          = var.lb_annotations
   tool_mappings           = var.tool_mappings
   namespace               = local.namespace
+  id_secret               = local.id_secret
 }

@@ -18,3 +18,4 @@ output "db_name" { value = local.db_name }
 output "uwsgi_port" { value = local.uwsgi_port }
 output "uwsgi_uid" { value = local.uwsgi_uid }
 output "uwsgi_gid" { value = local.uwsgi_gid }
+output "id_secret" { value = local.id_secret }
