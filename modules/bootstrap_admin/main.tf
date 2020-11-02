@@ -1,3 +1,7 @@
+locals {
+  password = var.password != "" ? var.password : random_password.admin_user.0.result
+}
+
 resource "random_password" "admin_user" {
   count = var.password == "" ? 1 : 0
   length  = 16
@@ -15,6 +19,6 @@ provider "galaxy" {
 resource "galaxy_user" "admin" {
   provider = galaxy.master
   username = var.username
-  password = var.password != nil ? var.password : random_password.admin_user.0.result
+  password = local.password
   email = var.email
 }

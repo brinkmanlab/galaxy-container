@@ -1,5 +1,5 @@
 output "password" {
-  value = var.password != nil ? var.password : random_password.admin_user.0.result
+  value = local.password
   sensitive = true
 }
 
