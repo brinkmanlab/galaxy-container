@@ -121,7 +121,7 @@ resource "kubernetes_deployment" "galaxy_app" {
         volume {
           name = "config"
           config_map {
-            name = kubernetes_configmap.galaxy_config.metadata.0.name
+            name = kubernetes_config_map.galaxy_config.metadata.0.name
           }
         }
         # TODO Configure
