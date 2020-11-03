@@ -23,6 +23,7 @@ module "galaxy-k8s" {
   admin_users             = var.admin_users
   app_name                = var.app_name
   config_dir              = var.config_dir
+  managed_config_dir      = var.managed_config_dir
   data_dir                = var.data_dir
   db_data_volume_name     = var.db_data_volume_name
   db_name                 = var.db_name

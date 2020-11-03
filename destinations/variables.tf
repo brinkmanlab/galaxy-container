@@ -4,6 +4,7 @@ locals {
   data_dir = var.data_dir != null ? var.data_dir : local.ansible.paths.data
   root_dir = var.root_dir != null ? var.root_dir : local.ansible.paths.root
   config_dir = var.config_dir != null ? var.config_dir : local.ansible.paths.config
+  managed_config_dir = var.managed_config_dir != null ? var.managed_config_dir : local.ansible.paths.managed_config
   galaxy_web_image = var.galaxy_web_image != null ? var.galaxy_web_image : "brinkmanlab/${local.ansible.containers.web.image}"
   galaxy_app_image = var.galaxy_app_image != null ? var.galaxy_app_image : "brinkmanlab/${local.ansible.containers.app.image}"
   db_image = var.db_image != null ? var.db_image : local.ansible.containers.db.image
@@ -30,8 +31,8 @@ locals {
     user   = "galaxy"
     pass   = random_password.db_password[0].result
   }
-  master_api_key = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key.0.result
-  id_secret = var.id_secret != "" ? var.id_secret : random_password.id_secret.0.result
+  master_api_key = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key.result
+  id_secret = var.id_secret != "" ? var.id_secret : random_password.id_secret.result
   common_galaxy_conf = {
     database_connection = "${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
     master_api_key = local.master_api_key
@@ -91,7 +92,7 @@ variable "master_api_key" {
 }
 
 resource "random_password" "master_api_key" {
-  count = var.master_api_key == "" ? 1 : 0
+  #count = var.master_api_key == "" ? 1 : 0
   length  = 32
   special = false
 }
@@ -103,7 +104,7 @@ variable "galaxy_conf" {
 }
 
 resource "random_password" "id_secret" {
-  count = var.id_secret == "" ? 1 : 0
+  #count = var.id_secret == "" ? 1 : 0
   length  = 32
 }
 
@@ -141,6 +142,12 @@ variable "config_dir" {
   type        = string
   default     = null
   description = "Path to galaxy configuration folder within container"
+}
+
+variable "managed_config_dir" {
+  type        = string
+  default     = null
+  description = "Path to galaxy managed configuration folder on persistent storage"
 }
 
 variable "galaxy_web_image" {
