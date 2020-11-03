@@ -17,7 +17,6 @@ resource "kubernetes_deployment" "galaxy_web" {
     }
   }
   spec {
-    replicas          = 1
     min_ready_seconds = 1
     revision_history_limit = 0
     strategy {
@@ -55,7 +54,7 @@ resource "kubernetes_deployment" "galaxy_web" {
             http_get {
               path = "/health"
               port = "80"
-              scheme = "http"
+              scheme = "HTTP"
             }
           }
 

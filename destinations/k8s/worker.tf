@@ -25,7 +25,6 @@ resource "kubernetes_deployment" "galaxy_worker" {
     }
   }
   spec {
-    replicas          = 1
     min_ready_seconds = 10
     revision_history_limit = 0
     strategy {
@@ -78,7 +77,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
 
           readiness_probe {
             exec {
-              command = ["sh", "-c", "python ${local.root_dir}/probedb.py -e $GALAXY_CONFIG_OVERRIDE_database_connection -o $HOSTNAME"]
+              command = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -e $GALAXY_CONFIG_OVERRIDE_database_connection -o $HOSTNAME"]
             }
             initial_delay_seconds = 3
             timeout_seconds = 30
@@ -88,7 +87,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
 
           liveness_probe {
             exec {
-              command = ["sh", "-c", "python ${local.root_dir}/probedb.py -e $GALAXY_CONFIG_OVERRIDE_database_connection -o $HOSTNAME"]
+              command = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -e $GALAXY_CONFIG_OVERRIDE_database_connection -o $HOSTNAME"]
             }
             initial_delay_seconds = 2
             failure_threshold = 3

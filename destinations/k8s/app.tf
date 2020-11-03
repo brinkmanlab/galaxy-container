@@ -17,7 +17,6 @@ resource "kubernetes_deployment" "galaxy_app" {
     }
   }
   spec {
-    replicas          = 1
     min_ready_seconds = 10
     revision_history_limit = 0
     strategy {
