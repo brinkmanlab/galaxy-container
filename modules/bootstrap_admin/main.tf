@@ -11,7 +11,8 @@ resource "random_password" "admin_user" {
 # Configure a aliased Galaxy provider with the master API key
 provider "galaxy" {
   host = var.galaxy_url
-  api_key = var.master_api_key
+  apikey = var.master_api_key
+  wait_for_host = 90
   alias = "master"
 }
 
