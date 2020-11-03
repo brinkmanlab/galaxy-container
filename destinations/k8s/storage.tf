@@ -11,8 +11,7 @@ resource "kubernetes_job" "init_nfs" {
         container {
           name    = "init-nfs-galaxy"
           image   = "alpine"
-          # Make folders all the way into the managed config dir instead of multiple commands
-          command = ["install", "-v", "-d", "-m", "0777", "-o", local.uwsgi_uid, "-g", local.uwsgi_gid, "/${local.instance}/galaxy/${local.managed_config_dir}"]
+          command = ["install", "-v", "-d", "-m", "0777", "-o", local.uwsgi_uid, "-g", local.uwsgi_gid, "${local.data_dir}/${local.instance}/galaxy/"]
           volume_mount {
             mount_path = local.data_dir
             name       = "data"

@@ -53,7 +53,11 @@ resource "kubernetes_job" "init_install_db" {
         }
         container {
           name              = "${local.app_name}-init-install-db"
-          command           = ["/env_run.sh", "python3", "${local.root_dir}/scripts/create_db.py", "-c", "${local.config_dir}/galaxy.yml", "install"]
+          command           = [ "bash", "-c", join(" && ", [
+            # Ensure managed config dir exists or create_db.py will fail
+            "install -v -d -m 0777 -o ${local.uwsgi_uid} -g ${local.uwsgi_gid} ${local.managed_config_dir}",
+            "/env_run.sh python3 ${local.root_dir}/scripts/create_db.py -c ${local.config_dir}/galaxy.yml install"
+          ])]
           image             = "${local.galaxy_app_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null
           env {
