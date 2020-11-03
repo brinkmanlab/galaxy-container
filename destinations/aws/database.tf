@@ -13,7 +13,7 @@ resource "aws_db_instance" "galaxy_db" {
   db_subnet_group_name      = var.vpc.database_subnet_group
   publicly_accessible       = false
   skip_final_snapshot       = var.debug
-  final_snapshot_identifier = local.db_conf.name
+  final_snapshot_identifier = "${local.db_conf.name}-${timestamp()}"
 }
 
 ## Register database in internal DNS
