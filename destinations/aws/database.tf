@@ -1,3 +1,5 @@
+resource "time_static" "now" {}
+
 resource "aws_db_instance" "galaxy_db" {
   identifier            = "${local.db_name}${local.name_suffix}"
   allocated_storage     = 20
@@ -13,7 +15,7 @@ resource "aws_db_instance" "galaxy_db" {
   db_subnet_group_name      = var.vpc.database_subnet_group
   publicly_accessible       = false
   skip_final_snapshot       = var.debug
-  final_snapshot_identifier = "${local.db_conf.name}-${formatdate("YYYYMMDDhhmmss", timestamp())}"
+  final_snapshot_identifier = "${local.db_conf.name}-${formatdate("YYYYMMDDhhmmss", time_static.now.rfc3339)}"
 }
 
 ## Register database in internal DNS
