@@ -25,6 +25,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
     }
   }
   spec {
+    replicas = 3 #TODO https://github.com/galaxyproject/galaxy/issues/10243
     min_ready_seconds = 10
     revision_history_limit = 0
     strategy {
@@ -77,7 +78,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
 
           readiness_probe {
             exec {
-              command = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -e $GALAXY_CONFIG_OVERRIDE_database_connection -o $HOSTNAME"]
+              command = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -c \"$GALAXY_CONFIG_OVERRIDE_database_connection\" -s $HOSTNAME -o $HOSTNAME"]
             }
             initial_delay_seconds = 3
             timeout_seconds = 30
@@ -87,7 +88,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
 
           liveness_probe {
             exec {
-              command = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -e $GALAXY_CONFIG_OVERRIDE_database_connection -o $HOSTNAME"]
+              command = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -c \"$GALAXY_CONFIG_OVERRIDE_database_connection\" -s $HOSTNAME -o $HOSTNAME"]
             }
             initial_delay_seconds = 2
             failure_threshold = 3
@@ -138,23 +139,23 @@ resource "kubernetes_deployment" "galaxy_worker" {
   }
 }
 
-resource "kubernetes_horizontal_pod_autoscaler" "galaxy_worker" {
-  metadata {
-    name      = local.worker_name
-    namespace = kubernetes_deployment.galaxy_worker.metadata.0.namespace
-  }
-
-  spec {
-    max_replicas = 3 #10 TODO https://github.com/galaxyproject/galaxy/issues/10243
-    min_replicas = 3 #1
-
-    scale_target_ref {
-      api_version = "apps/v1"
-      kind        = "Deployment"
-      name        = local.worker_name
-    }
-  }
-}
+#resource "kubernetes_horizontal_pod_autoscaler" "galaxy_worker" {
+#  metadata {
+#    name      = local.worker_name
+#    namespace = kubernetes_deployment.galaxy_worker.metadata.0.namespace
+#  }
+#
+#  spec {
+#    max_replicas = 3 #10 TODO https://github.com/galaxyproject/galaxy/issues/10243
+#    min_replicas = 3 #1
+#
+#    scale_target_ref {
+#      api_version = "apps/v1"
+#      kind        = "Deployment"
+#      name        = local.worker_name
+#    }
+#  }
+#}
 
 resource "kubernetes_service_account" "galaxy_worker" {
   metadata {
