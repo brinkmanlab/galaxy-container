@@ -1,5 +1,4 @@
 resource "kubernetes_job" "init_db" {
-  # Update galaxy database
   metadata {
     generate_name = "init-db-galaxy-"
     namespace     = local.instance
@@ -38,7 +37,6 @@ resource "kubernetes_job" "init_db" {
 
 resource "kubernetes_job" "init_install_db" {
   depends_on = [kubernetes_job.init_nfs]
-  # Update galaxy database
   metadata {
     generate_name = "init-install-db-galaxy-"
     namespace     = local.instance
@@ -130,4 +128,48 @@ resource "kubernetes_job" "upgrade_db" {
   timeouts {
     create = "10m"
   }
+}
+
+resource "kubernetes_job" "init_builds" {
+  # if builds path is changed, init file with needed default row
+  count = lookup(local.galaxy_conf, "builds_file_path", false) == false ? 0 : 1
+  depends_on = [kubernetes_job.init_nfs]
+  metadata {
+    generate_name = "init-builds-"
+    namespace     = local.instance
+  }
+  spec {
+    template {
+      metadata {}
+      spec {
+        security_context {
+          run_as_user = local.uwsgi_uid
+          run_as_group = local.uwsgi_gid
+        }
+        container {
+          name              = "init-builds"
+          args = ["echo '?	unspecified (?)' > ${local.galaxy_conf["builds_file_path"]}"]
+          image             = "alpine"
+          image_pull_policy = var.debug ? "Always" : null
+
+          volume_mount {
+            mount_path = local.data_dir
+            name       = "data"
+          }
+        }
+        node_selector = {
+          WorkClass = "service"
+        }
+        volume {
+          name = "data"
+          persistent_volume_claim {
+            claim_name = kubernetes_persistent_volume_claim.user_data.metadata.0.name
+          }
+        }
+        restart_policy = "Never"
+      }
+    }
+    backoff_limit = 1
+  }
+  wait_for_completion = true
 }

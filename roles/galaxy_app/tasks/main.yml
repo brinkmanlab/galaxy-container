@@ -26,6 +26,7 @@
   - {from: '{{ playbook_dir }}/galaxy/config/tool_data_table_conf.xml.sample', to: "{{ paths.config }}/tool_data_table_conf.xml" }
   - {from: '{{ playbook_dir }}/galaxy/config/datatypes_conf.xml.sample', to: "{{ paths.config }}/datatypes_conf.xml" }
   - {from: '{{ playbook_dir }}/galaxy/config/workflow_schedulers_conf.xml.sample', to: "{{ paths.config }}/workflow_schedulers_conf.xml" }
+  - {from: 'builds.txt', to: '{{ galaxy.config.galaxy.builds_file_path }}'}
   #- {from: '{{ playbook_dir }}/galaxy/config/shed_tool_conf.xml.sample', to: "{{ paths.managed_config }}/shed_tool_conf.xml" }
   #- {from: '{{ playbook_dir }}/galaxy/config/migrated_tools_conf.xml.sample', to: "{{ paths.managed_config }}/migrated_tools_conf.xml" }
   #- {from: '{{ playbook_dir }}/galaxy/config/integrated_tool_panel.xml.sample', to: "{{ paths.managed_config }}/integrated_tool_panel.xml" }
