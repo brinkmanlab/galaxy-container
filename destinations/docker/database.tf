@@ -65,17 +65,3 @@ resource "docker_container" "upgrade_db" {
     "GALAXY_CONFIG_OVERRIDE_database_connection=${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
   ])
 }
-
-resource "docker_container" "init_builds" {
-  # if builds path is changed, init file with needed default row
-  count = lookup(local.galaxy_conf, "builds_file_path", false) == false ? 0 : 1
-  image = "alpine"
-  name = "init-builds${local.name_suffix}"
-  attach = true
-  args = ["echo '?	unspecified (?)' > ${local.galaxy_conf["builds_file_path"]}"]
-  mounts {
-    source = docker_volume.user_data.name
-    target = local.data_dir
-    type   = "volume"
-  }
-}
