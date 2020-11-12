@@ -51,7 +51,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
         automount_service_account_token = true
         container {
           image             = "${local.galaxy_app_image}:${var.image_tag}"
-          image_pull_policy = var.debug ? "Always" : null
+          image_pull_policy = var.debug ? "Always" : "IfNotPresent"
           name              = local.worker_name
           command           = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
 

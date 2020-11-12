@@ -45,7 +45,7 @@ resource "kubernetes_deployment" "galaxy_app" {
         container {
           name              = local.app_name
           image             = "${local.galaxy_app_image}:${var.image_tag}"
-          image_pull_policy = var.debug ? "Always" : null
+          image_pull_policy = var.debug ? "Always" : "IfNotPresent"
 
           readiness_probe {
             exec {
@@ -145,6 +145,8 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_app" {
       kind        = "Deployment"
       name        = local.app_name
     }
+
+    target_cpu_utilization_percentage = 50
   }
 }
 

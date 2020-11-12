@@ -43,7 +43,7 @@ resource "kubernetes_deployment" "galaxy_web" {
           #  run_as_group = local.uwsgi_gid
           #}
           image             = "${local.galaxy_web_image}:${var.image_tag}"
-          image_pull_policy = var.debug ? "Always" : null
+          image_pull_policy = var.debug ? "Always" : "IfNotPresent"
           name              = local.web_name
           env {
             name = "master_api_key"
