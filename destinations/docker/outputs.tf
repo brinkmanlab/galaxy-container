@@ -3,3 +3,7 @@ output "db_root" {
   sensitive   = true
   description = "Password for root user in DB container"
 }
+
+output "endpoint" {
+  value = "galaxy"
+}
