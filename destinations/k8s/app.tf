@@ -53,6 +53,8 @@ resource "kubernetes_deployment" "galaxy_app" {
             }
             initial_delay_seconds = 2
             timeout_seconds = 2
+            failure_threshold = 1
+            success_threshold = 3
             period_seconds = 2
           }
 
@@ -64,7 +66,7 @@ resource "kubernetes_deployment" "galaxy_app" {
             failure_threshold = 3
             timeout_seconds = 2
             success_threshold = 1
-            period_seconds = 10
+            period_seconds = 60
           }
 
           dynamic "env" {
