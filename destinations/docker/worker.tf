@@ -35,7 +35,7 @@ resource "docker_container" "galaxy_worker" {
   ))
 
   healthcheck {
-    test = ["sh", "-c", "python ${local.root_dir}/probedb.py -e $GALAXY_CONFIG_OVERRIDE_database_connection -o $HOSTNAME"]
+    test = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -v -c \"$GALAXY_CONFIG_OVERRIDE_database_connection\" -s $HOSTNAME"]
     start_period = "2s"
     timeout = "30s"
     interval = "10s"
