@@ -4,7 +4,7 @@ locals {
     CWD = local.root_dir,
     DEFAULT_CONTAINER_ID = docker_image.galaxy_worker.latest,
   }, local.name_suffix == "" ? {} : {
-    DOCKER_VOLUME_MOUNTS = "${local.galaxy_root_volume_name}${local.name_suffix}:$galaxy_root:ro,${local.user_data_volume_name}${local.name_suffix}:/data:rw,$working_directory:rw"
+    DOCKER_VOLUME_MOUNTS = "${local.galaxy_root_volume_name}${local.name_suffix}:$galaxy_root:ro,${local.user_data_volume_name}${local.name_suffix}:/data:rw,$working_directory:rw,${join(",", var.extra_job_mounts)}"
   })
 }
 
@@ -64,5 +64,15 @@ resource "docker_container" "galaxy_worker" {
     source = docker_volume.galaxy_root.name
     target = local.root_dir
     type   = "volume"
+  }
+
+  dynamic "mounts" {
+    for_each = var.extra_mounts
+    content {
+      source = mounts.value.source
+      target = mounts.value.target
+      type = mounts.value.type
+      read_only = mounts.value.read_only
+    }
   }
 }

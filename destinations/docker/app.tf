@@ -14,6 +14,7 @@ resource "docker_container" "galaxy_app" {
 
   networks_advanced {
     name = local.network
+    aliases = [local.app_name]
   }
 
   env = compact(concat(
@@ -41,11 +42,23 @@ resource "docker_container" "galaxy_app" {
     source = docker_volume.user_data.name
     target = local.data_dir
     type   = "volume"
+    read_only = false
   }
 
   mounts {
     source = docker_volume.galaxy_root.name
     target = local.root_dir
     type = "volume"
+    read_only = false
+  }
+
+  dynamic "mounts" {
+    for_each = var.extra_mounts
+    content {
+      source = mounts.value.source
+      target = mounts.value.target
+      type = mounts.value.type
+      read_only = mounts.value.read_only
+    }
   }
 }

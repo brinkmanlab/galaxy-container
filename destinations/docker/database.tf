@@ -10,9 +10,9 @@ resource "docker_container" "galaxy_db" {
   restart    = "unless-stopped"
   must_run   = true
   env = [
-    "POSTGRES_PASSWORD=${var.db_conf.pass}",
-    "POSTGRES_USER=galaxy",
-    "POSTGRES_DB=galaxy",
+    "POSTGRES_USER=${local.db_conf.user}",
+    "POSTGRES_PASSWORD=${local.db_conf.pass}",
+    "POSTGRES_DB=${local.db_conf.name}",
     "PGDATA=/var/lib/postgresql/data/pgdata"
   ]
   mounts {
@@ -22,6 +22,7 @@ resource "docker_container" "galaxy_db" {
   }
   networks_advanced {
     name = local.network
+    aliases = [local.db_name]
   }
 }
 
@@ -29,18 +30,26 @@ resource "docker_container" "init_db" {
   depends_on = [docker_container.galaxy_db]
   image = docker_image.galaxy_app.latest
   name = "${local.app_name}-init-db${local.name_suffix}"
+  restart = "no"
+  must_run = false
   attach = true
   command = ["/env_run.sh", "python3", "${local.root_dir}/scripts/create_db.py", "-c", "${local.config_dir}/galaxy.yml", "galaxy"]
   env = compact([
     "CWD=${local.root_dir}",
     "GALAXY_CONFIG_OVERRIDE_database_connection=${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
   ])
+  networks_advanced {
+    name = local.network
+  }
 }
 
 resource "docker_container" "init_install_db" {
   depends_on = [docker_container.galaxy_db]
   image = docker_image.galaxy_app.latest
   name = "${local.app_name}-init-install-db${local.name_suffix}"
+  user       = "${local.uwsgi_user}:${local.uwsgi_group}"
+  restart = "no"
+  must_run = false
   attach = true
   command = ["/env_run.sh", "python3", "${local.root_dir}/scripts/create_db.py", "-c", "${local.config_dir}/galaxy.yml", "install"]
   env = compact([
@@ -52,16 +61,24 @@ resource "docker_container" "init_install_db" {
     target = local.data_dir
     type   = "volume"
   }
+  networks_advanced {
+    name = local.network
+  }
 }
 
 resource "docker_container" "upgrade_db" {
   depends_on = [docker_container.init_db, docker_container.init_install_db]
   image = docker_image.galaxy_app.latest
-  name = "${local.app_name}-init-db${local.name_suffix}"
+  name = "${local.app_name}-upgrade-db${local.name_suffix}"
+  restart = "no"
+  must_run = false
   attach = true
   command = ["/env_run.sh", "python3", "${local.root_dir}/scripts/manage_db.py", "upgrade", "-c", "${local.config_dir}/galaxy.yml"]
   env = compact([
     "CWD=${local.root_dir}",
     "GALAXY_CONFIG_OVERRIDE_database_connection=${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
   ])
+  networks_advanced {
+    name = local.network
+  }
 }
