@@ -25,10 +25,10 @@ galaxy:
               from_environ: DOCKER_VOLUME_MOUNTS
               default: '{{ volumes.galaxy_root.name }}:$galaxy_root:ro,{{ volumes.user_data.name }}:/data:rw,$working_directory:rw'
             docker_auto_rm: true
-            #docker_set_user: '$UID'
-        galaxy_env:
-          <<: *docker
-          profiles: [tiny]
-          params:
-            <<: *docker_params
-            docker_run_extra_arguments: '--entrypoint="/env_run.sh" -e "PYTHONPATH={{ paths.root }}/lib"'
+            docker_set_user: '{{ uwsgi.uid }}:{{ uwsgi.gid }}'
+        #galaxy_env:
+        #  <<: *docker
+        #  profiles: [tiny]
+        #  params:
+        #    <<: *docker_params
+        #    docker_run_extra_arguments: '--entrypoint="/env_run.sh" -e "PYTHONPATH={{ paths.root }}/lib"'
