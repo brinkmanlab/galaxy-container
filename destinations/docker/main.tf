@@ -6,3 +6,10 @@ resource "docker_network" "galaxy_network" {
   count = var.network != "" ? 0 : 1
   name  = "galaxy_network${local.name_suffix}"
 }
+
+data "null_data_source" "api_ready" {
+  depends_on = [docker_container.galaxy_web]
+  inputs = {
+    endpoint = "galaxy-web"
+  }
+}

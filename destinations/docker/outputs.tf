@@ -1,3 +1,3 @@
 output "endpoint" {
-  value = "galaxy-web"
+  value = data.null_data_source.api_ready.outputs.endpoint
 }
