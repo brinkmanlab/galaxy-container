@@ -78,13 +78,13 @@ resource "kubernetes_deployment" "galaxy_worker" {
 
           liveness_probe {
             exec {
-              command = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -v -c \"$GALAXY_CONFIG_OVERRIDE_database_connection\" -s $HOSTNAME"]
+              command = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -v -c \"$GALAXY_CONFIG_OVERRIDE_database_connection\" -s $HOSTNAME -i 200"]
             }
             initial_delay_seconds = 60
             failure_threshold = 2
             timeout_seconds = 2
             success_threshold = 1
-            period_seconds = 60
+            period_seconds = 200
           }
 
           resources {
