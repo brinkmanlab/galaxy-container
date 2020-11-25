@@ -17,7 +17,7 @@ resource "docker_container" "galaxy_db" {
   ]
   mounts {
     source = docker_volume.db_data.name
-    target = "/var/lib/postgresql/data/pgdata"
+    target = "/var/lib/postgresql/data"
     type   = "volume"
   }
   networks_advanced {
