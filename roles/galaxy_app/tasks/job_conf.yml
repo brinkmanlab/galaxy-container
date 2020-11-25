@@ -18,4 +18,5 @@
     mode: u=rw,g=r,o=r
   loop:
     - tool_mapping.xml
+    - limits.xml
     - job_destinations.xml

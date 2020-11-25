@@ -26,6 +26,11 @@ galaxy:
               default: '{{ volumes.galaxy_root.name }}:$galaxy_root:ro,{{ volumes.user_data.name }}:/data:rw,$working_directory:rw'
             docker_auto_rm: true
             docker_set_user: '{{ uwsgi.uid }}:{{ uwsgi.gid }}'
+          resubmit:
+            - condition: "(unknown_error or walltime_reached) and attempt &lt;= 4"
+              delay: "attempt * 15"
+            - condition: memory_limit_reached
+              destination: next_profile
         #galaxy_env:
         #  <<: *docker
         #  profiles: [tiny]

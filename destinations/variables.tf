@@ -46,6 +46,7 @@ locals {
   galaxy_conf = merge(local.common_galaxy_conf, local.admin_users_conf, local.destination_galaxy_conf, var.galaxy_conf)
   configs = {
     "tool_mapping.xml" = <<-EOF
+      <?xml version="1.0"?>
       <macros>
           <xml name="tool_mapping">
           <!--
@@ -59,8 +60,19 @@ locals {
       </macros>
     EOF
     "job_destinations.xml" = <<-EOF
+      <?xml version="1.0"?>
       <macros>
           <xml name="job_destinations">
+          </xml>
+      </macros>
+    EOF
+    "limits.xml" = <<-EOF
+      <?xml version="1.0"?>
+      <macros>
+          <xml name="limits">
+          %{ for limit in var.limits }
+            <limit type="${limit.type}"%{ if limit.id != "" } ${limit.id}%{ endif }%{ if length(limit.tags) > 0 } tags="${join(",", limit.tags)}"%{ endif }>${limit.value}</limit>
+          %{ endfor }
           </xml>
       </macros>
     EOF
@@ -273,4 +285,15 @@ variable "tool_mappings" {
   type = map(string)
   default = {}
   description = "Tool ID to destination mappings. See roles/galaxy_app/defaults/main/job_conf.yml within the module root for destinations."
+}
+
+variable "limits" {
+  type = list(object({
+    type = string
+    tags = list(string)
+    value = string
+    id = string
+  }))
+  default = []
+  description = "List of limits to add to the job_conf.xml. id is optional and can be set as an empty string."
 }

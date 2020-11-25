@@ -15,6 +15,7 @@
 <job_conf>
     <macros>
         <import>{{ paths.config }}/macros/tool_mapping.xml</import>
+        <import>{{ paths.config }}/macros/limits.xml</import>
         <import>{{ paths.config }}/macros/job_destinations.xml</import>
     </macros>
     <plugins workers="{{ galaxy.config.job_conf.default_workers or 4 }}">
@@ -82,6 +83,7 @@
 {%      endfor %}
     </tools>
     <limits>
+        <expand macro="limits" />
 {%      for limit, config in galaxy.config.job_conf.get('limits', {}).items() %}
         <limit id="{{ limit }}" {% for attrib, val in config.items() if attrib not in ('value',) %} {{ attrib }}="{{ val }}"{% endfor %}>{{ config['value'] }}</limit>
 {%      endfor %}
