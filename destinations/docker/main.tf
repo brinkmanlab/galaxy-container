@@ -10,6 +10,6 @@ resource "docker_network" "galaxy_network" {
 data "null_data_source" "api_ready" {
   depends_on = [docker_container.galaxy_web]
   inputs = {
-    endpoint = "galaxy-web"
+    endpoint = "galaxy-web:${docker_container.galaxy_web.ports[0].external}"
   }
 }
