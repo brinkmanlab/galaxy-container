@@ -15,7 +15,7 @@ resource "kubernetes_namespace" "instance" {
 }
 
 module "nfs_server" {
-  source = "storage"
+  source = "./storage"
   count = var.nfs_server == "" ? 1 : 0
   user_data_volume_name = local.user_data_volume_name
   instance = local.instance
