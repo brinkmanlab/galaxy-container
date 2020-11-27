@@ -1,5 +1,6 @@
 output "master_api_key" {
   value = local.master_api_key
+  #sensitive = true
 }
 
 output "data_dir" { value = local.data_dir }

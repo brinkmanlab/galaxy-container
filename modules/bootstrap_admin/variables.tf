@@ -17,9 +17,11 @@ variable "password" {
   type = string
   default = ""
   description = "Password of admin user"
+  #sensitive = true
 }
 
 variable "master_api_key" {
   type = string
   description = "Galaxy master API key"
+  #sensitive = true
 }
