@@ -55,7 +55,6 @@ galaxy:
       nginx_x_accel_redirect_base: "/_x_accel_redirect"
       nginx_upload_store: "{{ paths.data }}/uploads"
       nginx_upload_path: "/_upload"
-      legacy_eager_objectstore_initialization: true
       tool_dependency_dir: "{{ paths.data }}/tool-deps"
       tool_data_path: "{{ paths.data }}/tool-data"
       shed_tool_data_path: "{{ paths.data }}/shed-tool-data"
