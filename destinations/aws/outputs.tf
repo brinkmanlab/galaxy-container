@@ -1,9 +1,5 @@
-output "efs_user_data" {
-  value = aws_efs_file_system.user_data.dns_name
-}
-
 output "endpoint" {
-  value = module.galaxy-k8s.endpoint
+  value = module.k8s.endpoint
 }
 
 output "smtp_conf" {
@@ -11,9 +7,9 @@ output "smtp_conf" {
 }
 
 output "nfs_server" {
-  value = aws_efs_file_system.user_data.dns_name
+  value = module.nfs_server.nfs_server
 }
 
 output "namespace" {
-  value = module.galaxy-k8s.namespace
+  value = module.k8s.namespace
 }
