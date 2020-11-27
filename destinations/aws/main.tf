@@ -1,5 +1,6 @@
 locals {
   namespace = var.namespace != null ? var.namespace : kubernetes_namespace.instance[0]
+  nfs_server = var.nfs_server != "" ? var.nfs_server : module.nfs_server[0].nfs_server
 }
 
 data "aws_availability_zones" "available" {}
@@ -13,11 +14,19 @@ resource "kubernetes_namespace" "instance" {
   }
 }
 
-module "galaxy-k8s" {
+module "nfs_server" {
+  source = "storage"
+  count = var.nfs_server == "" ? 1 : 0
+  user_data_volume_name = local.user_data_volume_name
+  instance = local.instance
+  vpc = var.vpc
+}
+
+module "k8s" {
   source                  = "../k8s"
-  depends_on              = [var.eks, kubernetes_service.galaxy_db, kubernetes_service.galaxy_mail, aws_efs_mount_target.user_data]
+  depends_on              = [var.eks, kubernetes_service.galaxy_db, kubernetes_service.galaxy_mail]
   instance                = var.instance
-  nfs_server              = aws_efs_file_system.user_data.dns_name
+  nfs_server              = local.nfs_server
   db_conf                 = local.db_conf
   galaxy_conf             = merge(local.galaxy_conf, local.smtp_conf)
   admin_users             = var.admin_users

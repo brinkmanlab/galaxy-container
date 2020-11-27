@@ -25,3 +25,9 @@ variable "namespace" {
   default = null
   description = "Instance of kubernetes_namespace to provision instance resources under"
 }
+
+variable "nfs_server" {
+  type        = string
+  default = ""
+  description = "URL to NFS server containing user data"
+}
