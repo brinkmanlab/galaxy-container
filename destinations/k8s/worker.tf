@@ -2,7 +2,7 @@ locals {
   job_conf = {
     K8S_ENABLED   = "True"
     K8S_NAMESPACE = local.instance
-    K8S_VOLUMES   = "${kubernetes_persistent_volume_claim.user_data.metadata.0.name}:${local.data_dir}"
+    K8S_VOLUMES   = "${kubernetes_persistent_volume_claim.user_data.metadata.0.name}:${local.data_dir},${join(",", var.extra_job_mounts)}"
     K8S_DEFAULT_IMAGE_TAG = var.image_tag
   }
 }
@@ -106,6 +106,14 @@ resource "kubernetes_deployment" "galaxy_worker" {
             name = "config"
             read_only = true
           }
+          dynamic "volume_mount" {
+            for_each = var.extra_mounts
+            content {
+              name = volume_mount.key
+              mount_path = volume_mount.value.path
+              read_only = volume_mount.value.read_only
+            }
+          }
         }
         node_selector = {
           WorkClass = "service"
@@ -120,6 +128,15 @@ resource "kubernetes_deployment" "galaxy_worker" {
           name = "config"
           config_map {
              name = kubernetes_config_map.galaxy_config.metadata.0.name
+          }
+        }
+        dynamic "volume" {
+          for_each = var.extra_mounts
+          content {
+            name = volume.key
+            persistent_volume_claim {
+              claim_name = volume.value.claim_name
+            }
           }
         }
         # TODO Configure

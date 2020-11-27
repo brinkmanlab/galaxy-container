@@ -26,9 +26,3 @@ variable "extra_mounts" {
   default = []
   description = "Set of mount configurations to add to app and worker containers"
 }
-
-variable "extra_job_mounts" {
-  type = set(string)
-  default = []
-  description = "Extra mounts passed to job_conf for jobs"
-}

@@ -31,3 +31,13 @@ variable "nfs_server" {
   default = ""
   description = "URL to NFS server containing user data"
 }
+
+variable "extra_mounts" {
+  type = map(object({
+    claim_name = string
+    path = string
+    read_only = bool
+  }))
+  default = {}
+  description = "Map of mount configurations to add to app and worker containers keyed on volume name"
+}

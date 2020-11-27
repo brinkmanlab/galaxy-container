@@ -21,3 +21,13 @@ variable "namespace" {
   default = null
   description = "Instance of kubernetes_namespace to provision instance resources under"
 }
+
+variable "extra_mounts" {
+  type = map(object({
+    claim_name = string
+    path = string
+    read_only = bool
+  }))
+  default = {}
+  description = "Map of mount configurations to add to app and worker containers keyed on volume name"
+}

@@ -297,3 +297,9 @@ variable "limits" {
   default = []
   description = "List of limits to add to the job_conf.xml. id is optional and can be set as an empty string."
 }
+
+variable "extra_job_mounts" {
+  type = set(string)
+  default = []
+  description = "Extra mounts passed to job_conf for jobs"
+}

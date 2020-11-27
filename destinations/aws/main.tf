@@ -56,4 +56,6 @@ module "k8s" {
   tool_mappings           = var.tool_mappings
   namespace               = local.namespace
   id_secret               = local.id_secret
+  extra_mounts            = var.extra_mounts
+  extra_job_mounts        = var.extra_job_mounts
 }
