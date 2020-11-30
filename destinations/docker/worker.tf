@@ -23,7 +23,7 @@ resource "docker_container" "galaxy_worker" {
   restart    = "unless-stopped"
   must_run   = true
   user       = "${local.uwsgi_user}:${local.uwsgi_group}"
-  group_add  = ["969"]
+  group_add  = [var.docker_gid]
 
   networks_advanced {
     name = local.network

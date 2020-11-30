@@ -26,3 +26,8 @@ variable "extra_mounts" {
   default = []
   description = "Set of mount configurations to add to app and worker containers"
 }
+
+variable "docker_gid" {
+  type = number
+  description = "GID with write permission to /var/run/docker.sock"
+}
