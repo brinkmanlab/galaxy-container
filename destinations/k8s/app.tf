@@ -109,6 +109,14 @@ resource "kubernetes_deployment" "galaxy_app" {
             name = "data"
             sub_path = "visualizations"
           }
+          dynamic "volume_mount" {
+            for_each = var.extra_mounts
+            content {
+              name = volume_mount.key
+              mount_path = volume_mount.value.path
+              read_only = volume_mount.value.read_only
+            }
+          }
         }
         node_selector = {
           WorkClass = "service"
@@ -125,7 +133,15 @@ resource "kubernetes_deployment" "galaxy_app" {
             name = kubernetes_config_map.galaxy_config.metadata.0.name
           }
         }
-        # TODO Configure
+        dynamic "volume" {
+          for_each = var.extra_mounts
+          content {
+            name = volume.key
+            persistent_volume_claim {
+              claim_name = volume.value.claim_name
+            }
+          }
+        }
         # https://www.terraform.io/docs/providers/kubernetes/r/deployment.html#volume-2
       }
     }
