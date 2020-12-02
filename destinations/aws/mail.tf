@@ -9,13 +9,12 @@ locals {
 
 resource "aws_iam_user" "mail" {
   count = local.create_smtp
-  name  = "ses-smtp"
+  name  = "ses-smtp${local.name_suffix}"
   path  = "/${local.instance}/"
 }
 
 data "aws_iam_policy_document" "mail" {
   statement {
-    sid    = "SESSendEmail"
     effect = "Allow"
     actions = [
       "ses:SendRawEmail"
@@ -27,7 +26,7 @@ data "aws_iam_policy_document" "mail" {
 
 resource "aws_iam_policy" "mail" {
   count       = local.create_smtp
-  name        = "ses-smtp"
+  name_prefix = "ses-smtp"
   path        = "/${local.instance}/"
   description = "SES SMTP user policy"
 
