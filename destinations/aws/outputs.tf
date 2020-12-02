@@ -4,6 +4,7 @@ output "endpoint" {
 
 output "smtp_conf" {
   value = local.smtp_conf
+  description = "galaxy_conf must have email_from configured for this to not be empty"
 }
 
 output "nfs_server" {
