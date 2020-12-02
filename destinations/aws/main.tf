@@ -58,4 +58,5 @@ module "k8s" {
   id_secret               = local.id_secret
   extra_mounts            = var.extra_mounts
   extra_job_mounts        = var.extra_job_mounts
+  limits                  = var.limits
 }
