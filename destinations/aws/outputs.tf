@@ -7,7 +7,7 @@ output "smtp_conf" {
 }
 
 output "nfs_server" {
-  value = module.nfs_server.nfs_server
+  value = length(module.nfs_server) > 0 ? module.nfs_server[0].nfs_server : null
 }
 
 output "namespace" {
