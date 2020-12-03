@@ -46,6 +46,7 @@ Visit [here](http://localhost:8001/api/v1/namespaces/kube-system/services/https:
 access the dashboard.
 
 To check the state of the cluster run `kubectl describe node`.
+To restart a deployment run `kubectl rollout restart -n galaxy deployment galaxy-worker`.
 
 ### Existing Kubernetes cluster
 
