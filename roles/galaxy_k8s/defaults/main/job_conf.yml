@@ -57,6 +57,7 @@ galaxy:
             enabled:
               from_environ: K8S_ENABLED
               default: False
+            tmp_dir: True
             docker_enabled: true
             docker_repo_default:
               from_environ: K8S_DEFAULT_REPO
