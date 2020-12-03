@@ -71,7 +71,7 @@ locals {
       <macros>
           <xml name="limits">
           %{ for limit in var.limits }
-            <limit type="${limit.type}"%{ if limit.id != "" } ${limit.id}%{ endif }%{ if length(limit.tags) > 0 } tags="${join(",", limit.tags)}"%{ endif }>${limit.value}</limit>
+            <limit type="${limit.type}"%{ if limit.id != "" } ${limit.id}%{ endif }%{ if limit.tag != "" } tag="${limit.tag}"%{ endif }>${limit.value}</limit>
           %{ endfor }
           </xml>
       </macros>
@@ -290,7 +290,7 @@ variable "tool_mappings" {
 variable "limits" {
   type = list(object({
     type = string
-    tags = list(string)
+    tag = string
     value = string
     id = string
   }))
