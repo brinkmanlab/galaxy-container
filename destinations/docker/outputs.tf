@@ -1,5 +1,5 @@
 output "endpoint" {
-  value = data.null_data_source.api_ready.outputs.endpoint
+  value = "galaxy-web:${data.null_data_source.api_ready.outputs.host_port}"
 }
 
 output "network" {
@@ -7,5 +7,5 @@ output "network" {
 }
 
 output "host_port" {
-  value = docker_container.galaxy_web.ports[0].external
+  value = data.null_data_source.api_ready.outputs.host_port
 }
