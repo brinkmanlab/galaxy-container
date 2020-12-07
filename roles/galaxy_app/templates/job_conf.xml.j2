@@ -19,6 +19,7 @@
         <import>{{ paths.config }}/macros/job_destinations.xml</import>
     </macros>
     <plugins workers="{{ galaxy.config.job_conf.default_workers or 4 }}">
+        <expand macro="plugins" />
 {%      for plugin, config in galaxy.config.job_conf.get('plugins', {}).items() %}
         <plugin id="{{ plugin }}"{% for attrib, val in config.items() if attrib not in ('params',) %} {{ attrib }}="{{ val }}"{% endfor %}>
 {%          for param, val in config.get('params', {}).items() %}

@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
 <macros>
+    <xml name="plugins">
+    <!--
+    List plugins here to be included in the job_conf.xml
+    <plugin id="" type="" load=""></plugin>
+    -->
+    </xml>
     <xml name="job_destinations">
     <!--
     List job destinations here to be included in the job_conf.xml

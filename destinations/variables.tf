@@ -62,7 +62,11 @@ locals {
     "job_destinations.xml" = <<-EOF
       <?xml version="1.0"?>
       <macros>
+          <xml name="plugins">
+            ${var.plugins}
+          </xml>
           <xml name="job_destinations">
+            ${var.job_destinations}
           </xml>
       </macros>
     EOF
@@ -279,6 +283,18 @@ variable "debug" {
   type        = bool
   default     = false
   description = "Enabling will put the deployment into a mode suitable for debugging"
+}
+
+variable "plugins" {
+  type = string
+  default = ""
+  description = "XML list of <plugin> tags"
+}
+
+variable "job_destinations" {
+  type = string
+  default = ""
+  description = "XML list of <destination> tags"
 }
 
 variable "tool_mappings" {
