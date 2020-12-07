@@ -62,3 +62,14 @@ resource "docker_container" "galaxy_app" {
     }
   }
 }
+
+resource "docker_container" "wait_for_app" {
+  image = docker_image.galaxy_app.latest
+  name = "wait_for_app${local.name_suffix}"
+  must_run = false
+  attach = true
+  command = ["bash", "-c", "until uwping uwsgi://${local.app_name}:${local.uwsgi_port}/api/version; do sleep 1; done"]
+  networks_advanced {
+    name = local.network
+  }
+}

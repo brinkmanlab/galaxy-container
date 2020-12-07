@@ -3,7 +3,7 @@ resource "docker_image" "galaxy_web" {
 }
 
 resource "docker_container" "galaxy_web" {
-  depends_on = [docker_container.galaxy_app]
+  depends_on = [docker_container.wait_for_app]
   name       = "${local.web_name}${local.name_suffix}"
   image      = docker_image.galaxy_web.latest
   hostname   = local.web_name
