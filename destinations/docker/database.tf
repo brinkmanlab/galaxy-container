@@ -1,10 +1,5 @@
-data "docker_registry_image" "galaxy_db" {
-  name = local.db_image
-}
-
 resource "docker_image" "galaxy_db" {
-  name = data.docker_registry_image.galaxy_db.name
-  pull_triggers = [data.docker_registry_image.galaxy_db.sha256_digest]
+  name = local.db_image
 }
 
 resource "docker_container" "galaxy_db" {
