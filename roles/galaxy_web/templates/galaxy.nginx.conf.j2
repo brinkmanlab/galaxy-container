@@ -12,8 +12,12 @@ server {
   set $galaxy_root {{ nginx.paths.root }};
   set $plugin_root /srv/plugins;
 
+  include cors.conf
+
   # proxy all requests not matching other locations to uWSGI
   location / {
+    include cors.conf
+    include cors_options.conf
     include master_api_key;
     include uwsgi_params;
     set $test '';

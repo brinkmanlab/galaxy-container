@@ -1,11 +1,13 @@
 ---
-- name: Copy in base conf
+- name: Copy in files
   copy:
     src: '{{ item.from }}'
     dest: '{{ item.to }}'
     mode: preserve
   loop:
     - {from: nginx.conf, to: /etc/nginx/ }
+    - {from: cors.conf, to: /etc/nginx/ }
+    - {from: cors_options.conf, to: /etc/nginx/ }
     - {from: entry.sh, to: / }
 
 - name: Remove base image custom config
