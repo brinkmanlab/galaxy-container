@@ -2,20 +2,16 @@ locals {
   job_conf = merge({
     DOCKER_ENABLED   = "True"
     CWD = local.root_dir,
-    DEFAULT_CONTAINER_ID = docker_image.galaxy_worker.latest,
+    DEFAULT_CONTAINER_ID = docker_image.galaxy_app.latest,
   }, local.name_suffix == "" ? {} : {
     DOCKER_VOLUME_MOUNTS = "${local.galaxy_root_volume_name}${local.name_suffix}:$galaxy_root:ro,${local.user_data_volume_name}${local.name_suffix}:/data:rw,${join(",", var.extra_job_mounts)}"
   })
 }
 
-resource "docker_image" "galaxy_worker" {
-  name = "${local.galaxy_app_image}:${var.image_tag}"
-}
-
 resource "docker_container" "galaxy_worker" {
   depends_on = [docker_container.upgrade_db]
   name  = "${local.worker_name}${local.name_suffix}"
-  image = docker_image.galaxy_worker.latest
+  image = docker_image.galaxy_app.latest
   # https://docs.galaxyproject.org/en/master/admin/scaling.html#uwsgi-for-web-serving-and-webless-galaxy-applications-as-job-handlers
   command = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
   hostname   = local.worker_name
