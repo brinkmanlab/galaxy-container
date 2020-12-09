@@ -10,7 +10,7 @@ server {
   server_name _;
 
   set $galaxy_root {{ nginx.paths.root }};
-  set $plugin_root /srv/plugins;
+  set $plugin_root {{ paths.managed_config }};
 
   include cors.conf;
 
@@ -88,10 +88,10 @@ server {
   }
 
   # serve visualization and interactive environment plugin static content
-  #location ~ ^/plugins/(?<plug_type>.+?)/(?<vis_name>.+?)/static/(?<static_file>.*?)$ {
-  #  alias $plugins_root/plugins/$plug_type/$vis_name/static/$static_file;
-  #  expires 24;
-  #}
+  location ~ ^/plugins/(?<plug_type>.+?)/(?<vis_name>.+?)/static/(?<static_file>.*?)$ {
+    alias $plugins_root/$plug_type/$vis_name/static/$static_file;
+    expires 24;
+  }
 
   location /health { return 200 "OK\n"; }
 }

@@ -49,7 +49,7 @@ galaxy:
       #shed_tool_data_table_config: "{{ paths.managed_config }}/shed_tool_data_table_conf.xml"
       #shed_data_manager_config_file: "{{ paths.managed_config }}/shed_data_manager_conf.xml"
       tool_data_table_config_path: "{{ paths.config }}/tool_data_table_conf.xml"
-      visualization_plugins_directory: "{{ paths.root }}/visualizations"
+      visualization_plugins_directory: "{{ paths.managed_config }}/visualizations"
       datatypes_config_file: "{{ paths.config }}/datatypes_conf.xml"
       builds_file_path: "{{ paths.data }}/builds.txt"
       nginx_x_accel_redirect_base: "/_x_accel_redirect"

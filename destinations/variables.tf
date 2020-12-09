@@ -81,6 +81,7 @@ locals {
       </macros>
     EOF
   }
+  viz_curl_cmd = join(" && ", [for url in var.visualizations: "curl -L '${url}' | tar -xvz -C '${local.managed_config_dir}/visualizations'"])
 }
 
 variable "db_conf" {
@@ -318,4 +319,10 @@ variable "extra_job_mounts" {
   type = set(string)
   default = []
   description = "Extra mounts passed to job_conf for jobs"
+}
+
+variable "visualizations" {
+  type = set(string)
+  default = []
+  description = "Set of URLs to tarballs to unpack into visualizations folder"
 }
