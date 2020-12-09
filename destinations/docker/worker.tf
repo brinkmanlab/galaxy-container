@@ -56,11 +56,6 @@ resource "docker_container" "galaxy_worker" {
     target = local.data_dir
     type   = "volume"
   }
-  mounts {
-    source = docker_volume.galaxy_root.name
-    target = local.root_dir
-    type   = "volume"
-  }
 
   dynamic "mounts" {
     for_each = var.extra_mounts
