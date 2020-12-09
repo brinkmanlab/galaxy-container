@@ -1,5 +1,10 @@
-resource "docker_image" "galaxy_web" {
+data "docker_registry_image" "galaxy_web" {
   name = "${local.galaxy_web_image}:${var.image_tag}"
+}
+
+resource "docker_image" "galaxy_web" {
+  name = data.docker_registry_image.galaxy_app.name
+  pull_triggers = [data.docker_registry_image.galaxy_app.sha256_digest]
 }
 
 resource "docker_container" "galaxy_web" {
