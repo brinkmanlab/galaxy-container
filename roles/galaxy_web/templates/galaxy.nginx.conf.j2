@@ -24,21 +24,21 @@ server {
     set $api_key '';
     if ($request_method = POST) {
         # Limit master api key to only POST requests
-        set $test 1$test;
+        set $test p$test;
     }
-    if ($uri = '/api/users') {
+    if ($uri = '/api/users/') {
         # Limit master api key to only /api/users exactly
-        set $test 1$test;
+        set $test u$test;
     }
     if ($arg_key = '') {
         # Do not overwrite a passed api key
-        set $test 1$test;
+        set $test k$test;
     }
-    if ($test = 111) {
+    if ($test = 'kup') {
         # Add master api key to query params if all tests succeed
         set $api_key $master_api_key;
     }
-    uwsgi_param HTTP_X-API-KEY $api_key if_not_empty;
+    uwsgi_param HTTP_X_API_KEY "$api_key" if_not_empty;
     uwsgi_pass uwsgi://{{ containers.app.name }}:{{ uwsgi.port }};
     uwsgi_param UWSGI_SCHEME $scheme;
   }
