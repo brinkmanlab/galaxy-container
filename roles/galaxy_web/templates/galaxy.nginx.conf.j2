@@ -89,7 +89,7 @@ server {
 
   # serve visualization and interactive environment plugin static content
   location ~ ^/plugins/(?<plug_type>.+?)/(?<vis_name>.+?)/static/(?<static_file>.*?)$ {
-    alias $plugins_root/$plug_type/$vis_name/static/$static_file;
+    alias $plugin_root/$plug_type/$vis_name/static/$static_file;
     expires 24;
   }
 
