@@ -27,8 +27,20 @@ resource "docker_container" "galaxy_db" {
   }
 }
 
-resource "docker_container" "init_db" {
+resource "docker_container" "wait_for_db" {
   depends_on = [docker_container.galaxy_db]
+  image = docker_image.galaxy_db.latest
+  name = "wait_for_db"
+  must_run = false
+  attach = true
+  command = ["bash", "-c", "until pg_isready -h '${local.db_conf.host}' -U '${local.db_conf.user}' -d '${local.db_conf.name}'; do sleep 1; done"]
+  networks_advanced {
+    name = local.network
+  }
+}
+
+resource "docker_container" "init_db" {
+  depends_on = [docker_container.wait_for_db]
   image = docker_image.galaxy_app.latest
   name = "${local.app_name}-init-db${local.name_suffix}"
   restart = "no"
@@ -45,7 +57,7 @@ resource "docker_container" "init_db" {
 }
 
 resource "docker_container" "init_install_db" {
-  depends_on = [docker_container.galaxy_db]
+  depends_on = [docker_container.wait_for_db]
   image = docker_image.galaxy_app.latest
   name = "${local.app_name}-init-install-db${local.name_suffix}"
   user       = "${local.uwsgi_user}:${local.uwsgi_group}"
