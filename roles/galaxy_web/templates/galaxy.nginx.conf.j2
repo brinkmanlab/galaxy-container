@@ -21,7 +21,7 @@ server {
     include master_api_key;
     include uwsgi_params;
     set $test '';
-    set $api_key '';
+    set $api_key $http_x_api_key;
     if ($request_method = POST) {
         # Limit master api key to only POST requests
         set $test p$test;
@@ -34,7 +34,11 @@ server {
         # Do not overwrite a passed api key
         set $test k$test;
     }
-    if ($test = 'kup') {
+    if ($http_x_api_key = '') {
+        # Do not overwrite a passed api key via header
+        set $test h$test;
+    }
+    if ($test = 'hkup') {
         # Add master api key to query params if all tests succeed
         set $api_key $master_api_key;
     }
