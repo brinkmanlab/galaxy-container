@@ -13,6 +13,7 @@ variable "network" {
 
 variable "host_port" {
   type = number
+  default = null
   description = "Host port to expose galaxy service"
 }
 
