@@ -2,7 +2,7 @@ locals {
   job_conf = {
     K8S_ENABLED   = "True"
     K8S_NAMESPACE = local.instance
-    K8S_VOLUMES   = "${kubernetes_persistent_volume_claim.user_data.metadata.0.name}:${local.data_dir},${join(",", var.extra_job_mounts)}"
+    K8S_VOLUMES   = "${kubernetes_persistent_volume_claim.user_data.metadata.0.name}:${local.data_dir}${length(var.extra_job_mounts) > 0 ? "," : ""}${join(",", var.extra_job_mounts)}"
     K8S_DEFAULT_IMAGE_TAG = var.image_tag
   }
 }

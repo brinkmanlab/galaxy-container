@@ -4,7 +4,7 @@ locals {
     CWD = local.root_dir,
     DEFAULT_CONTAINER_ID = docker_image.galaxy_app.latest,
   }, local.name_suffix == "" ? {} : {
-    DOCKER_VOLUME_MOUNTS = "${local.galaxy_root_volume_name}${local.name_suffix}:$galaxy_root:ro,${local.user_data_volume_name}${local.name_suffix}:/data:rw,${join(",", var.extra_job_mounts)}"
+    DOCKER_VOLUME_MOUNTS = "${local.galaxy_root_volume_name}${local.name_suffix}:$galaxy_root:ro,${local.user_data_volume_name}${local.name_suffix}:/data:rw${length(var.extra_job_mounts) > 0 ? "," : ""}${join(",", var.extra_job_mounts)}"
   })
 }
 
