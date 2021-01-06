@@ -3,7 +3,7 @@ resource "docker_image" "galaxy_app" {
 }
 
 resource "docker_container" "galaxy_app" {
-  depends_on = [docker_container.upgrade_db, docker_container.visualizations]
+  depends_on = [docker_container.upgrade_db, docker_container.visualizations-fix] # TODO remove '-fix' after https://github.com/galaxyproject/galaxy/issues/11057
   name       = "${local.app_name}${local.name_suffix}"
   image      = docker_image.galaxy_app.latest
   hostname   = local.app_name

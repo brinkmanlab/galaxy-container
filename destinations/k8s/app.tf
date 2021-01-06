@@ -1,7 +1,7 @@
 # TODO https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/docs/spot-instances.md
 
 resource "kubernetes_deployment" "galaxy_app" {
-  depends_on       = [kubernetes_job.upgrade_db, kubernetes_job.visualizations]
+  depends_on       = [kubernetes_job.upgrade_db, kubernetes_job.visualizations-fix] # TODO remove '-fix' after https://github.com/galaxyproject/galaxy/issues/11057
   wait_for_rollout = ! var.debug
   metadata {
     name      = local.app_name
