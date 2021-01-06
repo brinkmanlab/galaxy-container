@@ -82,8 +82,6 @@ resource "kubernetes_deployment" "galaxy_web" {
             claim_name = kubernetes_persistent_volume_claim.user_data.metadata.0.name
           }
         }
-        # TODO Configure
-        # https://www.terraform.io/docs/providers/kubernetes/r/deployment.html#volume-2
       }
     }
   }

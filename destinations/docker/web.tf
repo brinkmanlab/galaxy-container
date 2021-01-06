@@ -11,6 +11,8 @@ resource "docker_container" "galaxy_web" {
   restart    = "unless-stopped"
   must_run   = true
 
+  env = ["master_api_key=${local.master_api_key}"]
+
   ports {
     external = var.host_port
     internal = 80
