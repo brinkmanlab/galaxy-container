@@ -8,8 +8,9 @@ is the deployment manager software used for all deployment destinations.
 To install terraform, check that your systems package manager provides it or download it from [here](https://www.terraform.io/downloads.html).
 
 ## Run local
-Change the current working directory to `./deployment/docker`.
-Modify `./changeme.auto.tfvars` with any custom values you like.
+Change the current working directory to `./deployment/docker`. Modify `./changeme.auto.tfvars` with any custom values you like.
+You must at least set the `docker_gid` variable to a group id with write access to `/var/run/docker.sock`.
+Run `stat /var/run/docker.sock` (or `stat -x /var/run/docker.sock` on OSX) to show the owning group id.
 
 Run the following to start an instance on your local computer using docker:
 ```shell script
