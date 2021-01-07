@@ -30,7 +30,7 @@ resource "docker_container" "galaxy_db" {
 resource "docker_container" "wait_for_db" {
   depends_on = [docker_container.galaxy_db]
   image = docker_image.galaxy_db.latest
-  name = "wait_for_galaxy_db"
+  name = "wait_for_galaxy_db${local.name_suffix}"
   must_run = false
   attach = true
   command = ["bash", "-c", "until pg_isready -h '${local.db_conf.host}' -U '${local.db_conf.user}' -d '${local.db_conf.name}'; do sleep 1; done"]
