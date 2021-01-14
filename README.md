@@ -5,6 +5,8 @@ Example deployments are provided in the `./deployment` folder for various destin
 recommended to create your own deployment recipe using the terraform modules provided in `./desinations`. Terraform
 is the deployment manager software used for all deployment destinations.
 
+The deployment can be further customized including installing tools using the [Galaxy Terraform Provider](https://registry.terraform.io/providers/brinkmanlab/galaxy/latest/docs)
+
 To install terraform, check that your systems package manager provides it or download it from [here](https://www.terraform.io/downloads.html).
 
 ## Run local
