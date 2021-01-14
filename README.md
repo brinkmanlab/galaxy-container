@@ -40,6 +40,13 @@ Configure `kubectl` by running `aws eks --region us-west-2 update-kubeconfig --n
 Refer to the Kubernetes section for the remaining information.
 
 ### Azure
+TODO
+
+### Google Cloud
+TODO
+
+### OpenStack
+TODO
 
 ### Kubernetes
 
