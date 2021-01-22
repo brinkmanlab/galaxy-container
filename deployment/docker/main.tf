@@ -1,5 +1,4 @@
 module "galaxy" {
-  #source   = "github.com/brinkmanlab/galaxy-container.git//destinations/docker"
   source   = "../../destinations/docker"
   instance = var.instance
   galaxy_conf = {
@@ -16,10 +15,14 @@ module "galaxy" {
 }
 
 module "admin_user" {
-  #source         = "github.com/brinkmanlab/galaxy-container.git//modules/bootstrap_admin"
   source         = "../../modules/bootstrap_admin"
   email          = var.email
   galaxy_url     = "http://localhost:${module.galaxy.host_port}"
   master_api_key = module.galaxy.master_api_key
   username       = "admin"
+}
+
+provider "galaxy" {
+  host    = "http://${module.galaxy.endpoint}"
+  api_key = module.admin_user.api_key
 }
