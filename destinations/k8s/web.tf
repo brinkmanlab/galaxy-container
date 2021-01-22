@@ -37,6 +37,7 @@ resource "kubernetes_deployment" "galaxy_web" {
         security_context {
           fs_group = 1000
         }
+        automount_service_account_token = false
         container {
           #security_context {
           #  run_as_user = local.uwsgi_uid

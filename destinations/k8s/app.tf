@@ -37,6 +37,7 @@ resource "kubernetes_deployment" "galaxy_app" {
         security_context {
           fs_group = local.uwsgi_gid
         }
+        automount_service_account_token = false
         #image_pull_secrets {
         #  # TODO https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
         #  # docker hub is limiting anonymous access

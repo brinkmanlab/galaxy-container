@@ -11,6 +11,7 @@ resource "kubernetes_job" "visualizations" {
           run_as_user = local.uwsgi_uid
           run_as_group = local.uwsgi_gid
         }
+        automount_service_account_token = false
         container {
           name              = "load-visualizations"
           command           = [ "bash", "-c", "mkdir -p '${local.managed_config_dir}/visualizations'; ${local.viz_curl_cmd}"]
@@ -56,6 +57,7 @@ resource "kubernetes_job" "visualizations-fix" {
           run_as_user = 0
           run_as_group = local.uwsgi_gid
         }
+        automount_service_account_token = false
         container {
           name              = "load-visualizations-fix"
           command           = ["bash", "-c", "apt-get install rename && rename -v 'y/A-Z/a-z/' '${local.managed_config_dir}/visualizations/'*"]

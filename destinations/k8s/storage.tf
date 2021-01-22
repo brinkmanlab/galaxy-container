@@ -8,6 +8,7 @@ resource "kubernetes_job" "init_nfs" {
     template {
       metadata {}
       spec {
+        automount_service_account_token = false
         container {
           name    = "init-nfs-galaxy"
           image   = "alpine"
