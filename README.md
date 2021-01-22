@@ -28,7 +28,8 @@ To shut down this instance, run `./destroy.sh`. This will delete the instance, a
 
 Several terraform destinations have been configured. Select one from the `./destinations/` folder that you wish to use.
 Modify `./changeme.auto.tfvars` with any custom values you like. Ensure you are authenticated with your cloud provider
-and that the required environment variables are set for the respective terraform provider.
+and that the required environment variables are set for the respective terraform provider. Review the relevant cloud provider section below
+for additional configuration. Once fully prepared, run `./deploy.sh` to deploy the application to the cloud.
 
 ### AWS
 
