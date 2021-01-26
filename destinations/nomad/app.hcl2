@@ -1,0 +1,79 @@
+job "galaxy-app" {
+  name = "${name}"
+  namespace = "${namespace}"
+  type = "service"
+  # TODO constraint https://www.nomadproject.io/docs/job-specification/constraint
+  # TODO affinity https://www.nomadproject.io/docs/job-specification/affinity
+  # TODO spread https://www.nomadproject.io/docs/job-specification/spread
+  # TODO update {}
+
+  group "nginx" {
+    # TODO migrate {} https://www.nomadproject.io/docs/job-specification/migrate
+    # TODO restart {} https://www.nomadproject.io/docs/job-specification/restart
+    task {
+      driver = "docker"
+      config {
+        image = "${image}:${tag}"
+        # TODO auth https://www.nomadproject.io/docs/drivers/docker#auth
+        ports = ["http"]
+      }
+
+      service {
+        # TODO register with consul, figure out how to delay registration until checks pass
+        check {
+          name = "check_uwsgi"
+          type = "script"
+          command = "uwping"
+          args = ["uwsgi://localhost:${uwsgi_port}/api/version"]
+          interval = 2
+          success_before_passing = 3
+          failures_before_critical = 1
+          check_restart {
+            limit = 3
+            grace = "90s"
+            ignore_warnings = false
+          }
+        }
+      }
+
+      env {
+        name = "master_api_key"
+        value = "${master_api_key}"
+      }
+
+      %{ for key, value in configs }
+      template {
+        destination = "${config_dir}/macros/${key}"
+        change_mode = "restart"
+        data = <<EOF
+${value}
+EOF
+      }
+      %{ endfor ~}
+
+      volume_mount {
+        destination = "${data_dir}"
+        volume = "data"
+      }
+    }
+
+    network {
+      port "http" {
+        to = 80
+      }
+      # TODO https offload for service
+    }
+
+    volume "data" {
+      type = "csi"
+      source = "${user_data}"
+    }
+
+    scaling {
+      enabled = true
+      min = 1
+      max = 10
+      policy {}
+    }
+  }
+}

@@ -1,0 +1,59 @@
+job "galaxy-web" {
+  name = "${name}"
+  namespace = "${namespace}"
+  type = "service"
+  # TODO constraint https://www.nomadproject.io/docs/job-specification/constraint
+  # TODO affinity https://www.nomadproject.io/docs/job-specification/affinity
+  # TODO spread https://www.nomadproject.io/docs/job-specification/spread
+  # TODO update {}
+
+  group "nginx" {
+    # TODO migrate {} https://www.nomadproject.io/docs/job-specification/migrate
+    task {
+        driver = "docker"
+        config {
+            image = "${image}:${tag}"
+            # TODO auth https://www.nomadproject.io/docs/drivers/docker#auth
+            ports = ["http"]
+        }
+
+        service {
+        	# TODO register with consul
+        	check {
+        		type = "http"
+        		path = "/health"
+						port = "http"
+        	}
+        }
+
+        env {
+            name = "master_api_key"
+            value = "${master_api_key}"
+        }
+
+        volume_mount {
+            destination = "${data_dir}"
+            volume       = "data"
+        }
+    }
+
+    network {
+      port "http" {
+          to = 80
+      }
+      # TODO https offload for service
+    }
+
+    volume "data" {
+      type = "csi"
+      source = "${user_data}"
+    }
+
+    scaling {
+      enabled = true
+      min = 1
+      max = 10
+      policy {}
+    }
+  }
+}
