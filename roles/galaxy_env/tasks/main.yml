@@ -3,9 +3,9 @@
   shell: 'apt update && apt install -y --no-install-recommends ca-certificates curl {{ build_deps | join(" ") }}'
 
 # TODO Look into why app uwsgi workers cant find hg in the environment, venv not inherited?
-- name: Install virtualenv, uwsgi and extras
+- name: Install virtualenv, and extras
   pip:
-   name: "{{ ['virtualenv', 'uwsgi', 'mercurial'] + pip_extra }}"
+   name: "{{ ['virtualenv', 'mercurial'] + pip_extra }}"
    extra_args: "--no-cache-dir"
 
 - tempfile:
