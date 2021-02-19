@@ -24,5 +24,5 @@ module "admin_user" {
 
 provider "galaxy" {
   host    = "http://${module.galaxy.endpoint}"
-  api_key = module.admin_user.api_key
+  apikey = module.admin_user.api_key
 }
