@@ -70,6 +70,15 @@ resource "kubernetes_deployment" "galaxy_app" {
             period_seconds = 60
           }
 
+          startup_probe {
+            exec {
+              command = ["uwping", "uwsgi://localhost:${local.uwsgi_port}/api/genomes"]
+            }
+            initial_delay_seconds = 5
+            failure_threshold = 30
+            period_seconds = 5
+          }
+
           dynamic "env" {
             for_each = local.galaxy_conf
             content {
