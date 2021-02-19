@@ -13,7 +13,7 @@ variable "nfs_server" {
 
 variable "lb_annotations" {
   type = map(string)
-  default = {}
+  default = {"service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout": 120}
   description = "Annotations to pass to the ingress load-balancer (https://gist.github.com/mgoodness/1a2926f3b02d8e8149c224d25cc57dc1)"
 }
 
