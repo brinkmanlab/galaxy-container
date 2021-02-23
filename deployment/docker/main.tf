@@ -12,6 +12,7 @@ module "galaxy" {
   debug       = var.debug
   host_port = var.host_port
   docker_gid = var.docker_gid
+  docker_socket_path = var.docker_socket_path
 }
 
 module "admin_user" {

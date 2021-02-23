@@ -28,6 +28,7 @@ resource "docker_container" "galaxy_worker" {
   env = compact(concat(
     [for k, v in local.galaxy_conf: "GALAXY_CONFIG_OVERRIDE_${k}=${v}"],
     [for k, v in local.job_conf: "${k}=${v}"],
+    ["DOCKER_HOST=${var.docker_socket_path}"],
   ))
 
   healthcheck {
@@ -47,8 +48,8 @@ resource "docker_container" "galaxy_worker" {
   }
 
   mounts {
-    target = "/var/run/docker.sock"
-    source = "/var/run/docker.sock"
+    target = var.docker_socket_path
+    source = var.docker_socket_path
     type   = "bind"
   }
   mounts {
