@@ -15,7 +15,9 @@ galaxy:
             docker_enabled: true
             require_container: true
             embed_metadata_in_job: true
-            docker_host: 'unix:///var/run/docker.sock'
+            docker_host:
+              default: 'unix:///var/run/docker.sock'
+              from_environ: DOCKER_HOST
             docker_sudo: false
             docker_default_container_id:
               from_environ: DEFAULT_CONTAINER_ID

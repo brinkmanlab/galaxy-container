@@ -28,7 +28,7 @@ resource "docker_container" "galaxy_worker" {
   env = compact(concat(
     [for k, v in local.galaxy_conf: "GALAXY_CONFIG_OVERRIDE_${k}=${v}"],
     [for k, v in local.job_conf: "${k}=${v}"],
-    ["DOCKER_HOST=${var.docker_socket_path}"],
+    ["DOCKER_HOST=unix://${var.docker_socket_path}"],
   ))
 
   healthcheck {
