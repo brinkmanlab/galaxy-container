@@ -9,6 +9,10 @@ galaxy:
           upload:
             file: "{{ paths.root }}/tools/data_source/upload.xml"
           # label: text
+        expression_tools:
+          name: Expression Tools
+          parse_from_file:
+            file: "expression_tools/parse_values_from_file.xml"
         collection_operations:
           name: Collection Operations
           unzip:
