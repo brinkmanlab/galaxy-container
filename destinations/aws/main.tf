@@ -1,6 +1,12 @@
 locals {
   namespace = var.namespace != null ? var.namespace : kubernetes_namespace.instance[0]
   nfs_server = var.nfs_server != "" ? var.nfs_server : module.nfs_server[0].nfs_server
+  lb_annotations = {
+    "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" : "http"
+    "service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled": true
+    "service.beta.kubernetes.io/aws-load-balancer-connection-draining-timeout": 120
+    "service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout": 120
+  }
 }
 
 data "aws_availability_zones" "available" {}
@@ -52,7 +58,7 @@ module "k8s" {
   uwsgi_uid               = var.uwsgi_uid
   uwsgi_gid               = var.uwsgi_gid
   master_api_key          = local.master_api_key
-  lb_annotations          = var.lb_annotations
+  lb_annotations          = merge(local.lb_annotations, var.lb_annotations)
   tool_mappings           = var.tool_mappings
   namespace               = local.namespace
   id_secret               = local.id_secret
