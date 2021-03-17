@@ -10,6 +10,8 @@ The deployment can be further customized including installing tools using the [G
 To install terraform, check that your systems package manager provides it or download it from [here](https://www.terraform.io/downloads.html).
 
 ## Run local
+If you are running Docker on OSX (Mac), first see the [related subheading below](#osx-peculiarities). 
+Ensure docker can be [run without root privileges](https://docs.docker.com/engine/install/linux-postinstall/).
 Change the current working directory to `./deployment/docker`. Modify `./changeme.auto.tfvars` with any custom values you like.
 You must at least set the `docker_gid` variable to a group id with write access to `/var/run/docker.sock`.
 Run `stat /var/run/docker.sock` (or `stat -x /var/run/docker.sock` on OSX) to show the owning group id.
@@ -22,7 +24,28 @@ terraform init
 
 Browse to http://localhost:8000/ to access the deployment.
 
-To shut down this instance, run `./destroy.sh`. This will delete the instance, all of its data, and the container images.
+To shut down this instance, run `./destroy.sh`. This will delete the instance, all of its data, and the container images. Docker may fail to unmount
+CVMFS during shutdown, run `sudo fusermount -u ./microbedb/mount` if you encounter `transport endpoint is not connected` errors.
+
+### OSX Peculiarities
+
+OSX does not natively support Docker, it runs Docker within a Linux virtual machine. This workaround means that support is limited to only the most
+basic use case. The following needs to be added to `changeme.auto.tfvars`:
+
+```hcl
+docker_gid = 0
+docker_socket_path = "/run/host-services/docker.proxy.sock"
+```
+
+The last modification you need to make is to allow group write access to the docker socket within containers. To do this run the following:
+```shell
+docker run --rm -v /run/host-services/docker.proxy.sock:/run/host-services/docker.proxy.sock alpine chmod g+w /run/host-services/docker.proxy.sock
+```
+
+This command must be run any time you restart your system, before you can run deploy.sh or submit analysis.
+
+See https://github.com/docker/for-mac/issues/3431 for more information about the issue.
+
 
 ## Deploy to cloud
 
