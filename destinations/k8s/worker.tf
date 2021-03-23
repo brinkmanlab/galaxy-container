@@ -25,7 +25,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
     }
   }
   spec {
-    replicas = 3 #TODO https://github.com/galaxyproject/galaxy/issues/10243
+    replicas = 1 #TODO https://github.com/galaxyproject/galaxy/issues/10243 and https://github.com/galaxyproject/galaxy/issues/11335
     min_ready_seconds = 10
     revision_history_limit = 0
     strategy {
