@@ -76,6 +76,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
             value = local.root_dir
           }
 
+          /* TODO https://github.com/galaxyproject/galaxy/issues/10894
           liveness_probe {
             exec {
               command = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -v -c \"$GALAXY_CONFIG_OVERRIDE_database_connection\" -s $HOSTNAME -i 200"]
@@ -85,7 +86,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
             timeout_seconds = 2
             success_threshold = 1
             period_seconds = 200
-          }
+          }*/
 
           resources {
             limits = {

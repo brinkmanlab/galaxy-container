@@ -31,13 +31,14 @@ resource "docker_container" "galaxy_worker" {
     ["DOCKER_HOST=unix://${var.docker_socket_path}"],
   ))
 
+  /* TODO https://github.com/galaxyproject/galaxy/issues/10894
   healthcheck {
     test = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -v -c \"$GALAXY_CONFIG_OVERRIDE_database_connection\" -s $HOSTNAME"]
     start_period = "2s"
     timeout = "30s"
     interval = "10s"
     retries = 3
-  }
+  }*/
 
   dynamic "upload" {
     for_each = local.configs
