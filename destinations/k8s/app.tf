@@ -80,10 +80,10 @@ resource "kubernetes_deployment" "galaxy_app" {
           }
 
           dynamic "env" {
-            for_each = local.galaxy_conf
+            for_each = toset([for k,v in local.galaxy_conf : k])  # https://www.terraform.io/docs/language/meta-arguments/for_each.html#limitations-on-values-used-in-for_each
             content {
               name  = "GALAXY_CONFIG_OVERRIDE_${env.key}"
-              value = env.value
+              value = local.galaxy_conf[env.key]
             }
           }
 
