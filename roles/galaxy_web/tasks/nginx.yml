@@ -1,4 +1,5 @@
 ---
+# TODO https://docs.galaxyproject.org/en/latest/admin/nginx.html#creating-archives-with-mod-zip
 - name: Copy in files
   copy:
     src: '{{ item.from }}'
