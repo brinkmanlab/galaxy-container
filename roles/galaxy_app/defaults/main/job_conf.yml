@@ -42,8 +42,8 @@ galaxy:
       #  - db-self	# Database Self Assignment
       #  - db-preassign	# Database Preassignment
       #  - uwsgi-mule-message	# uWSGI Mule Messaging
-      #  - db-transaction-isolation	# Database Transaction Isolation
-        - db-skip-locked	# Database SKIP LOCKED
+        - db-transaction-isolation	# Database Transaction Isolation
+      #  - db-skip-locked	# Database SKIP LOCKED
       #  handler_max_grab:
       #  default_handler:
       #  default_destination: local
