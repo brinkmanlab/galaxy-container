@@ -43,7 +43,7 @@ resource "kubernetes_storage_class" "nfs" {
   # This exists to get around a bug preventing setting an empty storage_class_name
   # https://github.com/hashicorp/terraform-provider-kubernetes/issues/872
   metadata {
-    name = "filestore"
+    generate_name = "filestore"
   }
   reclaim_policy      = "Retain"
   storage_provisioner = "nfs"
