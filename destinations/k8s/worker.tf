@@ -91,7 +91,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
           resources {
             limits = {
               cpu    = "2"
-              memory = "2Gi"
+              memory = "6Gi"
             }
             requests = {
               cpu    = "1"
