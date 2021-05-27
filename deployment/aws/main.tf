@@ -34,7 +34,7 @@ module "galaxy" {
     #cleanup_job = "never"
     slow_query_log_threshold = 500
   }
-  image_tag   = "dev"
+  image_tag   = "latest"
   admin_users = [var.email]
   email       = var.email
   debug       = var.debug

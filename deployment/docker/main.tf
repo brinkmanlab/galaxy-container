@@ -6,7 +6,7 @@ module "galaxy" {
     error_email_to = var.email
     require_login  = true
   }
-  image_tag   = "dev"
+  image_tag   = "latest"
   admin_users = [var.email]
   email       = var.email
   debug       = var.debug
