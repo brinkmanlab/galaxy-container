@@ -25,8 +25,8 @@ resource "kubernetes_deployment" "galaxy_worker" {
     }
   }
   spec {
-    replicas = 1 #TODO https://github.com/galaxyproject/galaxy/issues/10243 and https://github.com/galaxyproject/galaxy/issues/11335
-    min_ready_seconds = 10
+    replicas               = var.worker_max_replicas #TODO https://github.com/galaxyproject/galaxy/issues/10243 and https://github.com/galaxyproject/galaxy/issues/11335
+    min_ready_seconds      = 10
     revision_history_limit = 0
     strategy {
       type = "Recreate"
@@ -147,6 +147,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
   }
 }
 
+# TODO https://github.com/galaxyproject/galaxy/issues/10243
 #resource "kubernetes_horizontal_pod_autoscaler" "galaxy_worker" {
 #  metadata {
 #    name      = local.worker_name
@@ -154,8 +155,8 @@ resource "kubernetes_deployment" "galaxy_worker" {
 #  }
 #
 #  spec {
-#    max_replicas = 3 #10 TODO https://github.com/galaxyproject/galaxy/issues/10243
-#    min_replicas = 3 #1
+#    max_replicas = var.worker_max_replicas
+#    min_replicas = 1
 #
 #    scale_target_ref {
 #      api_version = "apps/v1"

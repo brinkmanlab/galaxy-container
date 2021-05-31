@@ -95,7 +95,7 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_web" {
   }
 
   spec {
-    max_replicas = 10
+    max_replicas = var.web_max_replicas
     min_replicas = 1
 
     scale_target_ref {

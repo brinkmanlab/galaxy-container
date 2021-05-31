@@ -68,4 +68,7 @@ module "k8s" {
   job_destinations        = var.job_destinations
   limits                  = var.limits
   visualizations          = var.visualizations
+  web_max_replicas        = var.web_max_replicas
+  app_max_replicas        = var.app_max_replicas
+  worker_max_replicas     = var.worker_max_replicas
 }

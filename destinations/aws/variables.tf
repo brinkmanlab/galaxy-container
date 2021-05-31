@@ -41,3 +41,21 @@ variable "extra_mounts" {
   default = {}
   description = "Map of mount configurations to add to app and worker containers keyed on volume name"
 }
+
+variable "web_max_replicas" {
+  type        = number
+  default     = 10
+  description = "Maximum number of web replicas"
+}
+
+variable "app_max_replicas" {
+  type        = number
+  default     = 10
+  description = "Maximum number of app replicas"
+}
+
+variable "worker_max_replicas" {
+  type        = number
+  default     = 10
+  description = "Maximum number of worker replicas"
+}
