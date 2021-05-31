@@ -13,51 +13,51 @@ resource "docker_container" "galaxy_app" {
   user       = "${local.uwsgi_user}:${local.uwsgi_group}"
 
   networks_advanced {
-    name = local.network
+    name    = local.network
     aliases = [local.app_name]
   }
 
   env = compact(concat(
-    [for k, v in local.galaxy_conf: "GALAXY_CONFIG_OVERRIDE_${k}=${v}"],
-    [for k, v in local.job_conf: "${k}=${v}"],
+    [for k, v in local.galaxy_conf : "GALAXY_CONFIG_OVERRIDE_${k}=${v}"],
+    [for k, v in local.job_conf : "${k}=${v}"],
   ))
 
   healthcheck {
-    test = ["CMD", "uwping", "uwsgi://localhost:${local.uwsgi_port}/api/version"]
+    test         = ["CMD", "uwping", "uwsgi://localhost:${local.uwsgi_port}/api/version"]
     start_period = "2s"
-    timeout = "2s"
-    interval = "10s"
-    retries = 3
+    timeout      = "2s"
+    interval     = "10s"
+    retries      = 3
   }
 
   dynamic "upload" {
     for_each = local.configs
     content {
-      file = "${local.config_dir}/macros/${upload.key}"
+      file    = "${local.config_dir}/macros/${upload.key}"
       content = upload.value
     }
   }
 
   mounts {
-    source = docker_volume.user_data.name
-    target = local.data_dir
-    type   = "volume"
+    source    = docker_volume.user_data.name
+    target    = local.data_dir
+    type      = "volume"
     read_only = false
   }
 
   mounts {
-    source = docker_volume.galaxy_root.name
-    target = local.root_dir
-    type = "volume"
+    source    = docker_volume.galaxy_root.name
+    target    = local.root_dir
+    type      = "volume"
     read_only = false
   }
 
   dynamic "mounts" {
     for_each = var.extra_mounts
     content {
-      source = mounts.value.source
-      target = mounts.value.target
-      type = mounts.value.type
+      source    = mounts.value.source
+      target    = mounts.value.target
+      type      = mounts.value.type
       read_only = mounts.value.read_only
     }
   }
@@ -65,11 +65,11 @@ resource "docker_container" "galaxy_app" {
 
 resource "docker_container" "wait_for_app" {
   depends_on = [docker_container.galaxy_app]
-  image = docker_image.galaxy_app.latest
-  name = "wait_for_galaxy_app${local.name_suffix}"
-  must_run = false
-  attach = true
-  command = ["bash", "-c", "until uwping uwsgi://${local.app_name}:${local.uwsgi_port}/api/version; do sleep 1; done"]
+  image      = docker_image.galaxy_app.latest
+  name       = "wait_for_galaxy_app${local.name_suffix}"
+  must_run   = false
+  attach     = true
+  command    = ["bash", "-c", "until uwping uwsgi://${local.app_name}:${local.uwsgi_port}/api/version; do sleep 1; done"]
   networks_advanced {
     name = local.network
   }

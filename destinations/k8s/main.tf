@@ -11,7 +11,7 @@ resource "kubernetes_namespace" "instance" {
 
 resource "kubernetes_config_map" "galaxy_config" {
   metadata {
-    name = "galaxy-config"
+    name      = "galaxy-config"
     namespace = local.namespace.metadata.0.name
   }
   data = local.configs

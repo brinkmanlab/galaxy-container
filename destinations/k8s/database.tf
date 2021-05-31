@@ -49,13 +49,13 @@ resource "kubernetes_job" "init_install_db" {
       metadata {}
       spec {
         security_context {
-          run_as_user = local.uwsgi_uid
+          run_as_user  = local.uwsgi_uid
           run_as_group = local.uwsgi_gid
         }
         automount_service_account_token = false
         container {
-          name              = "${local.app_name}-init-install-db"
-          command           = [ "bash", "-c", join(" && ", [
+          name = "${local.app_name}-init-install-db"
+          command = ["bash", "-c", join(" && ", [
             # Ensure managed config dir exists or create_db.py will fail
             "install -v -d -m 0777 -o ${local.uwsgi_uid} -g ${local.uwsgi_gid} ${local.managed_config_dir}",
             "/env_run.sh python3 ${local.root_dir}/scripts/create_db.py -c ${local.config_dir}/galaxy.yml install"

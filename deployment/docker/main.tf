@@ -6,12 +6,12 @@ module "galaxy" {
     error_email_to = var.email
     require_login  = true
   }
-  image_tag   = "latest"
-  admin_users = [var.email]
-  email       = var.email
-  debug       = var.debug
-  host_port = var.host_port
-  docker_gid = var.docker_gid
+  image_tag          = "latest"
+  admin_users        = [var.email]
+  email              = var.email
+  debug              = var.debug
+  host_port          = var.host_port
+  docker_gid         = var.docker_gid
   docker_socket_path = var.docker_socket_path
 }
 
@@ -24,6 +24,6 @@ module "admin_user" {
 }
 
 provider "galaxy" {
-  host    = "http://${module.galaxy.endpoint}"
+  host   = "http://${module.galaxy.endpoint}"
   apikey = module.admin_user.api_key
 }

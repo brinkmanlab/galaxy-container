@@ -2,7 +2,7 @@
 
 resource "kubernetes_deployment" "galaxy_web" {
   depends_on       = [kubernetes_service.galaxy_app]
-  wait_for_rollout = ! var.debug
+  wait_for_rollout = !var.debug
   metadata {
     name      = local.web_name
     namespace = local.namespace.metadata.0.name
@@ -17,7 +17,7 @@ resource "kubernetes_deployment" "galaxy_web" {
     }
   }
   spec {
-    min_ready_seconds = 1
+    min_ready_seconds      = 1
     revision_history_limit = 0
     strategy {
       type = "Recreate"
@@ -47,14 +47,14 @@ resource "kubernetes_deployment" "galaxy_web" {
           image_pull_policy = var.debug ? "Always" : "IfNotPresent"
           name              = local.web_name
           env {
-            name = "master_api_key"
+            name  = "master_api_key"
             value = local.master_api_key
           }
 
           liveness_probe {
             http_get {
-              path = "/health"
-              port = "80"
+              path   = "/health"
+              port   = "80"
               scheme = "HTTP"
             }
           }
@@ -109,8 +109,8 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_web" {
 
 resource "kubernetes_service" "galaxy_web" {
   metadata {
-    name      = local.web_name
-    namespace = kubernetes_deployment.galaxy_web.metadata.0.namespace
+    name        = local.web_name
+    namespace   = kubernetes_deployment.galaxy_web.metadata.0.namespace
     annotations = var.lb_annotations
   }
   spec {
@@ -118,15 +118,15 @@ resource "kubernetes_service" "galaxy_web" {
       App = local.web_name
     }
     port {
-      name = "http"
+      name        = "http"
       protocol    = "TCP"
       port        = 80
       target_port = 80
     }
     port {
-      name = "https"
-      protocol = "TCP"
-      port = 443
+      name        = "https"
+      protocol    = "TCP"
+      port        = 443
       target_port = 80
     }
 

@@ -1,11 +1,11 @@
 locals {
-  namespace = var.namespace != null ? var.namespace : kubernetes_namespace.instance[0]
+  namespace  = var.namespace != null ? var.namespace : kubernetes_namespace.instance[0]
   nfs_server = var.nfs_server != "" ? var.nfs_server : module.nfs_server[0].nfs_server
   lb_annotations = {
     "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" : "http"
-    "service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled": true
-    "service.beta.kubernetes.io/aws-load-balancer-connection-draining-timeout": 120
-    "service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout": 120
+    "service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled" : true
+    "service.beta.kubernetes.io/aws-load-balancer-connection-draining-timeout" : 120
+    "service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout" : 120
   }
 }
 
@@ -21,11 +21,11 @@ resource "kubernetes_namespace" "instance" {
 }
 
 module "nfs_server" {
-  source = "./storage"
-  count = var.nfs_server == "" ? 1 : 0
+  source                = "./storage"
+  count                 = var.nfs_server == "" ? 1 : 0
   user_data_volume_name = local.user_data_volume_name
-  instance = local.instance
-  vpc = var.vpc
+  instance              = local.instance
+  vpc                   = var.vpc
 }
 
 module "k8s" {

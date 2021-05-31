@@ -19,16 +19,16 @@ resource "docker_container" "galaxy_web" {
   }
 
   networks_advanced {
-    name = local.network
+    name    = local.network
     aliases = [local.web_name]
   }
 
   healthcheck {
-    test = ["CMD", "wget", "--spider", "http://localhost/health"]
+    test         = ["CMD", "wget", "--spider", "http://localhost/health"]
     start_period = "2s"
-    timeout = "2s"
-    interval = "10s"
-    retries = 3
+    timeout      = "2s"
+    interval     = "10s"
+    retries      = 3
   }
 
   mounts {

@@ -2,7 +2,7 @@
 
 resource "kubernetes_deployment" "galaxy_app" {
   depends_on       = [kubernetes_job.upgrade_db, kubernetes_job.visualizations-fix] # TODO remove '-fix' after https://github.com/galaxyproject/galaxy/issues/11057
-  wait_for_rollout = ! var.debug
+  wait_for_rollout = !var.debug
   metadata {
     name      = local.app_name
     namespace = local.namespace.metadata.0.name
@@ -17,7 +17,7 @@ resource "kubernetes_deployment" "galaxy_app" {
     }
   }
   spec {
-    min_ready_seconds = 10
+    min_ready_seconds      = 10
     revision_history_limit = 0
     strategy {
       type = "Recreate"
@@ -53,10 +53,10 @@ resource "kubernetes_deployment" "galaxy_app" {
               command = ["uwping", "uwsgi://localhost:${local.uwsgi_port}/api/version"]
             }
             initial_delay_seconds = 2
-            timeout_seconds = 2
-            failure_threshold = 1
-            success_threshold = 3
-            period_seconds = 2
+            timeout_seconds       = 2
+            failure_threshold     = 1
+            success_threshold     = 3
+            period_seconds        = 2
           }
 
           liveness_probe {
@@ -64,10 +64,10 @@ resource "kubernetes_deployment" "galaxy_app" {
               command = ["uwping", "uwsgi://localhost:${local.uwsgi_port}/api/version"]
             }
             initial_delay_seconds = 2
-            failure_threshold = 3
-            timeout_seconds = 2
-            success_threshold = 1
-            period_seconds = 60
+            failure_threshold     = 3
+            timeout_seconds       = 2
+            success_threshold     = 1
+            period_seconds        = 60
           }
 
           startup_probe {
@@ -75,12 +75,12 @@ resource "kubernetes_deployment" "galaxy_app" {
               command = ["uwping", "uwsgi://localhost:${local.uwsgi_port}/api/genomes"]
             }
             initial_delay_seconds = 5
-            failure_threshold = 30
-            period_seconds = 5
+            failure_threshold     = 30
+            period_seconds        = 5
           }
 
           dynamic "env" {
-            for_each = toset([for k,v in local.galaxy_conf : k])  # https://www.terraform.io/docs/language/meta-arguments/for_each.html#limitations-on-values-used-in-for_each
+            for_each = toset([for k, v in local.galaxy_conf : k]) # https://www.terraform.io/docs/language/meta-arguments/for_each.html#limitations-on-values-used-in-for_each
             content {
               name  = "GALAXY_CONFIG_OVERRIDE_${env.key}"
               value = local.galaxy_conf[env.key]
@@ -111,20 +111,20 @@ resource "kubernetes_deployment" "galaxy_app" {
           }
           volume_mount {
             mount_path = "${local.config_dir}/macros"
-            name = "config"
-            read_only = true
+            name       = "config"
+            read_only  = true
           }
           volume_mount {
             mount_path = "${local.root_dir}/visualizations"
-            name = "data"
-            sub_path = "visualizations"
+            name       = "data"
+            sub_path   = "visualizations"
           }
           dynamic "volume_mount" {
             for_each = var.extra_mounts
             content {
-              name = volume_mount.key
+              name       = volume_mount.key
               mount_path = volume_mount.value.path
-              read_only = volume_mount.value.read_only
+              read_only  = volume_mount.value.read_only
             }
           }
         }

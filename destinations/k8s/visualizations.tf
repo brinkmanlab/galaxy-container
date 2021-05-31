@@ -1,20 +1,20 @@
 resource "kubernetes_job" "visualizations" {
   metadata {
     generate_name = "load-visualizations-"
-    namespace = local.namespace.metadata.0.name
+    namespace     = local.namespace.metadata.0.name
   }
   spec {
     template {
       metadata {}
       spec {
         security_context {
-          run_as_user = local.uwsgi_uid
+          run_as_user  = local.uwsgi_uid
           run_as_group = local.uwsgi_gid
         }
         automount_service_account_token = false
         container {
           name              = "load-visualizations"
-          command           = [ "bash", "-c", "mkdir -p '${local.managed_config_dir}/visualizations'; ${local.viz_curl_cmd}"]
+          command           = ["bash", "-c", "mkdir -p '${local.managed_config_dir}/visualizations'; ${local.viz_curl_cmd}"]
           image             = "${local.galaxy_app_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null
           volume_mount {
@@ -47,14 +47,14 @@ resource "kubernetes_job" "visualizations-fix" {
   depends_on = [kubernetes_job.visualizations]
   metadata {
     generate_name = "load-visualizations-fix-"
-    namespace = local.namespace.metadata.0.name
+    namespace     = local.namespace.metadata.0.name
   }
   spec {
     template {
       metadata {}
       spec {
         security_context {
-          run_as_user = 0
+          run_as_user  = 0
           run_as_group = local.uwsgi_gid
         }
         automount_service_account_token = false

@@ -1,28 +1,28 @@
 locals {
-  ansible        = yamldecode(file("${path.module}/../../vars.yml"))
+  ansible = yamldecode(file("${path.module}/../../vars.yml"))
 
-  data_dir = var.data_dir != null ? var.data_dir : local.ansible.paths.data
-  root_dir = var.root_dir != null ? var.root_dir : local.ansible.paths.root
-  config_dir = var.config_dir != null ? var.config_dir : local.ansible.paths.config
-  managed_config_dir = var.managed_config_dir != null ? var.managed_config_dir : local.ansible.paths.managed_config
-  galaxy_web_image = var.galaxy_web_image != null ? var.galaxy_web_image : "brinkmanlab/${local.ansible.containers.web.image}"
-  galaxy_app_image = var.galaxy_app_image != null ? var.galaxy_app_image : "brinkmanlab/${local.ansible.containers.app.image}"
-  db_image = var.db_image != null ? var.db_image : local.ansible.containers.db.image
+  data_dir                = var.data_dir != null ? var.data_dir : local.ansible.paths.data
+  root_dir                = var.root_dir != null ? var.root_dir : local.ansible.paths.root
+  config_dir              = var.config_dir != null ? var.config_dir : local.ansible.paths.config
+  managed_config_dir      = var.managed_config_dir != null ? var.managed_config_dir : local.ansible.paths.managed_config
+  galaxy_web_image        = var.galaxy_web_image != null ? var.galaxy_web_image : "brinkmanlab/${local.ansible.containers.web.image}"
+  galaxy_app_image        = var.galaxy_app_image != null ? var.galaxy_app_image : "brinkmanlab/${local.ansible.containers.app.image}"
+  db_image                = var.db_image != null ? var.db_image : local.ansible.containers.db.image
   galaxy_root_volume_name = var.galaxy_root_volume_name != null ? var.galaxy_root_volume_name : local.ansible.volumes.galaxy_root.name
-  user_data_volume_name = var.user_data_volume_name != null ? var.user_data_volume_name : local.ansible.volumes.user_data.name
-  db_data_volume_name = var.db_data_volume_name != null ? var.db_data_volume_name : local.ansible.volumes.db_data.name
-  web_name = var.web_name != null ? var.web_name : local.ansible.containers.web.name
-  app_name = var.app_name != null ? var.app_name : local.ansible.containers.app.name
-  worker_name = var.worker_name != null ? var.worker_name : local.ansible.containers.worker.name
-  db_name = var.db_name != null ? var.db_name : local.ansible.containers.db.name
-  uwsgi_port = var.uwsgi_port != null ? var.uwsgi_port : local.ansible.uwsgi.port
-  uwsgi_uid = var.uwsgi_uid != null ? var.uwsgi_uid : local.ansible.uwsgi.uid
-  uwsgi_gid = var.uwsgi_gid != null ? var.uwsgi_gid : local.ansible.uwsgi.gid
-  uwsgi_user = var.uwsgi_user != null ? var.uwsgi_user : local.ansible.uwsgi.user
-  uwsgi_group = var.uwsgi_group != null ? var.uwsgi_group : local.ansible.uwsgi.group
+  user_data_volume_name   = var.user_data_volume_name != null ? var.user_data_volume_name : local.ansible.volumes.user_data.name
+  db_data_volume_name     = var.db_data_volume_name != null ? var.db_data_volume_name : local.ansible.volumes.db_data.name
+  web_name                = var.web_name != null ? var.web_name : local.ansible.containers.web.name
+  app_name                = var.app_name != null ? var.app_name : local.ansible.containers.app.name
+  worker_name             = var.worker_name != null ? var.worker_name : local.ansible.containers.worker.name
+  db_name                 = var.db_name != null ? var.db_name : local.ansible.containers.db.name
+  uwsgi_port              = var.uwsgi_port != null ? var.uwsgi_port : local.ansible.uwsgi.port
+  uwsgi_uid               = var.uwsgi_uid != null ? var.uwsgi_uid : local.ansible.uwsgi.uid
+  uwsgi_gid               = var.uwsgi_gid != null ? var.uwsgi_gid : local.ansible.uwsgi.gid
+  uwsgi_user              = var.uwsgi_user != null ? var.uwsgi_user : local.ansible.uwsgi.user
+  uwsgi_group             = var.uwsgi_group != null ? var.uwsgi_group : local.ansible.uwsgi.group
 
-  mail_name   = var.mail_name != null ? var.mail_name : regex("(?m)^mail.*hostname=(?P<mail_name>[^ ]+)", file("${path.root}/galaxy/inventory.ini")).mail_name
-  mail_port   = var.mail_port != null ? var.mail_port : regex("(?m)^mail.*port=(?P<mail_port>[^ ]+)", file("${path.root}/inventory.ini")).mail_port
+  mail_name = var.mail_name != null ? var.mail_name : regex("(?m)^mail.*hostname=(?P<mail_name>[^ ]+)", file("${path.root}/galaxy/inventory.ini")).mail_name
+  mail_port = var.mail_port != null ? var.mail_port : regex("(?m)^mail.*port=(?P<mail_port>[^ ]+)", file("${path.root}/inventory.ini")).mail_port
 
   db_conf = var.db_conf != null ? var.db_conf : {
     scheme = "postgres"
@@ -32,12 +32,12 @@ locals {
     pass   = random_password.db_password[0].result
   }
   master_api_key = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key.result
-  id_secret = var.id_secret != "" ? var.id_secret : random_password.id_secret.result
+  id_secret      = var.id_secret != "" ? var.id_secret : random_password.id_secret.result
   common_galaxy_conf = {
     database_connection = "${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
-    master_api_key = local.master_api_key
-    id_secret = local.id_secret
-    email_from = var.email
+    master_api_key      = local.master_api_key
+    id_secret           = local.id_secret
+    email_from          = var.email
     error_email_to      = var.email
   }
   admin_users_conf = length(var.admin_users) == 0 ? {} : {
@@ -45,7 +45,7 @@ locals {
   }
   galaxy_conf = merge(local.common_galaxy_conf, local.admin_users_conf, local.destination_galaxy_conf, var.galaxy_conf)
   configs = {
-    "tool_mapping.xml" = <<-EOF
+    "tool_mapping.xml"     = <<-EOF
       <?xml version="1.0"?>
       <macros>
           <xml name="tool_mapping">
@@ -53,9 +53,9 @@ locals {
           List tool mappings here to be included in the job_conf.xml
           <tool id="" destination="" />
           -->
-          %{ for k, v in var.tool_mappings }
+          %{for k, v in var.tool_mappings}
             <tool id="${k}" destination="${v}" />
-          %{ endfor }
+          %{endfor}
           </xml>
       </macros>
     EOF
@@ -70,18 +70,18 @@ locals {
           </xml>
       </macros>
     EOF
-    "limits.xml" = <<-EOF
+    "limits.xml"           = <<-EOF
       <?xml version="1.0"?>
       <macros>
           <xml name="limits">
-          %{ for limit in var.limits }
-            <limit type="${limit.type}"%{ if limit.id != "" } ${limit.id}%{ endif }%{ if limit.tag != "" } tag="${limit.tag}"%{ endif }>${limit.value}</limit>
-          %{ endfor }
+          %{for limit in var.limits}
+            <limit type="${limit.type}"%{if limit.id != ""} ${limit.id}%{endif}%{if limit.tag != ""} tag="${limit.tag}"%{endif}>${limit.value}</limit>
+          %{endfor}
           </xml>
       </macros>
     EOF
   }
-  viz_curl_cmd = join(" && ", [for url in var.visualizations: "curl -L '${url}' | tar -xvz -C '${local.managed_config_dir}/visualizations'"])
+  viz_curl_cmd = join(" && ", [for url in var.visualizations : "curl -L '${url}' | tar -xvz -C '${local.managed_config_dir}/visualizations'"])
 }
 
 variable "db_conf" {
@@ -122,12 +122,12 @@ variable "galaxy_conf" {
 
 resource "random_password" "id_secret" {
   #count = var.id_secret == "" ? 1 : 0
-  length  = 32
+  length = 32
 }
 
 variable "id_secret" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Salt used to make Galaxy Ids unpredictable"
 }
 
@@ -246,14 +246,14 @@ variable "uwsgi_gid" {
 }
 
 variable "uwsgi_user" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "User name of Galaxy process"
 }
 
 variable "uwsgi_group" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "Group name of Galaxy process"
 }
 
@@ -287,42 +287,42 @@ variable "debug" {
 }
 
 variable "plugins" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "XML list of <plugin> tags"
 }
 
 variable "job_destinations" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "XML list of <destination> tags"
 }
 
 variable "tool_mappings" {
-  type = map(string)
-  default = {}
+  type        = map(string)
+  default     = {}
   description = "Tool ID to destination mappings. See roles/galaxy_app/defaults/main/job_conf.yml within the module root for destinations."
 }
 
 variable "limits" {
   type = list(object({
-    type = string
-    tag = string
+    type  = string
+    tag   = string
     value = string
-    id = string
+    id    = string
   }))
-  default = []
+  default     = []
   description = "List of limits to add to the job_conf.xml. id is optional and can be set as an empty string."
 }
 
 variable "extra_job_mounts" {
-  type = set(string)
-  default = []
+  type        = set(string)
+  default     = []
   description = "Extra mounts passed to job_conf for jobs"
 }
 
 variable "visualizations" {
-  type = set(string)
-  default = []
+  type        = set(string)
+  default     = []
   description = "Set of URLs to tarballs to unpack into visualizations folder"
 }

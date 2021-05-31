@@ -1,8 +1,8 @@
 locals {
   job_conf = {
-    K8S_ENABLED   = "True"
-    K8S_NAMESPACE = local.instance
-    K8S_VOLUMES   = "${kubernetes_persistent_volume_claim.user_data.metadata.0.name}:${local.data_dir}${length(var.extra_job_mounts) > 0 ? "," : ""}${join(",", var.extra_job_mounts)}"
+    K8S_ENABLED           = "True"
+    K8S_NAMESPACE         = local.instance
+    K8S_VOLUMES           = "${kubernetes_persistent_volume_claim.user_data.metadata.0.name}:${local.data_dir}${length(var.extra_job_mounts) > 0 ? "," : ""}${join(",", var.extra_job_mounts)}"
     K8S_DEFAULT_IMAGE_TAG = var.image_tag
   }
 }
@@ -10,7 +10,7 @@ locals {
 
 resource "kubernetes_deployment" "galaxy_worker" {
   depends_on       = [kubernetes_job.upgrade_db]
-  wait_for_rollout = ! var.debug
+  wait_for_rollout = !var.debug
   metadata {
     name      = local.worker_name
     namespace = local.namespace.metadata.0.name
@@ -44,7 +44,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
       }
       spec {
         security_context {
-          run_as_user = local.uwsgi_uid
+          run_as_user  = local.uwsgi_uid
           run_as_group = local.uwsgi_gid
         }
         service_account_name            = kubernetes_service_account.galaxy_worker.metadata.0.name
@@ -56,7 +56,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
           command           = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
 
           dynamic "env" {
-            for_each = toset([for k,v in local.galaxy_conf : k])  # https://www.terraform.io/docs/language/meta-arguments/for_each.html#limitations-on-values-used-in-for_each
+            for_each = toset([for k, v in local.galaxy_conf : k]) # https://www.terraform.io/docs/language/meta-arguments/for_each.html#limitations-on-values-used-in-for_each
             content {
               name  = "GALAXY_CONFIG_OVERRIDE_${env.key}"
               value = local.galaxy_conf[env.key]
@@ -104,15 +104,15 @@ resource "kubernetes_deployment" "galaxy_worker" {
           }
           volume_mount {
             mount_path = "${local.config_dir}/macros"
-            name = "config"
-            read_only = true
+            name       = "config"
+            read_only  = true
           }
           dynamic "volume_mount" {
             for_each = var.extra_mounts
             content {
-              name = volume_mount.key
+              name       = volume_mount.key
               mount_path = volume_mount.value.path
-              read_only = volume_mount.value.read_only
+              read_only  = volume_mount.value.read_only
             }
           }
         }
@@ -128,7 +128,7 @@ resource "kubernetes_deployment" "galaxy_worker" {
         volume {
           name = "config"
           config_map {
-             name = kubernetes_config_map.galaxy_config.metadata.0.name
+            name = kubernetes_config_map.galaxy_config.metadata.0.name
           }
         }
         dynamic "volume" {

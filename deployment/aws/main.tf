@@ -1,12 +1,12 @@
 provider "aws" {
-  region  = var.region
+  region = var.region
 }
 
 module "cloud" {
   source             = "github.com/brinkmanlab/cloud_recipes.git//aws" #?ref=v0.1.2"
   cluster_name       = var.instance
   autoscaler_version = "1.17.3"
-  debug = var.debug
+  debug              = var.debug
 }
 
 data "aws_eks_cluster" "cluster" {
@@ -34,12 +34,13 @@ module "galaxy" {
     #cleanup_job = "never"
     slow_query_log_threshold = 500
   }
-  image_tag   = "latest"
-  admin_users = [var.email]
-  email       = var.email
-  debug       = var.debug
-  eks         = module.cloud.eks
-  vpc         = module.cloud.vpc
+  image_tag           = "latest"
+  admin_users         = [var.email]
+  email               = var.email
+  debug               = var.debug
+  eks                 = module.cloud.eks
+  vpc                 = module.cloud.vpc
+  worker_max_replicas = 3
 }
 
 module "admin_user" {
@@ -51,6 +52,6 @@ module "admin_user" {
 }
 
 provider "galaxy" {
-  host    = "http://${module.galaxy.endpoint}"
+  host   = "http://${module.galaxy.endpoint}"
   apikey = module.admin_user.api_key
 }

@@ -1,19 +1,19 @@
 locals {
   job_conf = merge({
-    DOCKER_ENABLED   = "True"
-    CWD = local.root_dir,
+    DOCKER_ENABLED       = "True"
+    CWD                  = local.root_dir,
     DEFAULT_CONTAINER_ID = docker_image.galaxy_app.latest,
-  }, local.name_suffix == "" ? {} : {
+    }, local.name_suffix == "" ? {} : {
     DOCKER_VOLUME_MOUNTS = "${local.galaxy_root_volume_name}${local.name_suffix}:$galaxy_root:ro,${local.user_data_volume_name}${local.name_suffix}:/data:rw${length(var.extra_job_mounts) > 0 ? "," : ""}${join(",", var.extra_job_mounts)}"
   })
 }
 
 resource "docker_container" "galaxy_worker" {
   depends_on = [docker_container.upgrade_db]
-  name  = "${local.worker_name}${local.name_suffix}"
-  image = docker_image.galaxy_app.latest
+  name       = "${local.worker_name}${local.name_suffix}"
+  image      = docker_image.galaxy_app.latest
   # https://docs.galaxyproject.org/en/master/admin/scaling.html#uwsgi-for-web-serving-and-webless-galaxy-applications-as-job-handlers
-  command = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
+  command    = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
   hostname   = local.worker_name
   domainname = local.worker_name
   restart    = "unless-stopped"
@@ -26,8 +26,8 @@ resource "docker_container" "galaxy_worker" {
   }
 
   env = compact(concat(
-    [for k, v in local.galaxy_conf: "GALAXY_CONFIG_OVERRIDE_${k}=${v}"],
-    [for k, v in local.job_conf: "${k}=${v}"],
+    [for k, v in local.galaxy_conf : "GALAXY_CONFIG_OVERRIDE_${k}=${v}"],
+    [for k, v in local.job_conf : "${k}=${v}"],
     ["DOCKER_HOST=unix://${var.docker_socket_path}"],
   ))
 
@@ -43,7 +43,7 @@ resource "docker_container" "galaxy_worker" {
   dynamic "upload" {
     for_each = local.configs
     content {
-      file = "${local.config_dir}/macros/${upload.key}"
+      file    = "${local.config_dir}/macros/${upload.key}"
       content = upload.value
     }
   }
@@ -62,9 +62,9 @@ resource "docker_container" "galaxy_worker" {
   dynamic "mounts" {
     for_each = var.extra_mounts
     content {
-      source = mounts.value.source
-      target = mounts.value.target
-      type = mounts.value.type
+      source    = mounts.value.source
+      target    = mounts.value.target
+      type      = mounts.value.type
       read_only = mounts.value.read_only
     }
   }
