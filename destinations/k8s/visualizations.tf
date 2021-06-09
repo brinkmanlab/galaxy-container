@@ -14,7 +14,7 @@ resource "kubernetes_job" "visualizations" {
         automount_service_account_token = false
         container {
           name              = "load-visualizations"
-          command           = ["bash", "-c", "mkdir -p '${local.managed_config_dir}/visualizations'; ${local.viz_curl_cmd}"]
+          command           = ["bash", "-c", "rm -rf '${local.managed_config_dir}/visualizations'; mkdir -p '${local.managed_config_dir}/visualizations'; ${local.viz_curl_cmd}"]
           image             = "${local.galaxy_app_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null
           volume_mount {
