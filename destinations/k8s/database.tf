@@ -35,6 +35,9 @@ resource "kubernetes_job" "init_db" {
   timeouts {
     create = "10m"
   }
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "kubernetes_job" "init_install_db" {
@@ -92,6 +95,9 @@ resource "kubernetes_job" "init_install_db" {
   wait_for_completion = true
   timeouts {
     create = "10m"
+  }
+  lifecycle {
+    ignore_changes = all
   }
 }
 
