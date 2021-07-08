@@ -7,8 +7,27 @@ locals {
   }
 }
 
+resource "kubernetes_service" "galaxy_worker" { # TODO Only required while https://github.com/galaxyproject/galaxy/issues/10243
+  metadata {
+    generate_name = local.worker_name
+    namespace = local.namespace.metadata.0.name
+  }
+  spec {
+    selector = {
+      App = local.worker_name
+    }
+    port {
+      port        = 8080
+    }
+    cluster_ip = "None"
+    type = "ClusterIP"
+  }
+}
 
-resource "kubernetes_deployment" "galaxy_worker" {
+
+#TODO https://github.com/galaxyproject/galaxy/issues/10243
+#resource "kubernetes_deployment" "galaxy_worker" {
+resource "kubernetes_stateful_set" "galaxy_worker" {
   depends_on       = [kubernetes_job.upgrade_db]
   wait_for_rollout = !var.debug
   metadata {
@@ -28,9 +47,10 @@ resource "kubernetes_deployment" "galaxy_worker" {
     replicas               = var.worker_max_replicas #TODO https://github.com/galaxyproject/galaxy/issues/10243 and https://github.com/galaxyproject/galaxy/issues/11335
     min_ready_seconds      = 10
     revision_history_limit = 0
-    strategy {
-      type = "Recreate"
-    }
+    #strategy { # TODO Required after https://github.com/galaxyproject/galaxy/issues/10243
+    #  type = "Recreate"
+    #}
+    service_name = kubernetes_service.galaxy_worker.metadata.0.name # TODO Only required while https://github.com/galaxyproject/galaxy/issues/10243
     selector {
       match_labels = {
         App = local.worker_name
@@ -89,10 +109,10 @@ resource "kubernetes_deployment" "galaxy_worker" {
           }*/
 
           resources {
-            limits = {
-              cpu    = "2"
-              memory = "6Gi"
-            }
+            #limits = {
+            #  cpu    = "2"
+            #  memory = "6Gi"
+            #}
             requests = {
               cpu    = "1"
               memory = "1Gi"
