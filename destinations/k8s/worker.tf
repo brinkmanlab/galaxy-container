@@ -45,8 +45,8 @@ resource "kubernetes_stateful_set" "galaxy_worker" {
   }
   spec {
     replicas               = var.worker_max_replicas #TODO https://github.com/galaxyproject/galaxy/issues/10243 and https://github.com/galaxyproject/galaxy/issues/11335
-    min_ready_seconds      = 10
-    revision_history_limit = 0
+    #min_ready_seconds      = 10 # TODO Required after https://github.com/galaxyproject/galaxy/issues/10243
+    revision_history_limit = 1 # 0 TODO Required after https://github.com/galaxyproject/galaxy/issues/10243
     #strategy { # TODO Required after https://github.com/galaxyproject/galaxy/issues/10243
     #  type = "Recreate"
     #}
