@@ -68,7 +68,7 @@ if __name__ == '__main__':
     conn = GalaxyInstance('localhost:8000', '63ade82a83e02581f076f34522d957b7')
     h = get_upload_history(conn)
     i = 0
-    while (True):
+    while True:
         upload(h, Path('./LICENSE'), 'test', 'txt')
         i += 1
         if i % 100 == 0:
