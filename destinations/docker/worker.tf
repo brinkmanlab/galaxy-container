@@ -10,12 +10,13 @@ locals {
 
 resource "docker_container" "galaxy_worker" {
   depends_on = [docker_container.upgrade_db]
+  count = var.worker_max_replicas
   name       = "${local.worker_name}${local.name_suffix}"
   image      = docker_image.galaxy_app.latest
   # https://docs.galaxyproject.org/en/master/admin/scaling.html#uwsgi-for-web-serving-and-webless-galaxy-applications-as-job-handlers
   command    = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
-  hostname   = local.worker_name
-  domainname = local.worker_name
+  hostname   = "${local.worker_name}-${count.index}"
+  domainname = "${local.worker_name}-${count.index}"
   restart    = "unless-stopped"
   must_run   = true
   user       = "${local.uwsgi_user}:${local.uwsgi_group}"
