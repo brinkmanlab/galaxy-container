@@ -31,3 +31,9 @@ variable "docker_socket_path" {
   description = "Host path to docker socket"
   default     = "/var/run/docker.sock"
 }
+
+variable "worker_replicas" {
+  type = number
+  description = "Number of worker replicas"
+  default = 1
+}

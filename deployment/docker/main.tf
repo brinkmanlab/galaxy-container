@@ -13,6 +13,7 @@ module "galaxy" {
   host_port          = var.host_port
   docker_gid         = var.docker_gid
   docker_socket_path = var.docker_socket_path
+  worker_max_replicas = var.worker_replicas
 }
 
 module "admin_user" {
