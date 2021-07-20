@@ -80,6 +80,17 @@ locals {
           </xml>
       </macros>
     EOF
+    "tool_data_table_conf.xml" = <<-EOF
+      <?xml version="1.0"?>
+      <tables>
+          %{for table in var.static_tool_data_tables}
+          <table name="${table.name}" comment_char="${table.comment_char}" allow_duplicate_entries="${table.allow_duplicate_entries ? "True" : "False"}">
+              <columns>${join(",", table.columns)}</columns>
+              <file path="${table.path}" />
+          </table>
+          %{endfor}
+      </tables>
+    EOF
   }
   viz_curl_cmd = join(" && ", [for url in var.visualizations : "curl -L '${url}' | tar -xvz -C '${local.managed_config_dir}/visualizations'"])
 }
@@ -325,4 +336,16 @@ variable "visualizations" {
   type        = set(string)
   default     = []
   description = "Set of URLs to tarballs to unpack into visualizations folder"
+}
+
+variable "static_tool_data_tables" {
+  type = list(object({
+    table = string
+    path = string
+    allow_duplicate_entries = bool
+    comment_char = string
+    columns = list(string)
+  }))
+  default = []
+  description = "List of static tool data table loc files to load. Paths are relative to the value of `tool_data_path` in the galaxy config"
 }
