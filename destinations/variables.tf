@@ -80,16 +80,18 @@ locals {
           </xml>
       </macros>
     EOF
-    "tool_data_table_conf.xml" = <<-EOF
+    "tool_data_tables.xml" = <<-EOF
       <?xml version="1.0"?>
-      <tables>
+      <macros>
+        <xml name="tables">
           %{for table in var.static_tool_data_tables}
           <table name="${table.name}" comment_char="${table.comment_char}" allow_duplicate_entries="${table.allow_duplicate_entries ? "True" : "False"}">
               <columns>${join(",", table.columns)}</columns>
               <file path="${table.path}" />
           </table>
           %{endfor}
-      </tables>
+        </xml>
+      </macros>
     EOF
   }
   viz_curl_cmd = join(" && ", [for url in var.visualizations : "curl -L '${url}' | tar -xvz -C '${local.managed_config_dir}/visualizations'"])

@@ -1,0 +1,20 @@
+---
+- name: Generate tool_data_table_conf.xml
+  template:
+    src: tool_data_table_conf.xml.j2
+    dest: "{{ paths.config }}/tool_data_table_conf.xml"
+    mode: u=rw,g=r,o=r
+
+- name: Ensure macro dir exists
+  file:
+    path: '{{ galaxy_config }}/macros'
+    recurse: yes
+    state: directory
+
+- name: Copy macro defaults
+  copy:
+    src: "{{ item }}"
+    dest: "{{ paths.config }}/macros/{{ item }}"
+    mode: u=rw,g=r,o=r
+  loop:
+    - tool_data_tables.xml
