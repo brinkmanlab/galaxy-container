@@ -82,7 +82,7 @@ locals {
     EOF
   }
   configs = {
-    "tool_data_tables.xml" = <<-EOF
+    "tool_data_table_conf.xml" = <<-EOF
       <?xml version="1.0"?>
       <tables>
         %{for table in var.static_tool_data_tables}
