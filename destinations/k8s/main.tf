@@ -16,3 +16,11 @@ resource "kubernetes_config_map" "galaxy_config" {
   }
   data = local.configs
 }
+
+resource "kubernetes_config_map" "galaxy_config_macros" {
+  metadata {
+    name      = "galaxy-config-macros"
+    namespace = local.namespace.metadata.0.name
+  }
+  data = local.macros
+}

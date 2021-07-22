@@ -109,9 +109,18 @@ resource "kubernetes_deployment" "galaxy_app" {
             mount_path = local.data_dir
             name       = "data"
           }
+          dynamic "volume_mount" {
+            for_each = local.configs
+            content {
+              mount_path = "${local.config_dir}/${volume_mount.key}"
+              name = "config"
+              read_only = true
+              sub_path = volume_mount.key
+            }
+          }
           volume_mount {
             mount_path = "${local.config_dir}/macros"
-            name       = "config"
+            name       = "config-macros"
             read_only  = true
           }
           volume_mount {
@@ -141,6 +150,12 @@ resource "kubernetes_deployment" "galaxy_app" {
           name = "config"
           config_map {
             name = kubernetes_config_map.galaxy_config.metadata.0.name
+          }
+        }
+        volume {
+          name = "config-macros"
+          config_map {
+            name = kubernetes_config_map.galaxy_config_macros.metadata.0.name
           }
         }
         dynamic "volume" {

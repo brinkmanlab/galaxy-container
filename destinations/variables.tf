@@ -44,8 +44,8 @@ locals {
     admin_users = join(",", var.admin_users)
   }
   galaxy_conf = merge(local.common_galaxy_conf, local.admin_users_conf, local.destination_galaxy_conf, var.galaxy_conf)
-  configs = {
-    "tool_mapping.xml"     = <<-EOF
+  macros = {
+    "tool_mapping.xml" = <<-EOF
       <?xml version="1.0"?>
       <macros>
           <xml name="tool_mapping">
@@ -70,7 +70,7 @@ locals {
           </xml>
       </macros>
     EOF
-    "limits.xml"           = <<-EOF
+    "limits.xml" = <<-EOF
       <?xml version="1.0"?>
       <macros>
           <xml name="limits">
@@ -80,18 +80,18 @@ locals {
           </xml>
       </macros>
     EOF
+  }
+  configs = {
     "tool_data_tables.xml" = <<-EOF
       <?xml version="1.0"?>
-      <macros>
-        <xml name="tables">
-          %{for table in var.static_tool_data_tables}
-          <table name="${table.name}" comment_char="${table.comment_char}" allow_duplicate_entries="${table.allow_duplicate_entries ? "True" : "False"}">
-              <columns>${join(",", table.columns)}</columns>
-              <file path="${table.path}" />
-          </table>
-          %{endfor}
-        </xml>
-      </macros>
+      <tables>
+        %{for table in var.static_tool_data_tables}
+        <table name="${table.name}" comment_char="${table.comment_char}" allow_duplicate_entries="${table.allow_duplicate_entries ? "True" : "False"}">
+            <columns>${join(",", table.columns)}</columns>
+            <file path="${table.path}" />
+        </table>
+        %{endfor}
+      </tables>
     EOF
   }
   viz_curl_cmd = join(" && ", [for url in var.visualizations : "curl -L '${url}' | tar -xvz -C '${local.managed_config_dir}/visualizations'"])

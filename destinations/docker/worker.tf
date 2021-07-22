@@ -44,6 +44,14 @@ resource "docker_container" "galaxy_worker" {
   dynamic "upload" {
     for_each = local.configs
     content {
+      file    = "${local.config_dir}/${upload.key}"
+      content = upload.value
+    }
+  }
+
+  dynamic "upload" {
+    for_each = local.macros
+    content {
       file    = "${local.config_dir}/macros/${upload.key}"
       content = upload.value
     }
