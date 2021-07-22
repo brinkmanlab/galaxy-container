@@ -340,7 +340,7 @@ variable "visualizations" {
 
 variable "static_tool_data_tables" {
   type = list(object({
-    table = string
+    name = string
     path = string
     allow_duplicate_entries = bool
     comment_char = string
