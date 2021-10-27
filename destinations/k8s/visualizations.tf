@@ -60,7 +60,7 @@ resource "kubernetes_job" "visualizations-fix" {
         automount_service_account_token = false
         container {
           name              = "load-visualizations-fix"
-          command           = ["bash", "-c", "apt-get install rename && rename -v 'y/A-Z/a-z/' '${local.managed_config_dir}/visualizations/'*"]
+          command           = ["bash", "-c", "apt-get install -y rename && rename -v 'y/A-Z/a-z/' '${local.managed_config_dir}/visualizations/'*"]
           image             = "${local.galaxy_app_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : null
           volume_mount {
