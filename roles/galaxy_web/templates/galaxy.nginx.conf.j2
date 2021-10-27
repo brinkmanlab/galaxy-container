@@ -4,6 +4,10 @@ uwsgi_read_timeout 180;
 # maximum file upload size, defaults to 1MB
 client_max_body_size 10g;
 
+upstream app {
+    server {{ containers.app.name }}:{{ uwsgi.port }};
+}
+
 server {
   listen       80 default_server;
   listen       [::]:80 default_server;
@@ -43,7 +47,7 @@ server {
         set $api_key $master_api_key;
     }
     uwsgi_param HTTP_X_API_KEY "$api_key" if_not_empty;
-    uwsgi_pass uwsgi://{{ containers.app.name }}:{{ uwsgi.port }};
+    uwsgi_pass uwsgi://app;
     uwsgi_param UWSGI_SCHEME $scheme;
   }
 
