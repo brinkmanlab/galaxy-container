@@ -13,7 +13,7 @@ resource "kubernetes_job" "init_db" {
           name              = "${local.app_name}-init-db"
           command           = ["/env_run.sh", "python3", "${local.root_dir}/scripts/create_db.py", "-c", "${local.config_dir}/galaxy.yml", "galaxy"]
           image             = "${local.galaxy_app_image}:${var.image_tag}"
-          image_pull_policy = var.debug ? "Always" : null
+          image_pull_policy = "Always"
           env {
             name  = "GALAXY_CONFIG_OVERRIDE_database_connection"
             value = "${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
@@ -64,7 +64,7 @@ resource "kubernetes_job" "init_install_db" {
             "/env_run.sh python3 ${local.root_dir}/scripts/create_db.py -c ${local.config_dir}/galaxy.yml install"
           ])]
           image             = "${local.galaxy_app_image}:${var.image_tag}"
-          image_pull_policy = var.debug ? "Always" : null
+          image_pull_policy = "Always"
           env {
             name  = "GALAXY_CONFIG_OVERRIDE_database_connection"
             value = "${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
@@ -117,7 +117,7 @@ resource "kubernetes_job" "upgrade_db" {
           name              = "${local.app_name}-upgrade-db"
           command           = ["/env_run.sh", "python3", "${local.root_dir}/scripts/manage_db.py", "upgrade", "-c", "${local.config_dir}/galaxy.yml"]
           image             = "${local.galaxy_app_image}:${var.image_tag}"
-          image_pull_policy = var.debug ? "Always" : null
+          image_pull_policy = "Always"
           env {
             name  = "GALAXY_CONFIG_OVERRIDE_database_connection"
             value = "${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
