@@ -73,7 +73,7 @@ resource "kubernetes_stateful_set" "galaxy_worker" {
           image             = "${local.galaxy_app_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : "IfNotPresent"
           name              = local.worker_name
-          command           = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
+          command           = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers --attach-to-pool=workflow-schedulers"]
 
           dynamic "env" {
             for_each = toset([for k, v in local.galaxy_conf : k]) # https://www.terraform.io/docs/language/meta-arguments/for_each.html#limitations-on-values-used-in-for_each
