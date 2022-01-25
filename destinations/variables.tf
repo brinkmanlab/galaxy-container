@@ -25,7 +25,7 @@ locals {
   mail_port = var.mail_port != null ? var.mail_port : regex("(?m)^mail.*port=(?P<mail_port>[^ ]+)", file("${path.root}/inventory.ini")).mail_port
 
   db_conf = var.db_conf != null ? var.db_conf : {
-    scheme = "postgres"
+    scheme = "postgresql"
     host   = local.db_name
     name   = "galaxy"
     user   = "galaxy"
