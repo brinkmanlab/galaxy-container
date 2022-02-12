@@ -114,7 +114,7 @@ resource "kubernetes_stateful_set" "galaxy_worker" {
             #  memory = "6Gi"
             #}
             requests = {
-              cpu    = "1"
+              cpu    = "500m"
               memory = "1Gi"
             }
           }

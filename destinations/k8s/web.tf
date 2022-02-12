@@ -65,7 +65,7 @@ resource "kubernetes_deployment" "galaxy_web" {
               memory = "2Gi"
             }
             requests = {
-              cpu    = "1"
+              cpu    = "200m"
               memory = "1Gi"
             }
           }

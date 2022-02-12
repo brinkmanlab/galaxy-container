@@ -101,7 +101,7 @@ resource "kubernetes_deployment" "galaxy_app" {
               memory = "2Gi"
             }
             requests = {
-              cpu    = "1"
+              cpu    = "500m"
               memory = "1Gi"
             }
           }
