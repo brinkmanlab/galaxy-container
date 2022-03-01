@@ -39,6 +39,7 @@ locals {
     id_secret           = local.id_secret
     email_from          = var.email
     error_email_to      = var.email
+    container_resolvers_config_file = "${local.config_dir}/container_resolvers_conf.yml"
   }
   admin_users_conf = length(var.admin_users) == 0 ? {} : {
     admin_users = join(",", var.admin_users)
@@ -92,6 +93,19 @@ locals {
         </table>
         %{endfor}
       </tables>
+    EOF
+    # See https://github.com/galaxyproject/galaxy/commit/46fc861fb666f698290e6417a640d34626d10629#diff-466bfb1ecf19ceb83fd1f7918e1f087db3013582f5e7dc8f79263d6912dbc4b0R131
+    "container_resolvers_conf.yml" = <<-EOF
+      - type: explicit
+      - type: mapping
+        mappings:
+          %{for k, v in var.tool_containers}
+          - container_type: docker
+            tool_id: "${k}"
+            identifier: "${v}"
+          %{endfor}
+      - type: mulled
+        auto_install: "True"
     EOF
   }
   viz_curl_cmd = join(" && ", [for url in var.visualizations : "curl -L '${url}' | tar -xvz -C '${local.managed_config_dir}/visualizations'"])
@@ -350,4 +364,10 @@ variable "static_tool_data_tables" {
   }))
   default = []
   description = "List of static tool data table loc files to load. Paths are relative to the value of `tool_data_path` in the galaxy config"
+}
+
+variable "tool_containers" {
+  type = map(string)
+  default = {}
+  description = "Mapping of tool IDs to tool containers"
 }
