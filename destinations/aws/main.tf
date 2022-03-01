@@ -72,4 +72,5 @@ module "k8s" {
   app_max_replicas        = var.app_max_replicas
   worker_max_replicas     = var.worker_max_replicas
   static_tool_data_tables = var.static_tool_data_tables
+  tool_containers         = var.tool_containers
 }
