@@ -92,7 +92,7 @@ galaxy:
       static_enabled: false
       enable_old_display_applications: false
       enable_mulled_containers: false  # Enabled in container_resolvers_conf.xml
-      containers_resolvers_config_file: "{{ paths.config }}/container_resolvers_conf.xml"
+      container_resolvers_config_file: "{{ paths.config }}/container_resolvers_conf.yml"
       involucro_auto_init: false
       involucro_path: '{{ paths.root }}/involucro'
       mulled_resolution_cache_type: file # TODO https://github.com/galaxyproject/galaxy/pull/10436
