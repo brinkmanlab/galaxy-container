@@ -1,4 +1,4 @@
-# AWS Deployment
+# AWS Galaxy Deployment Module
 <!-- BEGIN_TF_DOCS -->
 ## Providers
 
@@ -8,6 +8,13 @@
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
 | <a name="provider_time"></a> [time](#provider\_time) | n/a |
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_k8s"></a> [k8s](#module\_k8s) | ../k8s | n/a |
+| <a name="module_nfs_server"></a> [nfs\_server](#module\_nfs\_server) | ./storage | n/a |
 
 ## Inputs
 
@@ -72,14 +79,14 @@
 | <a name="output_db_data_volume_name"></a> [db\_data\_volume\_name](#output\_db\_data\_volume\_name) | n/a |
 | <a name="output_db_image"></a> [db\_image](#output\_db\_image) | n/a |
 | <a name="output_db_name"></a> [db\_name](#output\_db\_name) | n/a |
-| <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | n/a |
+| <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | Galaxy front-end HTTP endpoint |
 | <a name="output_galaxy_app_image"></a> [galaxy\_app\_image](#output\_galaxy\_app\_image) | n/a |
 | <a name="output_galaxy_root_volume_name"></a> [galaxy\_root\_volume\_name](#output\_galaxy\_root\_volume\_name) | n/a |
 | <a name="output_galaxy_web_image"></a> [galaxy\_web\_image](#output\_galaxy\_web\_image) | n/a |
 | <a name="output_id_secret"></a> [id\_secret](#output\_id\_secret) | n/a |
 | <a name="output_master_api_key"></a> [master\_api\_key](#output\_master\_api\_key) | n/a |
-| <a name="output_namespace"></a> [namespace](#output\_namespace) | n/a |
-| <a name="output_nfs_server"></a> [nfs\_server](#output\_nfs\_server) | n/a |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | Kubernetes namespace containing Galaxy resources |
+| <a name="output_nfs_server"></a> [nfs\_server](#output\_nfs\_server) | AWS EFS domain name mounted by Galaxy |
 | <a name="output_root_dir"></a> [root\_dir](#output\_root\_dir) | n/a |
 | <a name="output_smtp_conf"></a> [smtp\_conf](#output\_smtp\_conf) | galaxy\_conf must have email\_from configured for this to not be empty |
 | <a name="output_user_data_volume_name"></a> [user\_data\_volume\_name](#output\_user\_data\_volume\_name) | n/a |

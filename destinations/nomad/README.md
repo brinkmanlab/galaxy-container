@@ -1,4 +1,4 @@
-# Nomad Deployment
+# Nomad Deployment Module
 <!-- BEGIN_TF_DOCS -->
 ## Providers
 
@@ -6,6 +6,10 @@
 |------|---------|
 | <a name="provider_nomad"></a> [nomad](#provider\_nomad) | n/a |
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
+
+## Modules
+
+No modules.
 
 ## Inputs
 

@@ -1,4 +1,4 @@
-# Kubernetes Deployment
+# Kubernetes Deployment Module
 <!-- BEGIN_TF_DOCS -->
 ## Providers
 
@@ -6,6 +6,10 @@
 |------|---------|
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
+
+## Modules
+
+No modules.
 
 ## Inputs
 

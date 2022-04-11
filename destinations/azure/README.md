@@ -1,10 +1,14 @@
-# Azure Deployment
+# Azure Deployment Module
 <!-- BEGIN_TF_DOCS -->
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
+
+## Modules
+
+No modules.
 
 ## Inputs
 

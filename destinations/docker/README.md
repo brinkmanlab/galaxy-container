@@ -1,4 +1,4 @@
-# Docker Deployment
+# Docker Deployment Module
 <!-- BEGIN_TF_DOCS -->
 ## Providers
 
@@ -7,6 +7,10 @@
 | <a name="provider_docker"></a> [docker](#provider\_docker) | n/a |
 | <a name="provider_null"></a> [null](#provider\_null) | n/a |
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
+
+## Modules
+
+No modules.
 
 ## Inputs
 
@@ -68,14 +72,14 @@
 | <a name="output_db_data_volume_name"></a> [db\_data\_volume\_name](#output\_db\_data\_volume\_name) | n/a |
 | <a name="output_db_image"></a> [db\_image](#output\_db\_image) | n/a |
 | <a name="output_db_name"></a> [db\_name](#output\_db\_name) | n/a |
-| <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | n/a |
+| <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | Docker network hostname for Galaxy front-end HTTP endpoint |
 | <a name="output_galaxy_app_image"></a> [galaxy\_app\_image](#output\_galaxy\_app\_image) | n/a |
 | <a name="output_galaxy_root_volume_name"></a> [galaxy\_root\_volume\_name](#output\_galaxy\_root\_volume\_name) | n/a |
 | <a name="output_galaxy_web_image"></a> [galaxy\_web\_image](#output\_galaxy\_web\_image) | n/a |
-| <a name="output_host_port"></a> [host\_port](#output\_host\_port) | n/a |
+| <a name="output_host_port"></a> [host\_port](#output\_host\_port) | Host port Galaxy is being served on |
 | <a name="output_id_secret"></a> [id\_secret](#output\_id\_secret) | n/a |
 | <a name="output_master_api_key"></a> [master\_api\_key](#output\_master\_api\_key) | n/a |
-| <a name="output_network"></a> [network](#output\_network) | n/a |
+| <a name="output_network"></a> [network](#output\_network) | Docker network Galaxy resources are attached to |
 | <a name="output_root_dir"></a> [root\_dir](#output\_root\_dir) | n/a |
 | <a name="output_user_data_volume_name"></a> [user\_data\_volume\_name](#output\_user\_data\_volume\_name) | n/a |
 | <a name="output_uwsgi_gid"></a> [uwsgi\_gid](#output\_uwsgi\_gid) | n/a |
