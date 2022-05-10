@@ -2,7 +2,7 @@
 
 If you are running Docker on OSX (Mac), first see the [related subheading below](#osx-peculiarities). 
 Ensure docker can be [run without root privileges](https://docs.docker.com/engine/install/linux-postinstall/).
-Change the current working directory to `./deployment/docker`. Modify `./changeme.auto.tfvars` with any custom values you like.
+Change the current working directory to `/deployment/docker`. Modify `./changeme.auto.tfvars` with any custom values you like.
 You must at least set the `docker_gid` variable to a group id with write access to `/var/run/docker.sock`.
 Run `stat /var/run/docker.sock` (or `stat -x /var/run/docker.sock` on OSX) to show the owning group id.
 
@@ -14,8 +14,7 @@ terraform init
 
 Browse to http://localhost:8000/ to access the deployment.
 
-To shut down this instance, run `./destroy.sh`. This will delete the instance, all of its data, and the container images. Docker may fail to unmount
-CVMFS during shutdown, run `sudo fusermount -u ./microbedb/mount` if you encounter `transport endpoint is not connected` errors.
+To shut down this instance, run `./destroy.sh`. This will delete the instance, all of its data, and the container images.
 
 ## OSX Peculiarities
 
