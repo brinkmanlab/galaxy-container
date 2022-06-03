@@ -25,6 +25,10 @@ resource "docker_container" "galaxy_db" {
     name    = local.network
     aliases = [local.db_name]
   }
+  ports {
+    external = 5432
+    internal = 5432
+  }
 }
 
 resource "docker_container" "wait_for_db" {
