@@ -10,6 +10,10 @@ This module configures an internal Galaxy provider to bootstrap the admin user a
 | <a name="provider_galaxy.master"></a> [galaxy.master](#provider\_galaxy.master) | n/a |
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
 
+## Modules
+
+No modules.
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
