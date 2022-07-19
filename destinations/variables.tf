@@ -96,13 +96,15 @@ locals {
     EOF
     # See https://github.com/galaxyproject/galaxy/commit/46fc861fb666f698290e6417a640d34626d10629#diff-466bfb1ecf19ceb83fd1f7918e1f087db3013582f5e7dc8f79263d6912dbc4b0R131
     "container_resolvers_conf.yml" = <<-EOF
+      %{if length(var.tool_containers) > 0 ~}
       - type: mapping
         mappings:
-          %{for k, v in var.tool_containers}
+          %{for k, v in var.tool_containers ~}
           - container_type: docker
             tool_id: "${k}"
             identifier: "${v}"
-          %{endfor}
+          %{endfor ~}
+      %{endif ~}
       - type: explicit
       - type: mulled
         auto_install: "True"
