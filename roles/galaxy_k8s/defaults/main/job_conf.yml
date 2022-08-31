@@ -41,12 +41,12 @@ galaxy:
             #k8s_timeout_seconds_job_deletion: 30
             k8s_run_as_user_id:
               from_environ: K8S_RUN_AS_UID
-              default: '{{ uwsgi.uid }}'
+              default: '{{ app.uid }}'
             k8s_run_as_group_id:
               from_environ: K8S_RUN_AS_GID
-              default: '{{ uwsgi.gid }}'
+              default: '{{ app.gid }}'
             #k8s_supplemental_group_id: 0
-            k8s_fs_group_id: '{{ uwsgi.gid }}'
+            k8s_fs_group_id: '{{ app.gid }}'
       destinations:
         k8s:
           runner: k8s

@@ -1,11 +1,16 @@
 # allow up to 3 minutes for Galaxy to respond to slow requests before timing out
-uwsgi_read_timeout 180;
+proxy_read_timeout 180;
 
 # maximum file upload size, defaults to 1MB
 client_max_body_size 10g;
 
 upstream app {
-    server {{ containers.app.name }}:{{ uwsgi.port }};
+    server {{ containers.app.name }}:{{ app.port }};
+}
+
+map $http_x_forwarded_proto $proxiedscheme {
+    default $http_x_forwarded_proto;
+    "" $scheme;
 }
 
 server {
@@ -20,10 +25,14 @@ server {
 
   # proxy all requests not matching other locations to uWSGI
   location / {
+    proxy_pass_request_headers      on;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $proxiedscheme;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
     include cors.conf;
     include cors_options.conf;
     include master_api_key;
-    include uwsgi_params;
     set $test '';
     set $api_key $http_x_api_key;
     if ($request_method = POST) {
@@ -46,9 +55,8 @@ server {
         # Add master api key to query params if all tests succeed
         set $api_key $master_api_key;
     }
-    uwsgi_param HTTP_X_API_KEY "$api_key" if_not_empty;
-    uwsgi_pass uwsgi://app;
-    uwsgi_param UWSGI_SCHEME $scheme;
+    proxy_set_header HTTP_X_API_KEY "$api_key";
+    proxy_pass http://app;
   }
 
   # User download via nginx # TODO verify paths

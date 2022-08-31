@@ -12,7 +12,7 @@ resource "kubernetes_job" "init_nfs" {
         container {
           name    = "init-nfs-galaxy"
           image   = "alpine"
-          command = ["install", "-v", "-d", "-m", "0777", "-o", local.uwsgi_uid, "-g", local.uwsgi_gid, "${local.data_dir}/${local.instance}/galaxy/"]
+          command = ["install", "-v", "-d", "-m", "0777", "-o", local.app_uid, "-g", local.app_gid, "${local.data_dir}/${local.instance}/galaxy/"]
           volume_mount {
             mount_path = local.data_dir
             name       = "data"

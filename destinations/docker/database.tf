@@ -46,7 +46,7 @@ resource "docker_container" "init_db" {
   restart    = "no"
   must_run   = false
   attach     = true
-  command    = ["/env_run.sh", "python3", "${local.root_dir}/scripts/create_db.py", "-c", "${local.config_dir}/galaxy.yml", "galaxy"]
+  command    = ["python3", "${local.root_dir}/scripts/create_db.py", "-c", "${local.config_dir}/galaxy.yml", "galaxy"]
   env = compact([
     "CWD=${local.root_dir}",
     "GALAXY_CONFIG_OVERRIDE_database_connection=${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
@@ -60,11 +60,11 @@ resource "docker_container" "init_install_db" {
   depends_on = [docker_container.wait_for_db]
   image      = docker_image.galaxy_app.latest
   name       = "${local.app_name}-init-install-db${local.name_suffix}"
-  user       = "${local.uwsgi_user}:${local.uwsgi_group}"
+  user       = "${local.app_user}:${local.app_group}"
   restart    = "no"
   must_run   = false
   attach     = true
-  command    = ["/env_run.sh", "python3", "${local.root_dir}/scripts/create_db.py", "-c", "${local.config_dir}/galaxy.yml", "install"]
+  command    = ["python3", "${local.root_dir}/scripts/create_db.py", "-c", "${local.config_dir}/galaxy.yml", "install"]
   env = compact([
     "CWD=${local.root_dir}",
     "GALAXY_CONFIG_OVERRIDE_database_connection=${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
@@ -86,7 +86,7 @@ resource "docker_container" "upgrade_db" {
   restart    = "no"
   must_run   = false
   attach     = true
-  command    = ["/env_run.sh", "python3", "${local.root_dir}/scripts/manage_db.py", "upgrade", "-c", "${local.config_dir}/galaxy.yml"]
+  command    = ["python3", "${local.root_dir}/scripts/manage_db.py", "upgrade", "-c", "${local.config_dir}/galaxy.yml"]
   env = compact([
     "CWD=${local.root_dir}",
     "GALAXY_CONFIG_OVERRIDE_database_connection=${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"

@@ -21,10 +21,10 @@ job "galaxy-app" {
       service {
         # TODO register with consul, figure out how to delay registration until checks pass
         check {
-          name = "check_uwsgi"
+          name = "check_service"
           type = "script"
-          command = "uwping"
-          args = ["uwsgi://localhost:${uwsgi_port}/api/version"]
+          command = "curl"
+          args = ["-f", "http://localhost:${app_port}/api/version"]
           interval = 2
           success_before_passing = 3
           failures_before_critical = 1

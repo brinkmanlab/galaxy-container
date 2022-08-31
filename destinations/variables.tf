@@ -8,18 +8,22 @@ locals {
   galaxy_web_image        = var.galaxy_web_image != null ? var.galaxy_web_image : "brinkmanlab/${local.ansible.containers.web.image}"
   galaxy_app_image        = var.galaxy_app_image != null ? var.galaxy_app_image : "brinkmanlab/${local.ansible.containers.app.image}"
   db_image                = var.db_image != null ? var.db_image : local.ansible.containers.db.image
+  tusd_image              = var.tusd_image != null ? var.tusd_image : local.ansible.containers.tusd.image
   galaxy_root_volume_name = var.galaxy_root_volume_name != null ? var.galaxy_root_volume_name : local.ansible.volumes.galaxy_root.name
   user_data_volume_name   = var.user_data_volume_name != null ? var.user_data_volume_name : local.ansible.volumes.user_data.name
   db_data_volume_name     = var.db_data_volume_name != null ? var.db_data_volume_name : local.ansible.volumes.db_data.name
   web_name                = var.web_name != null ? var.web_name : local.ansible.containers.web.name
   app_name                = var.app_name != null ? var.app_name : local.ansible.containers.app.name
   worker_name             = var.worker_name != null ? var.worker_name : local.ansible.containers.worker.name
+  celery_worker_name      = var.celery_worker_name != null ? var.celery_worker_name : local.ansible.containers.celery_worker.name
+  celery_beat_name      = var.celery_beat_name != null ? var.celery_beat_name : local.ansible.containers.celery_beat.name
   db_name                 = var.db_name != null ? var.db_name : local.ansible.containers.db.name
-  uwsgi_port              = var.uwsgi_port != null ? var.uwsgi_port : local.ansible.uwsgi.port
-  uwsgi_uid               = var.uwsgi_uid != null ? var.uwsgi_uid : local.ansible.uwsgi.uid
-  uwsgi_gid               = var.uwsgi_gid != null ? var.uwsgi_gid : local.ansible.uwsgi.gid
-  uwsgi_user              = var.uwsgi_user != null ? var.uwsgi_user : local.ansible.uwsgi.user
-  uwsgi_group             = var.uwsgi_group != null ? var.uwsgi_group : local.ansible.uwsgi.group
+  tusd_name               = var.tusd_name != null ? var.tusd_name : local.ansible.containers.tusd.name
+  app_port                = var.app_port != null ? var.app_port : local.ansible.app.port
+  app_uid                 = var.app_uid != null ? var.app_uid : local.ansible.app.uid
+  app_gid                 = var.app_gid != null ? var.app_gid : local.ansible.app.gid
+  app_user                = var.app_user != null ? var.app_user : local.ansible.app.user
+  app_group               = var.app_group != null ? var.app_group : local.ansible.app.group
 
   mail_name = var.mail_name != null ? var.mail_name : regex("(?m)^mail.*hostname=(?P<mail_name>[^ ]+)", file("${path.root}/galaxy/inventory.ini")).mail_name
   mail_port = var.mail_port != null ? var.mail_port : regex("(?m)^mail.*port=(?P<mail_port>[^ ]+)", file("${path.root}/inventory.ini")).mail_port
@@ -34,11 +38,11 @@ locals {
   master_api_key = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key.result
   id_secret      = var.id_secret != "" ? var.id_secret : random_password.id_secret.result
   common_galaxy_conf = {
-    database_connection = "${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
-    master_api_key      = local.master_api_key
-    id_secret           = local.id_secret
-    email_from          = var.email
-    error_email_to      = var.email
+    database_connection             = "${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
+    master_api_key                  = local.master_api_key
+    id_secret                       = local.id_secret
+    email_from                      = var.email
+    error_email_to                  = var.email
     container_resolvers_config_file = "${local.config_dir}/container_resolvers_conf.yml"
   }
   admin_users_conf = length(var.admin_users) == 0 ? {} : {
@@ -46,7 +50,7 @@ locals {
   }
   galaxy_conf = merge(local.common_galaxy_conf, local.admin_users_conf, local.destination_galaxy_conf, var.galaxy_conf)
   macros = {
-    "tool_mapping.xml" = <<-EOF
+    "tool_mapping.xml"     = <<-EOF
       <?xml version="1.0"?>
       <macros>
           <xml name="tool_mapping">
@@ -71,7 +75,7 @@ locals {
           </xml>
       </macros>
     EOF
-    "limits.xml" = <<-EOF
+    "limits.xml"           = <<-EOF
       <?xml version="1.0"?>
       <macros>
           <xml name="limits">
@@ -96,15 +100,15 @@ locals {
     EOF
     # See https://github.com/galaxyproject/galaxy/commit/46fc861fb666f698290e6417a640d34626d10629#diff-466bfb1ecf19ceb83fd1f7918e1f087db3013582f5e7dc8f79263d6912dbc4b0R131
     "container_resolvers_conf.yml" = <<-EOF
-      %{~ if length(var.tool_containers) > 0 ~}
+      %{~if length(var.tool_containers) > 0~}
       - type: mapping
         mappings:
-          %{for k, v in var.tool_containers ~}
+          %{for k, v in var.tool_containers~}
           - container_type: docker
             tool_id: "${k}"
             identifier: "${v}"
-          %{endfor ~}
-      %{endif ~}
+          %{endfor~}
+      %{endif~}
       - type: explicit
       - type: mulled
         auto_install: "True"
@@ -259,28 +263,28 @@ variable "db_name" {
 variable "uwsgi_port" {
   type        = number
   default     = null
-  description = "Port Galaxy UWSGI server is listening from"
+  description = "Port Galaxy app server is listening from"
 }
 
-variable "uwsgi_uid" {
+variable "app_uid" {
   type        = number
   default     = null
   description = "UID of Galaxy process"
 }
 
-variable "uwsgi_gid" {
+variable "app_gid" {
   type        = number
   default     = null
   description = "GID of Galaxy process"
 }
 
-variable "uwsgi_user" {
+variable "app_user" {
   type        = string
   default     = null
   description = "User name of Galaxy process"
 }
 
-variable "uwsgi_group" {
+variable "app_group" {
   type        = string
   default     = null
   description = "Group name of Galaxy process"
@@ -292,7 +296,8 @@ variable "mail_name" {
   description = "SMTP server name"
 }
 
-variable "mail_port" { # TODO is it actually required to specify the port?
+variable "mail_port" {
+  # TODO is it actually required to specify the port?
   type        = number
   default     = 587
   description = "Port to connect to SMTP server"
@@ -358,18 +363,18 @@ variable "visualizations" {
 
 variable "static_tool_data_tables" {
   type = list(object({
-    name = string
-    path = string
+    name                    = string
+    path                    = string
     allow_duplicate_entries = bool
-    comment_char = string
-    columns = list(string)
+    comment_char            = string
+    columns                 = list(string)
   }))
-  default = []
+  default     = []
   description = "List of static tool data table loc files to load. Paths are relative to the value of `tool_data_path` in the galaxy config"
 }
 
 variable "tool_containers" {
-  type = map(string)
-  default = {}
+  type        = map(string)
+  default     = {}
   description = "Mapping of tool IDs to tool containers"
 }

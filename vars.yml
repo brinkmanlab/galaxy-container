@@ -24,8 +24,8 @@ volumes:
   db_data:
     name: db-data
 
-uwsgi:
-  port: 9000
+app:
+  port: 8000
   user: galaxy
   uid: 1000
   group: galaxy

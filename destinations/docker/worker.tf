@@ -13,13 +13,13 @@ resource "docker_container" "galaxy_worker" {
   count = var.worker_max_replicas
   name       = "${local.worker_name}-${count.index}${local.name_suffix}"
   image      = docker_image.galaxy_app.latest
-  # https://docs.galaxyproject.org/en/master/admin/scaling.html#uwsgi-for-web-serving-and-webless-galaxy-applications-as-job-handlers
-  command    = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
+  # https://docs.galaxyproject.org/en/master/admin/scaling.html#app-for-web-serving-and-webless-galaxy-applications-as-job-handlers
+  command    = ["sh", "-c", "python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
   hostname   = "${local.worker_name}-${count.index}"
   domainname = "${local.worker_name}-${count.index}"
   restart    = "unless-stopped"
   must_run   = true
-  user       = "${local.uwsgi_user}:${local.uwsgi_group}"
+  user       = "${local.app_user}:${local.app_group}"
   group_add  = [var.docker_gid]
 
   networks_advanced {
@@ -34,7 +34,7 @@ resource "docker_container" "galaxy_worker" {
 
   /* TODO https://github.com/galaxyproject/galaxy/issues/10894
   healthcheck {
-    test = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -v -c \"$GALAXY_CONFIG_OVERRIDE_database_connection\" -s $HOSTNAME"]
+    test = ["sh", "-c", "python ${local.root_dir}/probedb.py -v -c \"$GALAXY_CONFIG_OVERRIDE_database_connection\" -s $HOSTNAME"]
     start_period = "2s"
     timeout = "30s"
     interval = "10s"

@@ -35,7 +35,7 @@ resource "kubernetes_deployment" "galaxy_app" {
       }
       spec {
         security_context {
-          fs_group = local.uwsgi_gid
+          fs_group = local.app_gid
         }
         automount_service_account_token = false
         #image_pull_secrets {
@@ -49,8 +49,8 @@ resource "kubernetes_deployment" "galaxy_app" {
           image_pull_policy = var.debug ? "Always" : "IfNotPresent"
 
           readiness_probe {
-            exec {
-              command = ["uwping", "uwsgi://localhost:${local.uwsgi_port}/api/version"]
+            http_get {
+              path = "/api/version"
             }
             initial_delay_seconds = 2
             timeout_seconds       = 2
@@ -60,8 +60,8 @@ resource "kubernetes_deployment" "galaxy_app" {
           }
 
           liveness_probe {
-            exec {
-              command = ["uwping", "uwsgi://localhost:${local.uwsgi_port}/api/version"]
+            http_get {
+              path = "/api/version"
             }
             initial_delay_seconds = 2
             failure_threshold     = 3
@@ -71,8 +71,9 @@ resource "kubernetes_deployment" "galaxy_app" {
           }
 
           startup_probe {
-            exec {
-              command = ["uwping", "uwsgi://localhost:${local.uwsgi_port}/api/genomes"]
+            http_get {
+              path = "/api/genomes"
+              port = local.app_port
             }
             initial_delay_seconds = 5
             failure_threshold     = 30
@@ -205,8 +206,8 @@ resource "kubernetes_service" "galaxy_app" {
     }
     port {
       protocol    = "TCP"
-      port        = local.uwsgi_port
-      target_port = local.uwsgi_port
+      port        = local.app_port
+      target_port = local.app_port
     }
 
     type = "ClusterIP" # https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types

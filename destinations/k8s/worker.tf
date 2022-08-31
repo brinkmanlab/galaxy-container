@@ -64,8 +64,8 @@ resource "kubernetes_stateful_set" "galaxy_worker" {
       }
       spec {
         security_context {
-          run_as_user  = local.uwsgi_uid
-          run_as_group = local.uwsgi_gid
+          run_as_user  = local.app_uid
+          run_as_group = local.app_gid
         }
         service_account_name            = kubernetes_service_account.galaxy_worker.metadata.0.name
         automount_service_account_token = true
@@ -73,7 +73,7 @@ resource "kubernetes_stateful_set" "galaxy_worker" {
           image             = "${local.galaxy_app_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : "IfNotPresent"
           name              = local.worker_name
-          command           = ["sh", "-c", "/env_run.sh python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers --attach-to-pool=workflow-schedulers"]
+          command           = ["sh", "-c", "python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers --attach-to-pool=workflow-schedulers"]
 
           dynamic "env" {
             for_each = toset([for k, v in local.galaxy_conf : k]) # https://www.terraform.io/docs/language/meta-arguments/for_each.html#limitations-on-values-used-in-for_each
@@ -99,7 +99,7 @@ resource "kubernetes_stateful_set" "galaxy_worker" {
           /* TODO https://github.com/galaxyproject/galaxy/issues/10894
           liveness_probe {
             exec {
-              command = ["sh", "-c", "/env_run.sh python ${local.root_dir}/probedb.py -v -c \"$GALAXY_CONFIG_OVERRIDE_database_connection\" -s $HOSTNAME -i 200"]
+              command = ["sh", "-c", "python3 ${local.root_dir}/probedb.py -v -c \"$GALAXY_CONFIG_OVERRIDE_database_connection\" -s $HOSTNAME -i 200"]
             }
             initial_delay_seconds = 60
             failure_threshold = 2

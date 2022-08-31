@@ -10,8 +10,8 @@
     path: '{{ item }}'
     recurse: yes
     state: directory
-    owner: galaxy
-    group: galaxy
+    owner: '{{ app.user }}'
+    group: '{{ app.group }}'
     mode: ugo+rw
   loop:
     - '{{ paths.data }}'
@@ -27,6 +27,8 @@
   - {from: '{{ playbook_dir }}/galaxy/config/workflow_schedulers_conf.xml.sample', to: "{{ paths.config }}/workflow_schedulers_conf.xml" }
   - {from: 'container_resolvers_conf.yml', to: "{{ paths.config }}/container_resolvers_conf.yml" }
   - {from: 'tool_data_table_conf.xml', to: "{{ paths.config }}/tool_data_table_conf.xml" }
+  - {from: 'gunicorn.conf.py', to: "{{ paths.config }}/gunicorn.conf.py" }
+  - {from: 'run.sh', to: "{{ paths.root }}/run.sh" }  # Required by galaxy-main script to simply exist
   #- {from: '{{ playbook_dir }}/galaxy/config/tool_data_table_conf.xml.sample', to: "{{ paths.config }}/tool_data_table_conf.xml" }
   #- {from: '{{ playbook_dir }}/galaxy/config/shed_tool_conf.xml.sample', to: "{{ paths.managed_config }}/shed_tool_conf.xml" }
   #- {from: '{{ playbook_dir }}/galaxy/config/migrated_tools_conf.xml.sample', to: "{{ paths.managed_config }}/migrated_tools_conf.xml" }

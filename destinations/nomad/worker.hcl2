@@ -16,15 +16,15 @@ job "galaxy-worker" {
         image = "${image}:${tag}"
         # TODO auth https://www.nomadproject.io/docs/drivers/docker#auth
         command = "sh"
-        args = ["-c", "/env_run.sh python3 ${root_dir}/scripts/galaxy-main -c ${config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
+        args = ["-c", "python3 ${root_dir}/scripts/galaxy-main -c ${config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
       }
 
       service {
         check {
-          name = "check_uwsgi"
+          name = "check_app"
           type = "script"
           command = "uwping"
-          args = ["uwsgi://localhost:${uwsgi_port}/api/version"]
+          args = ["app://localhost:${app_port}/api/version"]
           interval = 2
           success_before_passing = 3
           failures_before_critical = 1

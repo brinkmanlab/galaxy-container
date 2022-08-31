@@ -1,32 +1,18 @@
 ---
 galaxy:
   config:
-    uwsgi:
-      socket: "0.0.0.0:{{ uwsgi.port }}"
-      buffer-size: 16384
-      processes: 1
-      threads: 4
-      offload-threads: 2
-      #static-map:
-      #  - /static/style=static/style/blue
-      #  - /static=static
-      #  - /favicon.ico=static/favicon.ico
-      master: true
-      virtualenv: "{{ paths.root }}/venv"
+    gunicorn:
+      preload_app: true
+      wsgi_app: "galaxy.webapps.galaxy.fast_factory:factory()"
+      timeout: 300
       pythonpath: "{{ paths.root }}/lib"
-      force-cwd: "{{ paths.root }}"
+      worker_class: "galaxy.webapps.galaxy.workers.Worker"
+      bind: "0.0.0.0:{{ app.port }}"
+      workers: 1
+      raw_env: ["GALAXY_CONFIG_FILE={{ paths.config }}/galaxy.yml"]
       chdir: "{{ paths.root }}"
-      chdir2: "{{ paths.root }}"
-      module: galaxy.webapps.galaxy.buildapp:uwsgi_app()
-      manage-script-name: false
-      thunder-lock: true
-      die-on-term: true
-      hook-master-start:
-        - unix_signal:2 gracefully_kill_them_all
-        - unix_signal:15 gracefully_kill_them_all
-      py-call-osafterfork: true
-      enable-threads: true
     galaxy:
+      debug: false
       #database_connection: "{{ hostvars['galaxy_db'].db_scheme }}://{{ hostvars['galaxy_db'].db_user }}:{{ hostvars['galaxy_db'].db_secret }}@{{ hostvars['galaxy_db'].db_host }}/{{ hostvars['galaxy_db'].db_name }}"
       database_wait: true
       database_wait_attempts: 60

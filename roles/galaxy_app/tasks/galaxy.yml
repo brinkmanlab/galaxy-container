@@ -4,3 +4,9 @@
     src: galaxy.yml.j2
     dest: "{{ paths.config }}/galaxy.yml"
     mode: u=rw,g=r,o=r
+
+- name: gunicorn.yml
+  template:
+    src: gunicorn.yml.j2
+    dest: "{{ paths.config }}/gunicorn.yml"
+    mode: u=rw,g=r,o=r

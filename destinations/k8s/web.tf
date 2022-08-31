@@ -40,8 +40,8 @@ resource "kubernetes_deployment" "galaxy_web" {
         automount_service_account_token = false
         container {
           #security_context {
-          #  run_as_user = local.uwsgi_uid
-          #  run_as_group = local.uwsgi_gid
+          #  run_as_user = local.app_uid
+          #  run_as_group = local.app_gid
           #}
           image             = "${local.galaxy_web_image}:${var.image_tag}"
           image_pull_policy = var.debug ? "Always" : "IfNotPresent"

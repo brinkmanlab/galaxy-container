@@ -1,5 +1,6 @@
 resource "docker_image" "galaxy_app" {
   name = "${local.galaxy_app_image}:${var.image_tag}"
+  pull_triggers = ["1"]
 }
 
 resource "docker_container" "galaxy_app" {
@@ -10,7 +11,7 @@ resource "docker_container" "galaxy_app" {
   domainname = local.app_name
   restart    = "unless-stopped"
   must_run   = true
-  user       = "${local.uwsgi_user}:${local.uwsgi_group}"
+  user       = "${local.app_user}:${local.app_group}"
 
   networks_advanced {
     name    = local.network
@@ -23,7 +24,7 @@ resource "docker_container" "galaxy_app" {
   ))
 
   healthcheck {
-    test         = ["CMD", "uwping", "uwsgi://localhost:${local.uwsgi_port}/api/version"]
+    test         = ["CMD", "curl", "-f", "localhost:${local.app_port}/api/version"]
     start_period = "2s"
     timeout      = "2s"
     interval     = "10s"
@@ -77,7 +78,7 @@ resource "docker_container" "wait_for_app" {
   name       = "wait_for_galaxy_app${local.name_suffix}"
   must_run   = false
   attach     = true
-  command    = ["bash", "-c", "until uwping uwsgi://${local.app_name}:${local.uwsgi_port}/api/version; do sleep 1; done"]
+  command    = ["bash", "-c", "until curl -f ${local.app_name}:${local.app_port}/api/version; do sleep 1; done"]
   networks_advanced {
     name = local.network
   }

@@ -51,11 +51,11 @@ No modules.
 | <a name="input_tool_containers"></a> [tool\_containers](#input\_tool\_containers) | Mapping of tool IDs to tool containers | `map(string)` | `{}` | no |
 | <a name="input_tool_mappings"></a> [tool\_mappings](#input\_tool\_mappings) | Tool ID to destination mappings. See roles/galaxy\_app/defaults/main/job\_conf.yml within the module root for destinations. | `map(string)` | `{}` | no |
 | <a name="input_user_data_volume_name"></a> [user\_data\_volume\_name](#input\_user\_data\_volume\_name) | User data volume name | `string` | `null` | no |
-| <a name="input_uwsgi_gid"></a> [uwsgi\_gid](#input\_uwsgi\_gid) | GID of Galaxy process | `number` | `null` | no |
-| <a name="input_uwsgi_group"></a> [uwsgi\_group](#input\_uwsgi\_group) | Group name of Galaxy process | `string` | `null` | no |
-| <a name="input_uwsgi_port"></a> [uwsgi\_port](#input\_uwsgi\_port) | Port Galaxy UWSGI server is listening from | `number` | `null` | no |
-| <a name="input_uwsgi_uid"></a> [uwsgi\_uid](#input\_uwsgi\_uid) | UID of Galaxy process | `number` | `null` | no |
-| <a name="input_uwsgi_user"></a> [uwsgi\_user](#input\_uwsgi\_user) | User name of Galaxy process | `string` | `null` | no |
+| <a name="input_app_gid"></a> [app\_gid](#input\_app\_gid) | GID of Galaxy process | `number` | `null` | no |
+| <a name="input_app_group"></a> [app\_group](#input\_app\_group) | Group name of Galaxy process | `string` | `null` | no |
+| <a name="input_app_port"></a> [app\_port](#input\_app\_port) | Port Galaxy app server is listening from | `number` | `null` | no |
+| <a name="input_app_uid"></a> [app\_uid](#input\_app\_uid) | UID of Galaxy process | `number` | `null` | no |
+| <a name="input_app_user"></a> [app\_user](#input\_app\_user) | User name of Galaxy process | `string` | `null` | no |
 | <a name="input_visualizations"></a> [visualizations](#input\_visualizations) | Set of URLs to tarballs to unpack into visualizations folder | `set(string)` | `[]` | no |
 | <a name="input_web_name"></a> [web\_name](#input\_web\_name) | Galaxy web server container name | `string` | `null` | no |
 | <a name="input_worker_max_replicas"></a> [worker\_max\_replicas](#input\_worker\_max\_replicas) | Number of worker replicas | `number` | `1` | no |
@@ -82,9 +82,9 @@ No modules.
 | <a name="output_network"></a> [network](#output\_network) | Docker network Galaxy resources are attached to |
 | <a name="output_root_dir"></a> [root\_dir](#output\_root\_dir) | n/a |
 | <a name="output_user_data_volume_name"></a> [user\_data\_volume\_name](#output\_user\_data\_volume\_name) | n/a |
-| <a name="output_uwsgi_gid"></a> [uwsgi\_gid](#output\_uwsgi\_gid) | n/a |
-| <a name="output_uwsgi_port"></a> [uwsgi\_port](#output\_uwsgi\_port) | n/a |
-| <a name="output_uwsgi_uid"></a> [uwsgi\_uid](#output\_uwsgi\_uid) | n/a |
+| <a name="output_app_gid"></a> [app\_gid](#output\_app\_gid) | n/a |
+| <a name="output_app_port"></a> [app\_port](#output\_app\_port) | n/a |
+| <a name="output_app_uid"></a> [app\_uid](#output\_app\_uid) | n/a |
 | <a name="output_web_name"></a> [web\_name](#output\_web\_name) | n/a |
 | <a name="output_worker_name"></a> [worker\_name](#output\_worker\_name) | n/a |
 

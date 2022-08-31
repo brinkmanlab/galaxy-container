@@ -2,6 +2,6 @@
 - name: Install additional python dependencies
   pip:
     name: [pykube]
-    virtualenv: '{{ venv_path }}'
-    virtualenv_site_packages: no
+#    virtualenv: '{{ venv_path }}'
+#    virtualenv_site_packages: no
     extra_args: '--index-url https://wheels.galaxyproject.org/simple --extra-index-url https://pypi.python.org/simple --no-cache-dir --upgrade'

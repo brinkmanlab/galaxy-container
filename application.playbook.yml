@@ -9,7 +9,11 @@
     vars:
       name: "{{ containers.app.name }}"
       base_image: python:3.8-slim
-      cmd: '/env_run.sh uwsgi --yaml {{ paths.config }}/galaxy.yml --uid={{ uwsgi.uid }} --gid={{ uwsgi.gid }}'
+      cmd: 'gunicorn -c {{ paths.config }}/gunicorn.conf.py'
+      envs:
+        PYTHONPATH: '{{ paths.root }}/lib'
+        GALAXY_CONFIG_FILE: '{{ paths.config }}/galaxy.yml'
+        GALAXY_ROOT_DIR: '{{ paths.root }}'
 
 - name: Configure Container Environment
   hosts: "{{ containers.app.name }}"

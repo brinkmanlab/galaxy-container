@@ -19,7 +19,7 @@
     --cmd '{{ cmd }}'
     {% endif %}
     {% if envs is defined %}
-    {% for k, v in envs %}
+    {% for k, v in envs.items() %}
     --env {{ k }}={{ v }}
     {% endfor %}
     {% endif %}

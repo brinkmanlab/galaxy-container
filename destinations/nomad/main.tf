@@ -16,7 +16,7 @@ locals {
     name = local.app_name
     image = local.galaxy_app_image
     tag = var.image_tag
-    uwsgi_port = local.uwsgi_port
+    app_port = local.app_port
     configs = local.configs
   })
 
@@ -26,7 +26,7 @@ locals {
     tag = var.image_tag
     root_dir = local.root_dir
     config_dir = local.config_dir
-    uwsgi_port = local.uwsgi_port
+    app_port = local.app_port
     envs = merge({for key, value in local.galaxy_conf: "GALAXY_CONFIG_OVERRIDE_${key}" => value}, {
       NOMAD_ENABLED   = "True"
       NOMAD_NAMESPACE = local.namespace.name

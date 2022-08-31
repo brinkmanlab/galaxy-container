@@ -8,8 +8,8 @@ resource "kubernetes_job" "visualizations" {
       metadata {}
       spec {
         security_context {
-          run_as_user  = local.uwsgi_uid
-          run_as_group = local.uwsgi_gid
+          run_as_user  = local.app_uid
+          run_as_group = local.app_gid
         }
         automount_service_account_token = false
         container {
@@ -55,7 +55,7 @@ resource "kubernetes_job" "visualizations-fix" {
       spec {
         security_context {
           run_as_user  = 0
-          run_as_group = local.uwsgi_gid
+          run_as_group = local.app_gid
         }
         automount_service_account_token = false
         container {

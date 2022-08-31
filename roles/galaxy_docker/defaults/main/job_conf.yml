@@ -21,13 +21,13 @@ galaxy:
             docker_sudo: false
             docker_default_container_id:
               from_environ: DEFAULT_CONTAINER_ID
-              default: '{{ containers.worker.name }}'
+              default: '{{ containers.worker.image }}'
             #docker_volumes: '{{ volumes.galaxy_root.name }}:$galaxy_root:ro,{{ volumes.user_data.name }}:$tool_directory:ro,{{ volumes.user_data.name }}:$job_directory:ro,$working_directory:rw,{{ volumes.user_data.name }}:$default_file_path:ro'
             docker_volumes:
               from_environ: DOCKER_VOLUME_MOUNTS
               default: '{{ volumes.galaxy_root.name }}:$galaxy_root:ro,{{ volumes.user_data.name }}:/data:rw,$working_directory:rw'
             docker_auto_rm: true
-            docker_set_user: '{{ uwsgi.uid }}:{{ uwsgi.gid }}'
+            docker_set_user: '{{ app.uid }}:{{ app.gid }}'
           resubmit:
             - condition: "(unknown_error or walltime_reached) and attempt &lt;= 4"
               delay: "attempt * 15"

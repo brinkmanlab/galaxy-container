@@ -19,37 +19,43 @@
   loop:
   - { from: requirements.txt, to: '{{ requirements.path }}' }
 
-- name: env_run
-  template:
-    src: env_run.sh.j2
-    dest: "/env_run.sh"
-    mode: u=rwx,g=rx,o=rx
+#- name: env_run
+#  template:
+#    src: env_run.sh.j2
+#    dest: "/env_run.sh"
+#    mode: u=rwx,g=rx,o=rx
 
 - name: Add group
   group:
-    name: galaxy
-    gid: '{{ uwsgi.gid }}'
+    name: '{{ app.group }}'
+    gid: '{{ app.gid }}'
 
 - name: Add user
   user:
-    name: galaxy
-    group: galaxy
-    uid: '{{ uwsgi.uid }}'
+    name: '{{ app.user }}'
+    group: '{{ app.group }}'
+    uid: '{{ app.uid }}'
     shell: /sbin/nologin
 
 - name: Install additional python dependencies
   pip:
     name: [psycopg2, watchdog]
-    virtualenv: '{{ venv_path }}'
-    virtualenv_site_packages: no
+    #virtualenv: '{{ venv_path }}'
+    #virtualenv_site_packages: no
     extra_args: '--index-url https://wheels.galaxyproject.org/simple --extra-index-url https://pypi.python.org/simple --no-cache-dir --upgrade'
 
 - name: Install Galaxy python dependencies
   pip:
     requirements: '{{ requirements.path }}'
-    virtualenv: '{{ venv_path }}'
-    virtualenv_site_packages: no
+#    virtualenv: '{{ venv_path }}'
+#    virtualenv_site_packages: no
     extra_args: '--index-url https://wheels.galaxyproject.org/simple --extra-index-url https://pypi.python.org/simple --no-cache-dir'
+
+- name: Ensure root dir exists
+  file:
+    path: '{{ paths.root }}'
+    recurse: yes
+    state: directory
 
 - name: Download Involucro
   get_url:
@@ -57,11 +63,11 @@
     dest: '{{ paths.root }}/involucro'
     mode: u=rwx,g=rwx,o=rx
 
-- name: Download uwping
-  get_url:
-    url: https://github.com/che0/uwping/releases/download/14.0/uwping
-    dest: '/usr/local/bin/uwping'
-    mode: u=rwx,g=rwx,o=rx
+#- name: Download uwping
+#  get_url:
+#    url: https://github.com/che0/uwping/releases/download/14.0/uwping
+#    dest: '/usr/local/bin/uwping'
+#    mode: u=rwx,g=rwx,o=rx
 
 - name: Download handler probe script
   get_url:
