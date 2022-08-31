@@ -42,7 +42,6 @@
   delegate_to: buildah_server
   loop:
   - {from: galaxy/lib, to: lib}
-  - {from: galaxy/locale, to: locale}
   - {from: galaxy/templates, to: templates}
   - {from: galaxy/scripts, to: scripts}
   - {from: galaxy/tools, to: tools}
