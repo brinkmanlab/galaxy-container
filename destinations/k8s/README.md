@@ -16,8 +16,16 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_admin_users"></a> [admin\_users](#input\_admin\_users) | List of email addresses for Galaxy admin users | `set(string)` | <pre>[<br>  "admin@brinkmanlab.ca"<br>]</pre> | no |
+| <a name="input_app_gid"></a> [app\_gid](#input\_app\_gid) | GID of Galaxy process | `number` | `null` | no |
+| <a name="input_app_group"></a> [app\_group](#input\_app\_group) | Group name of Galaxy process | `string` | `null` | no |
 | <a name="input_app_max_replicas"></a> [app\_max\_replicas](#input\_app\_max\_replicas) | Maximum number of app replicas | `number` | `10` | no |
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Galaxy application container name | `string` | `null` | no |
+| <a name="input_app_port"></a> [app\_port](#input\_app\_port) | Port Galaxy app server is listening from | `number` | `null` | no |
+| <a name="input_app_uid"></a> [app\_uid](#input\_app\_uid) | UID of Galaxy process | `number` | `null` | no |
+| <a name="input_app_user"></a> [app\_user](#input\_app\_user) | User name of Galaxy process | `string` | `null` | no |
+| <a name="input_celery_beat_name"></a> [celery\_beat\_name](#input\_celery\_beat\_name) | Galaxy celery beat container name | `string` | `null` | no |
+| <a name="input_celery_worker_max_replicas"></a> [celery\_worker\_max\_replicas](#input\_celery\_worker\_max\_replicas) | Maximum number of celery worker replicas | `number` | `10` | no |
+| <a name="input_celery_worker_name"></a> [celery\_worker\_name](#input\_celery\_worker\_name) | Galaxy celery worker container name | `string` | `null` | no |
 | <a name="input_config_dir"></a> [config\_dir](#input\_config\_dir) | Path to galaxy configuration folder within container | `string` | `null` | no |
 | <a name="input_data_dir"></a> [data\_dir](#input\_data\_dir) | Path to user data within container | `string` | `null` | no |
 | <a name="input_db_conf"></a> [db\_conf](#input\_db\_conf) | Database configuration overrides | <pre>object({<br>    scheme = string<br>    host   = string<br>    name   = string<br>    user   = string<br>    pass   = string<br>  })</pre> | `null` | no |
@@ -46,15 +54,14 @@ No modules.
 | <a name="input_nfs_server"></a> [nfs\_server](#input\_nfs\_server) | URL to NFS server containing user data | `string` | n/a | yes |
 | <a name="input_plugins"></a> [plugins](#input\_plugins) | XML list of <plugin> tags | `string` | `""` | no |
 | <a name="input_root_dir"></a> [root\_dir](#input\_root\_dir) | Path to galaxy root folder within container | `string` | `null` | no |
-| <a name="input_static_tool_data_tables"></a> [static\_tool\_data\_tables](#input\_static\_tool\_data\_tables) | List of static tool data table loc files to load. Paths are relative to the value of `tool_data_path` in the galaxy config | <pre>list(object({<br>    name = string<br>    path = string<br>    allow_duplicate_entries = bool<br>    comment_char = string<br>    columns = list(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_static_tool_data_tables"></a> [static\_tool\_data\_tables](#input\_static\_tool\_data\_tables) | List of static tool data table loc files to load. Paths are relative to the value of `tool_data_path` in the galaxy config | <pre>list(object({<br>    name                    = string<br>    path                    = string<br>    allow_duplicate_entries = bool<br>    comment_char            = string<br>    columns                 = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_tool_containers"></a> [tool\_containers](#input\_tool\_containers) | Mapping of tool IDs to tool containers | `map(string)` | `{}` | no |
 | <a name="input_tool_mappings"></a> [tool\_mappings](#input\_tool\_mappings) | Tool ID to destination mappings. See roles/galaxy\_app/defaults/main/job\_conf.yml within the module root for destinations. | `map(string)` | `{}` | no |
+| <a name="input_tusd_image"></a> [tusd\_image](#input\_tusd\_image) | TUSd image name | `string` | `null` | no |
+| <a name="input_tusd_max_replicas"></a> [tusd\_max\_replicas](#input\_tusd\_max\_replicas) | Maximum number of TUSd replicas | `number` | `10` | no |
+| <a name="input_tusd_name"></a> [tusd\_name](#input\_tusd\_name) | TUSd container name | `string` | `null` | no |
+| <a name="input_tusd_tag"></a> [tusd\_tag](#input\_tusd\_tag) | Tag for tusproject/tusd docker image | `string` | `"latest"` | no |
 | <a name="input_user_data_volume_name"></a> [user\_data\_volume\_name](#input\_user\_data\_volume\_name) | User data volume name | `string` | `null` | no |
-| <a name="input_app_gid"></a> [app\_gid](#input\_app\_gid) | GID of Galaxy process | `number` | `null` | no |
-| <a name="input_app_group"></a> [app\_group](#input\_app\_group) | Group name of Galaxy process | `string` | `null` | no |
-| <a name="input_app_port"></a> [app\_port](#input\_app\_port) | Port Galaxy app server is listening from | `number` | `null` | no |
-| <a name="input_app_uid"></a> [app\_uid](#input\_app\_uid) | UID of Galaxy process | `number` | `null` | no |
-| <a name="input_app_user"></a> [app\_user](#input\_app\_user) | User name of Galaxy process | `string` | `null` | no |
 | <a name="input_visualizations"></a> [visualizations](#input\_visualizations) | Set of URLs to tarballs to unpack into visualizations folder | `set(string)` | `[]` | no |
 | <a name="input_web_max_replicas"></a> [web\_max\_replicas](#input\_web\_max\_replicas) | Maximum number of web replicas | `number` | `10` | no |
 | <a name="input_web_name"></a> [web\_name](#input\_web\_name) | Galaxy web server container name | `string` | `null` | no |
@@ -65,7 +72,10 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_app_gid"></a> [app\_gid](#output\_app\_gid) | n/a |
 | <a name="output_app_name"></a> [app\_name](#output\_app\_name) | n/a |
+| <a name="output_app_port"></a> [app\_port](#output\_app\_port) | n/a |
+| <a name="output_app_uid"></a> [app\_uid](#output\_app\_uid) | n/a |
 | <a name="output_config_dir"></a> [config\_dir](#output\_config\_dir) | n/a |
 | <a name="output_data_dir"></a> [data\_dir](#output\_data\_dir) | n/a |
 | <a name="output_db_conf"></a> [db\_conf](#output\_db\_conf) | n/a |
@@ -81,9 +91,6 @@ No modules.
 | <a name="output_namespace"></a> [namespace](#output\_namespace) | n/a |
 | <a name="output_root_dir"></a> [root\_dir](#output\_root\_dir) | n/a |
 | <a name="output_user_data_volume_name"></a> [user\_data\_volume\_name](#output\_user\_data\_volume\_name) | n/a |
-| <a name="output_app_gid"></a> [app\_gid](#output\_app\_gid) | n/a |
-| <a name="output_app_port"></a> [app\_port](#output\_app\_port) | n/a |
-| <a name="output_app_uid"></a> [app\_uid](#output\_app\_uid) | n/a |
 | <a name="output_web_name"></a> [web\_name](#output\_web\_name) | n/a |
 | <a name="output_worker_name"></a> [worker\_name](#output\_worker\_name) | n/a |
 
@@ -94,9 +101,14 @@ No modules.
 | [kubernetes_config_map.galaxy_config](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map) | resource |
 | [kubernetes_config_map.galaxy_config_macros](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map) | resource |
 | [kubernetes_deployment.galaxy_app](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
+| [kubernetes_deployment.galaxy_celery_beat](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
+| [kubernetes_deployment.galaxy_celery_worker](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
 | [kubernetes_deployment.galaxy_web](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
+| [kubernetes_deployment.tusd](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
 | [kubernetes_horizontal_pod_autoscaler.galaxy_app](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/horizontal_pod_autoscaler) | resource |
+| [kubernetes_horizontal_pod_autoscaler.galaxy_celery_worker](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/horizontal_pod_autoscaler) | resource |
 | [kubernetes_horizontal_pod_autoscaler.galaxy_web](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/horizontal_pod_autoscaler) | resource |
+| [kubernetes_horizontal_pod_autoscaler.tusd](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/horizontal_pod_autoscaler) | resource |
 | [kubernetes_job.init_db](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
 | [kubernetes_job.init_install_db](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
 | [kubernetes_job.init_nfs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
@@ -111,6 +123,7 @@ No modules.
 | [kubernetes_service.galaxy_app](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) | resource |
 | [kubernetes_service.galaxy_web](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) | resource |
 | [kubernetes_service.galaxy_worker](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) | resource |
+| [kubernetes_service.tusd](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) | resource |
 | [kubernetes_service_account.galaxy_worker](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account) | resource |
 | [kubernetes_stateful_set.galaxy_worker](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/stateful_set) | resource |
 | [kubernetes_storage_class.nfs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class) | resource |
