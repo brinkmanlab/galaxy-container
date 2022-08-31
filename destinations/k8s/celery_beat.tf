@@ -92,8 +92,8 @@ resource "kubernetes_deployment" "galaxy_celery_beat" {
             #  memory = "6Gi"
             #}
             requests = {
-              cpu    = "500m"
-              memory = "1Gi"
+              cpu    = "50m"
+              memory = "500M"
             }
           }
           volume_mount {
