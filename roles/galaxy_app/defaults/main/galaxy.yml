@@ -26,7 +26,7 @@ galaxy:
       tool_path: "{{ paths.root }}/tools"
       data_dir: "{{ paths.data }}"
       config_dir: "{{ paths.config }}"
-      mutable_config_dir: "{{ paths.managed_config }}"
+      managed_config_dir: "{{ paths.managed_config }}"
       job_config_file: "{{ paths.config }}/job_conf.xml"
       tool_config_file: "{{ paths.config }}/tool_conf.xml"
       #tool_cache_data_dir: "{{ paths.data }}/tool_cache"
