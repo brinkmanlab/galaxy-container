@@ -17,25 +17,6 @@
     - '{{ paths.data }}'
     - '{{ paths.managed_config }}'
 
-# TODO replace sample configs with galaxy.config.* data structures and templates like tool_conf.yml
-- name: Copy in sample configs
-  copy:
-    src: '{{ item.from }}'
-    dest: '{{ item.to }}'
-  loop:
-  - {from: '{{ playbook_dir }}/galaxy/config/datatypes_conf.xml.sample', to: "{{ paths.config }}/datatypes_conf.xml" }
-  - {from: '{{ playbook_dir }}/galaxy/config/workflow_schedulers_conf.xml.sample', to: "{{ paths.config }}/workflow_schedulers_conf.xml" }
-  - {from: 'container_resolvers_conf.yml', to: "{{ paths.config }}/container_resolvers_conf.yml" }
-  - {from: 'tool_data_table_conf.xml', to: "{{ paths.config }}/tool_data_table_conf.xml" }
-  - {from: 'gunicorn.conf.py', to: "{{ paths.config }}/gunicorn.conf.py" }
-  - {from: 'run.sh', to: "{{ paths.root }}/run.sh" }  # Required by galaxy-main script to simply exist
-  #- {from: '{{ playbook_dir }}/galaxy/config/tool_data_table_conf.xml.sample', to: "{{ paths.config }}/tool_data_table_conf.xml" }
-  #- {from: '{{ playbook_dir }}/galaxy/config/shed_tool_conf.xml.sample', to: "{{ paths.managed_config }}/shed_tool_conf.xml" }
-  #- {from: '{{ playbook_dir }}/galaxy/config/migrated_tools_conf.xml.sample', to: "{{ paths.managed_config }}/migrated_tools_conf.xml" }
-  #- {from: '{{ playbook_dir }}/galaxy/config/integrated_tool_panel.xml.sample', to: "{{ paths.managed_config }}/integrated_tool_panel.xml" }
-  #- {from: '{{ playbook_dir }}/galaxy/config/shed_tool_data_table_conf.xml.sample', to: "{{ paths.managed_config }}/shed_tool_data_table_conf.xml" }
-  #- {from: '{{ playbook_dir }}/galaxy/config/shed_data_manager_conf.xml.sample', to: "{{ paths.managed_config }}/shed_data_manager_conf.xml" }
-
 # Don't use copy as it is very very slow when copying lots of files
 - name: Populate container
   command: buildah copy {{ hostvars[containers.app.name]['ansible_host'] }} '{{ playbook_dir }}/{{ item.from }}' '{{ paths.root }}/{{ item.to }}'
@@ -45,6 +26,21 @@
   - {from: galaxy/templates, to: templates}
   - {from: galaxy/scripts, to: scripts}
   - {from: galaxy/tools, to: tools}
+
+# TODO replace sample configs with galaxy.config.* data structures and templates like tool_conf.yml
+- name: Copy in sample configs and additional files
+  copy:
+    src: '{{ item.from }}'
+    dest: '{{ item.to }}'
+    local_follow: yes
+  loop:
+  - {from: '{{ playbook_dir }}/galaxy/config/datatypes_conf.xml.sample', to: "{{ paths.config }}/datatypes_conf.xml" }
+  - {from: '{{ playbook_dir }}/galaxy/config/workflow_schedulers_conf.xml.sample', to: "{{ paths.config }}/workflow_schedulers_conf.xml" }
+  - {from: 'container_resolvers_conf.yml', to: "{{ paths.config }}/container_resolvers_conf.yml" }
+  - {from: 'tool_data_table_conf.xml', to: "{{ paths.config }}/tool_data_table_conf.xml" }
+  - {from: 'gunicorn.conf.py', to: "{{ paths.config }}/gunicorn.conf.py" }
+  - {from: 'run.sh', to: "{{ paths.root }}/run.sh" }  # Required by galaxy-main script to simply exist
+  - {from: 'navigation.yml', to: "{{ paths.root }}/lib/galaxy/selenium/navigation.yml" }  # Required by galaxy for tour
 
 - import_tasks: galaxy.yml
 - import_tasks: job_conf.yml
