@@ -15,6 +15,15 @@ containers:
   db:
     name: galaxy-db
     image: postgres:alpine
+  tusd:
+    name: tusd
+    image: tusproject/tusd
+  celery_worker:
+    name: celery-worker
+    image: galaxy-app
+  celery_beat:
+    name: celery_beat
+    image: galaxy-app
 
 volumes:
   galaxy_root:

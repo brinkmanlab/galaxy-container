@@ -44,3 +44,9 @@ variable "worker_max_replicas" {
   default     = 1
   description = "Number of worker replicas"
 }
+
+variable "celery_worker_max_replicas" {
+  type        = number
+  default     = 1
+  description = "Number of celery worker replicas"
+}

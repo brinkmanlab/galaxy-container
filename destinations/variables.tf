@@ -170,6 +170,12 @@ variable "image_tag" {
   description = "Tag for galaxy_web and galaxy_app image"
 }
 
+variable "tusd_tag" {
+  type        = string
+  default     = "latest"
+  description = "Tag for tusproject/tusd docker image"
+}
+
 variable "instance" {
   type        = string
   default     = ""
@@ -218,6 +224,12 @@ variable "db_image" {
   description = "MariaDB image name"
 }
 
+variable "tusd_image" {
+  type        = string
+  default     = null
+  description = "TUSd image name"
+}
+
 variable "galaxy_root_volume_name" {
   type        = string
   default     = null
@@ -254,13 +266,31 @@ variable "worker_name" {
   description = "Galaxy worker container name"
 }
 
+variable "celery_worker_name" {
+  type        = string
+  default     = null
+  description = "Galaxy celery worker container name"
+}
+
+variable "celery_beat_name" {
+  type        = string
+  default     = null
+  description = "Galaxy celery beat container name"
+}
+
 variable "db_name" {
   type        = string
   default     = null
   description = "Database container name"
 }
 
-variable "uwsgi_port" {
+variable "tusd_name" {
+  type        = string
+  default     = null
+  description = "TUSd container name"
+}
+
+variable "app_port" {
   type        = number
   default     = null
   description = "Port Galaxy app server is listening from"

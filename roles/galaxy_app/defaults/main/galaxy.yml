@@ -20,6 +20,7 @@ galaxy:
       database_engine_option_server_side_cursors: true
       install_database_connection: "sqlite:///{{ paths.managed_config }}/toolshed.sqlite?isolation_level=IMMEDIATE"
       #amqp_internal_connection: https://docs.celeryproject.org/projects/kombu/en/stable/userguide/connections.html#urls
+      enable_celery_tasks: true
       check_migrate_databases: false
       delay_tool_initialization: true
       tool_path: "{{ paths.root }}/tools"

@@ -50,3 +50,15 @@ variable "worker_max_replicas" {
   default     = 10
   description = "Maximum number of worker replicas"
 }
+
+variable "celery_worker_max_replicas" {
+  type        = number
+  default     = 10
+  description = "Maximum number of celery worker replicas"
+}
+
+variable "tusd_max_replicas" {
+  type        = number
+  default     = 10
+  description = "Maximum number of TUSd replicas"
+}
