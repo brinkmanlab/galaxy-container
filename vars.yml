@@ -22,7 +22,7 @@ containers:
     name: celery-worker
     image: galaxy-app
   celery_beat:
-    name: celery_beat
+    name: celery-beat
     image: galaxy-app
 
 volumes:
