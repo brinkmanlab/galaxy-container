@@ -51,6 +51,7 @@ resource "kubernetes_deployment" "galaxy_app" {
           readiness_probe {
             http_get {
               path = "/api/version"
+              port = local.app_port
             }
             initial_delay_seconds = 2
             timeout_seconds       = 2
@@ -62,6 +63,7 @@ resource "kubernetes_deployment" "galaxy_app" {
           liveness_probe {
             http_get {
               path = "/api/version"
+              port = local.app_port
             }
             initial_delay_seconds = 2
             failure_threshold     = 3
