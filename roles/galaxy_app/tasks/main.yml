@@ -39,8 +39,14 @@
   - {from: 'container_resolvers_conf.yml', to: "{{ paths.config }}/container_resolvers_conf.yml" }
   - {from: 'tool_data_table_conf.xml', to: "{{ paths.config }}/tool_data_table_conf.xml" }
   - {from: 'gunicorn.conf.py', to: "{{ paths.config }}/gunicorn.conf.py" }
+  - {from: 'create_db.sh', to: "{{ paths.root }}/create_db.sh" }
+  - {from: 'create_toolshed_db.sh', to: "{{ paths.root }}/create_toolshed_db.sh" }
+  - {from: 'manage_db.sh', to: "{{ paths.root }}/manage_db.sh" }
+  - {from: 'run_alembic.sh', to: "{{ paths.root }}/run_alembic.sh" }
+  - {from: 'run_reports.sh', to: "{{ paths.root }}/run_reports.sh" }
+  - {from: 'run_tool_shed.sh', to: "{{ paths.root }}/run_tool_shed.sh" }
   - {from: 'run.sh', to: "{{ paths.root }}/run.sh" }  # Required by galaxy-main script to simply exist
-  - {from: 'navigation.yml', to: "{{ paths.root }}/lib/galaxy/selenium/navigation.yml" }  # Required by galaxy for tour
+  - {from: 'navigation.yml', to: "{{ paths.root }}/lib/galaxy/selenium/navigation.yml" }  # Required by galaxy tour
 
 - import_tasks: galaxy.yml
 - import_tasks: job_conf.yml

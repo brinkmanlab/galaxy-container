@@ -1,0 +1,1 @@
+../../../galaxy/manage_db.sh
