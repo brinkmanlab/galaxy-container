@@ -110,7 +110,6 @@ No modules.
 | [kubernetes_horizontal_pod_autoscaler.galaxy_web](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/horizontal_pod_autoscaler) | resource |
 | [kubernetes_horizontal_pod_autoscaler.tusd](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/horizontal_pod_autoscaler) | resource |
 | [kubernetes_job.init_db](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
-| [kubernetes_job.init_install_db](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
 | [kubernetes_job.init_nfs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
 | [kubernetes_job.upgrade_db](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
 | [kubernetes_job.visualizations](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |

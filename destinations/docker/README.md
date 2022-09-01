@@ -105,7 +105,6 @@ No modules.
 | [docker_container.galaxy_web](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
 | [docker_container.galaxy_worker](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
 | [docker_container.init_db](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
-| [docker_container.init_install_db](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
 | [docker_container.tusd](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
 | [docker_container.upgrade_db](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
 | [docker_container.visualizations](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
