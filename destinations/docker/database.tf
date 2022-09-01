@@ -46,25 +46,7 @@ resource "docker_container" "init_db" {
   restart    = "no"
   must_run   = false
   attach     = true
-  command    = ["python3", "${local.root_dir}/scripts/create_db.py", "-c", "${local.config_dir}/galaxy.yml", "galaxy"]
-  env = compact([
-    "CWD=${local.root_dir}",
-    "GALAXY_CONFIG_OVERRIDE_database_connection=${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
-  ])
-  networks_advanced {
-    name = local.network
-  }
-}
-
-resource "docker_container" "init_install_db" {
-  depends_on = [docker_container.wait_for_db]
-  image      = docker_image.galaxy_app.latest
-  name       = "${local.app_name}-init-install-db${local.name_suffix}"
-  user       = "${local.app_user}:${local.app_group}"
-  restart    = "no"
-  must_run   = false
-  attach     = true
-  command    = ["python3", "${local.root_dir}/scripts/create_db.py", "-c", "${local.config_dir}/galaxy.yml", "install"]
+  command    = ["python3", "${local.root_dir}/scripts/create_db.py", "--galaxy-config", "${local.config_dir}/galaxy.yml"]
   env = compact([
     "CWD=${local.root_dir}",
     "GALAXY_CONFIG_OVERRIDE_database_connection=${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
@@ -77,21 +59,38 @@ resource "docker_container" "init_install_db" {
   networks_advanced {
     name = local.network
   }
+  lifecycle {
+    postcondition {
+      condition = self.exit_code == 0
+      error_message = "Database initialization failed"
+    }
+  }
 }
 
 resource "docker_container" "upgrade_db" {
-  depends_on = [docker_container.init_db, docker_container.init_install_db]
+  depends_on = [docker_container.init_db]
   image      = docker_image.galaxy_app.latest
   name       = "${local.app_name}-upgrade-db${local.name_suffix}"
   restart    = "no"
   must_run   = false
   attach     = true
-  command    = ["python3", "${local.root_dir}/scripts/manage_db.py", "upgrade", "-c", "${local.config_dir}/galaxy.yml"]
+  command    = ["python3", "${local.root_dir}/scripts/manage_db.py", "--galaxy-config", "${local.config_dir}/galaxy.yml", "upgrade"]
   env = compact([
     "CWD=${local.root_dir}",
     "GALAXY_CONFIG_OVERRIDE_database_connection=${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
   ])
+  mounts {
+    source = docker_volume.user_data.name
+    target = local.data_dir
+    type   = "volume"
+  }
   networks_advanced {
     name = local.network
+  }
+  lifecycle {
+    postcondition {
+      condition = self.exit_code == 0
+      error_message = "Database upgrade failed"
+    }
   }
 }
