@@ -1,5 +1,6 @@
 resource "docker_image" "galaxy_web" {
   name = "${local.galaxy_web_image}:${var.image_tag}"
+  keep_locally = var.debug
 }
 
 resource "docker_container" "galaxy_web" {

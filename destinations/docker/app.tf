@@ -1,6 +1,6 @@
 resource "docker_image" "galaxy_app" {
   name = "${local.galaxy_app_image}:${var.image_tag}"
-  pull_triggers = ["1"]
+  keep_locally = var.debug
 }
 
 resource "docker_container" "galaxy_app" {

@@ -1,5 +1,6 @@
 resource "docker_image" "galaxy_db" {
   name = local.db_image
+  keep_locally = var.debug
 }
 
 resource "docker_container" "galaxy_db" {

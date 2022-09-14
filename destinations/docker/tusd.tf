@@ -1,5 +1,6 @@
 resource "docker_image" "tusd" {
   name = "${local.tusd_image}:${var.tusd_tag}"
+  keep_locally = var.debug
 }
 
 resource "docker_container" "tusd" {
