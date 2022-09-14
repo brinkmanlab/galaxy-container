@@ -11,7 +11,7 @@ resource "docker_container" "tusd" {
   domainname = local.tusd_name
   restart    = "unless-stopped"
   must_run   = true
-
+  user       = "${local.app_uid}:${local.app_gid}"
   command = [
     "-port", "1080",
     "-base-path", "/api/upload/resumable_upload",

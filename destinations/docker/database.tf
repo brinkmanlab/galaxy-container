@@ -46,6 +46,7 @@ resource "docker_container" "init_db" {
   restart    = "no"
   must_run   = false
   attach     = true
+  user       = "${local.app_user}:${local.app_group}"
   command    = ["python3", "${local.root_dir}/scripts/create_db.py", "--galaxy-config", "${local.config_dir}/galaxy.yml"]
   env = compact([
     "CWD=${local.root_dir}",
@@ -68,6 +69,7 @@ resource "docker_container" "upgrade_db" {
   restart    = "no"
   must_run   = false
   attach     = true
+  user       = "${local.app_user}:${local.app_group}"
   command    = ["python3", "${local.root_dir}/scripts/manage_db.py", "--galaxy-config", "${local.config_dir}/galaxy.yml", "upgrade"]
   env = compact([
     "CWD=${local.root_dir}",
