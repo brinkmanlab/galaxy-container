@@ -10,6 +10,7 @@
       name: "{{ containers.app.name }}"
       base_image: python:3.8-slim
       cmd: 'gunicorn -c {{ paths.config }}/gunicorn.conf.py'
+      #user: '{{ app.uid }}:{{ app.gid }}'
       envs:
         PYTHONPATH: '{{ paths.root }}/lib'
         GALAXY_CONFIG_FILE: '{{ paths.config }}/galaxy.yml'
@@ -26,5 +27,7 @@
   gather_facts: false
   vars_files: [vars.yml]
   tasks:
+  - name: Set default user
+    command: buildah config --user '{{ app.uid }}:{{ app.gid }}' {{ hostvars[containers.app.name]['ansible_host'] }}
   - name: Commit container
     command: buildah commit {{ hostvars[containers.app.name]['ansible_host'] }} {{ containers.app.name }}

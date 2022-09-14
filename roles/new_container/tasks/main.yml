@@ -7,8 +7,6 @@
     var: container_handle.stdout
 
 - name: Configure container
-  # TODO - healthcheck command
-  # https://docs.galaxyproject.org/en/master/admin/scaling.html#uwsgi-for-web-serving-and-webless-galaxy-applications-as-job-handlers
   command: >-
     buildah config
     --author "{{ author }}"
@@ -18,6 +16,9 @@
     {% if cmd is defined %}
     --cmd '{{ cmd }}'
     {% endif %}
+    {% if user is defined %}
+    --user '{{ user }}'
+    {% endif %}
     {% if envs is defined %}
     {% for k, v in envs.items() %}
     --env {{ k }}={{ v }}
@@ -26,8 +27,8 @@
     {{ container_handle.stdout }}
 
 - name: Add application container to inventory
-  add_host:
+  ansible.builtin.add_host:
     name: '{{ name }}'
-    ansible_connection: buildah
-    remote_user: '{{ user }}'
+    ansible_connection: containers.podman.buildah
+    remote_user: '{{ build_user }}'
     ansible_host: "{{ container_handle.stdout }}"
