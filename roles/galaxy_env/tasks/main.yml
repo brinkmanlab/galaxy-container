@@ -1,8 +1,7 @@
 ---
 - name: Install system packages
-  shell: 'apt update && apt install -y --no-install-recommends ca-certificates curl {{ build_deps | join(" ") }}'
+  ansible.builtin.shell: 'apt update && apt install -y --no-install-recommends ca-certificates curl {{ build_deps | join(" ") }}'
 
-# TODO Look into why app uwsgi workers cant find hg in the environment, venv not inherited?
 - name: Install virtualenv, and extras
   pip:
    name: "{{ ['virtualenv', 'mercurial'] + pip_extra }}"
