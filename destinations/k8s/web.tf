@@ -35,7 +35,7 @@ resource "kubernetes_deployment" "galaxy_web" {
       }
       spec {
         security_context {
-          fs_group = 1000
+          fs_group = local.app_gid
         }
         automount_service_account_token = false
         container {
@@ -106,12 +106,10 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_web" {
   }
 }
 
-
 resource "kubernetes_service" "galaxy_web" {
   metadata {
     name        = local.web_name
     namespace   = kubernetes_deployment.galaxy_web.metadata.0.namespace
-    annotations = var.lb_annotations
   }
   spec {
     selector = {
@@ -123,13 +121,33 @@ resource "kubernetes_service" "galaxy_web" {
       port        = 80
       target_port = 80
     }
-    port {
-      name        = "https"
-      protocol    = "TCP"
-      port        = 443
-      target_port = 80
-    }
 
-    type = "LoadBalancer" # https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
+    type = "NodePort" # https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
+  }
+}
+
+resource "kubernetes_ingress" "galaxy_web" {
+  wait_for_load_balancer = true
+  metadata {
+    name        = local.web_name
+    namespace   = kubernetes_deployment.galaxy_web.metadata.0.namespace
+    annotations = var.lb_annotations
+  }
+  spec {
+    backend {
+      service_name = kubernetes_service.galaxy_web.metadata.0.name
+      service_port = 80
+    }
+    rule {
+      http {
+        path {
+          path = "/*"
+          backend {
+            service_name = kubernetes_service.galaxy_web.metadata.0.name
+            service_port = 80
+          }
+        }
+      }
+    }
   }
 }

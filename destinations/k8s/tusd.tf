@@ -49,7 +49,7 @@ resource "kubernetes_deployment" "tusd" {
             "-port", "1080",
             "-base-path", "/api/upload/resumable_upload",
             "-upload-dir", "${local.data_dir}/database/tmp",
-            "-hooks-http", "${kubernetes_service.galaxy_web.status.0.load_balancer.0.ingress.0.hostname}/api/upload/hooks",
+            "-hooks-http", "http://${kubernetes_ingress.galaxy_web.status.0.load_balancer.0.ingress.0.hostname}/api/upload/hooks",
             "-hooks-http-forward-headers", "X-Api-Key,Cookie",
             "-hooks-enabled-events", "pre-create",
             "-behind-proxy",
@@ -113,22 +113,55 @@ resource "kubernetes_horizontal_pod_autoscaler" "tusd" {
   }
 }
 
-# Register internal dns for web to discover app
-resource "kubernetes_service" "tusd" {
+resource "kubernetes_service" "galaxy_web" {
   metadata {
-    name      = local.tusd_name
-    namespace = kubernetes_deployment.tusd.metadata.0.namespace
+    name        = local.web_name
+    namespace   = kubernetes_deployment.galaxy_web.metadata.0.namespace
+    #annotations = var.lb_annotations
   }
   spec {
     selector = {
-      App = local.tusd_name
+      App = local.web_name
     }
     port {
+      name        = "http"
       protocol    = "TCP"
-      port        = 1080
-      target_port = 1080
+      port        = 80
+      target_port = 80
     }
+    #port {
+    #  name        = "https"
+    #  protocol    = "TCP"
+    #  port        = 443
+    #  target_port = 80
+    #}
 
-    type = "ClusterIP" # https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    type = "NodePort" # https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
+  }
+}
+
+resource "kubernetes_ingress" "galaxy_web" {
+  wait_for_load_balancer = true
+  metadata {
+    name        = local.web_name
+    namespace   = kubernetes_deployment.galaxy_web.metadata.0.namespace
+    annotations = var.lb_annotations
+  }
+  spec {
+    backend {
+      service_name = kubernetes_service.galaxy_web.metadata.0.name
+      service_port = 80
+    }
+    rule {
+      http {
+        path {
+          path = "/*"
+          backend {
+            service_name = kubernetes_service.galaxy_web.metadata.0.name
+            service_port = 80
+          }
+        }
+      }
+    }
   }
 }
