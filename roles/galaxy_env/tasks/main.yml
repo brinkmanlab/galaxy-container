@@ -1,7 +1,8 @@
 ---
 - name: Install system packages
-  ansible.builtin.shell: 'apt update && apt install -y --no-install-recommends ca-certificates curl {{ build_deps | join(" ") }}'
+  ansible.builtin.shell: 'apt update && apt install -y --no-install-recommends ca-certificates curl libcurl4-openssl-dev libssl-dev {{ build_deps | join(" ") }}'
 
+# TODO I think only mercurial is required at this point, move it to below?
 - name: Install virtualenv, and extras
   pip:
    name: "{{ ['virtualenv', 'mercurial'] + pip_extra }}"
@@ -38,7 +39,7 @@
 
 - name: Install additional python dependencies
   pip:
-    name: [psycopg2, watchdog]
+    name: [psycopg2, watchdog, pycurl]
     #virtualenv: '{{ venv_path }}'
     #virtualenv_site_packages: no
     extra_args: '--index-url https://wheels.galaxyproject.org/simple --extra-index-url https://pypi.python.org/simple --no-cache-dir --upgrade'

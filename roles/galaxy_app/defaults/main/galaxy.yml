@@ -107,6 +107,8 @@ galaxy:
           amqp:
             level: INFO
             qualname: amqp
+          botocore:
+            level: INFO
           dogpile:
             level: WARN
             qualname: dogpile
