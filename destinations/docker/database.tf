@@ -10,7 +10,6 @@ resource "docker_container" "galaxy_db" {
   domainname = local.db_name
   restart    = "unless-stopped"
   must_run   = true
-  user       = "postgres"
   env = [
     "POSTGRES_USER=${local.db_conf.user}",
     "POSTGRES_PASSWORD=${local.db_conf.pass}",
@@ -60,12 +59,6 @@ resource "docker_container" "init_db" {
   networks_advanced {
     name = local.network
   }
-  lifecycle {
-    postcondition {
-      condition = self.exit_code == 0
-      error_message = "Database initialization failed"
-    }
-  }
 }
 
 resource "docker_container" "upgrade_db" {
@@ -87,11 +80,5 @@ resource "docker_container" "upgrade_db" {
   }
   networks_advanced {
     name = local.network
-  }
-  lifecycle {
-    postcondition {
-      condition = self.exit_code == 0
-      error_message = "Database upgrade failed"
-    }
   }
 }
