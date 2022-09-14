@@ -6,6 +6,7 @@ containers:
   app:
     name: galaxy-app
     image: galaxy-app
+    tag: v22.05.0
   web:
     name: galaxy-web
     image: galaxy-web

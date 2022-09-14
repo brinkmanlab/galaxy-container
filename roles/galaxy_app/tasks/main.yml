@@ -48,6 +48,20 @@
   - {from: 'run.sh', to: "{{ paths.root }}/run.sh" }  # Required by galaxy-main script to simply exist
   - {from: 'navigation.yml', to: "{{ paths.root }}/lib/galaxy/selenium/navigation.yml" }  # Required by galaxy tour
 
+- name: get information about galaxy repository
+  delegate_to: buildah_server
+  ansible.builtin.git:
+    repo: 'https://github.com/galaxyproject/galaxy.git'
+    dest: '{{ playbook_dir }}/galaxy'
+    clone: no
+    update: no
+  register: galaxy_repo
+
+- name: Write version.json
+  copy:
+    dest: "{{ paths.root }}/version.json"
+    content: '{ "git_commit": "{{ galaxy_repo.after }}", "build_date": "{{ ansible_date_time.date }}", "image_tag": "{{ containers.app.tag }}" }'
+
 - import_tasks: galaxy.yml
 - import_tasks: job_conf.yml
 - import_tasks: tool_conf.yml

@@ -1,7 +1,7 @@
 ---
 galaxy:
   config:
-    gunicorn:
+    gunicorn:  # https://docs.gunicorn.org/en/stable/settings.html
       preload_app: true
       wsgi_app: "galaxy.webapps.galaxy.fast_factory:factory()"
       timeout: 300
@@ -63,6 +63,8 @@ galaxy:
       #remote_user_secret:
       #single_user:
       watch_tools: true
+      watch_core_config: true
+      watch_job_rules: true
       conda_auto_init: false
       #id_secret: USING THE DEFAULT IS NOT SECURE!
       #admin_users: "{{ admins | join(',') }}"

@@ -17,7 +17,7 @@
 
 - name: Configure Container Environment
   hosts: "{{ containers.app.name }}"
-  gather_facts: false
+  gather_facts: true
   vars_files: [vars.yml]
   roles: [galaxy_env, galaxy_app, galaxy_docker, galaxy_k8s, galaxy_text_tools]
 
