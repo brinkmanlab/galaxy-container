@@ -14,7 +14,7 @@ resource "docker_container" "galaxy_worker" {
   name       = "${local.worker_name}-${count.index}${local.name_suffix}"
   image      = docker_image.galaxy_app.latest
   # https://docs.galaxyproject.org/en/master/admin/scaling.html#app-for-web-serving-and-webless-galaxy-applications-as-job-handlers
-  command    = ["sh", "-c", "python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers"]
+  command    = ["sh", "-c", "python3 ${local.root_dir}/scripts/galaxy-main -c ${local.config_dir}/galaxy.yml --server-name=$HOSTNAME --log-file=/dev/stdout --attach-to-pool=job-handlers --attach-to-pool=workflow-schedulers"]
   hostname   = "${local.worker_name}-${count.index}"
   domainname = "${local.worker_name}-${count.index}"
   restart    = "unless-stopped"
