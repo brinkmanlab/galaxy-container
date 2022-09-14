@@ -8,7 +8,7 @@
   - role: new_container
     vars:
       name: "{{ containers.app.name }}"
-      base_image: python:3.8-slim
+      base_image: python:3.10-slim
       cmd: 'gunicorn -c {{ paths.config }}/gunicorn.conf.py'
       #user: '{{ app.uid }}:{{ app.gid }}'
       envs:
