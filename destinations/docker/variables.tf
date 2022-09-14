@@ -1,7 +1,12 @@
 locals {
+  mq_name                = var.mq_name != null ? var.mq_name : local.ansible.containers.mq.name
+  mq_image                = var.mq_image != null ? var.mq_image : local.ansible.containers.mq.image
+  mq_data_volume_name     = var.mq_data_volume_name != null ? var.mq_data_volume_name : local.ansible.volumes.mq_data.name
+
   name_suffix = var.instance == "" ? "" : "-${var.instance}"
   destination_galaxy_conf = {
     #retry_metadata_internally = true
+    amqp_internal_connection = "amqp://guest:guest@${local.mq_name}:5672//"
   }
 }
 
@@ -49,4 +54,22 @@ variable "celery_worker_max_replicas" {
   type        = number
   default     = 1
   description = "Number of celery worker replicas"
+}
+
+variable "mq_name" {
+  type        = string
+  default     = null
+  description = "Message queue container name"
+}
+
+variable "mq_image" {
+  type        = string
+  default     = null
+  description = "Message queue image name"
+}
+
+variable "mq_data_volume_name" {
+  type        = string
+  default     = null
+  description = "Message queue volume name"
 }

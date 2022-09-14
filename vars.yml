@@ -25,6 +25,9 @@ containers:
   celery_beat:
     name: celery-beat
     image: galaxy-app
+  mq:
+    name: rabbitmq
+    image: rabbitmq:alpine
 
 volumes:
   galaxy_root:
@@ -33,6 +36,8 @@ volumes:
     name: user-data
   db_data:
     name: db-data
+  mq_data:
+    name: mq-data
 
 app:
   port: 8000

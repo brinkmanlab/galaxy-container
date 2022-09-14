@@ -9,3 +9,7 @@ resource "docker_volume" "user_data" {
 resource "docker_volume" "db_data" {
   name = "${local.db_data_volume_name}${local.name_suffix}"
 }
+
+resource "docker_volume" "mq_data" {
+  name = "${local.db_data_volume_name}${local.name_suffix}"
+}
