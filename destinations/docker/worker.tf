@@ -30,6 +30,7 @@ resource "docker_container" "galaxy_worker" {
     [for k, v in local.galaxy_conf : "GALAXY_CONFIG_OVERRIDE_${k}=${v}"],
     [for k, v in local.job_conf : "${k}=${v}"],
     ["DOCKER_HOST=unix://${var.docker_socket_path}"],
+    [for k, v in var.extra_env : "${k}=${v}"],
   ))
 
   /* TODO https://github.com/galaxyproject/galaxy/issues/10894

@@ -25,6 +25,7 @@ resource "docker_container" "galaxy_celery_worker" {
   env = compact(concat(
     [for k, v in local.galaxy_conf : "GALAXY_CONFIG_OVERRIDE_${k}=${v}"],
     [for k, v in local.job_conf : "${k}=${v}"],
+    [for k, v in var.extra_env : "${k}=${v}"],
   ))
 
   healthcheck {

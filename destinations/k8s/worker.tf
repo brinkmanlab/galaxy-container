@@ -90,6 +90,14 @@ resource "kubernetes_stateful_set" "galaxy_worker" {
             }
           }
 
+          dynamic "env" {
+            for_each = var.extra_env
+            content {
+              name  = env.key
+              value = tostring(env.value)
+            }
+          }
+
           env {
             name  = "CWD"
             value = local.root_dir

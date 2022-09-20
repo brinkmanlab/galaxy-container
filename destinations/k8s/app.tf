@@ -97,6 +97,14 @@ resource "kubernetes_deployment" "galaxy_app" {
             }
           }
 
+          dynamic "env" {
+            for_each = var.extra_env
+            content {
+              name  = env.key
+              value = tostring(env.value)
+            }
+          }
+
           resources {
             limits = {
               cpu    = "2"

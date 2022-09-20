@@ -408,3 +408,9 @@ variable "tool_containers" {
   default     = {}
   description = "Mapping of tool IDs to tool containers"
 }
+
+variable "extra_env" {
+  type        = map(any)
+  default     = {}
+  description = "Additional environment variables for Galaxy containers"
+}
