@@ -16,7 +16,7 @@ locals {
   app_name                = var.app_name != null ? var.app_name : local.ansible.containers.app.name
   worker_name             = var.worker_name != null ? var.worker_name : local.ansible.containers.worker.name
   celery_worker_name      = var.celery_worker_name != null ? var.celery_worker_name : local.ansible.containers.celery_worker.name
-  celery_beat_name      = var.celery_beat_name != null ? var.celery_beat_name : local.ansible.containers.celery_beat.name
+  celery_beat_name        = var.celery_beat_name != null ? var.celery_beat_name : local.ansible.containers.celery_beat.name
   db_name                 = var.db_name != null ? var.db_name : local.ansible.containers.db.name
   tusd_name               = var.tusd_name != null ? var.tusd_name : local.ansible.containers.tusd.name
   app_port                = var.app_port != null ? var.app_port : local.ansible.app.port
@@ -35,8 +35,8 @@ locals {
     user   = "galaxy"
     pass   = random_password.db_password[0].result
   }
-  master_api_key = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key.result
-  id_secret      = var.id_secret != "" ? var.id_secret : random_password.id_secret.result
+  master_api_key     = var.master_api_key != "" ? var.master_api_key : random_password.master_api_key.result
+  id_secret          = var.id_secret != "" ? var.id_secret : random_password.id_secret.result
   common_galaxy_conf = {
     database_connection             = "${local.db_conf.scheme}://${local.db_conf.user}:${local.db_conf.pass}@${local.db_conf.host}/${local.db_conf.name}"
     master_api_key                  = local.master_api_key
@@ -49,7 +49,7 @@ locals {
     admin_users = join(",", var.admin_users)
   }
   galaxy_conf = merge(local.common_galaxy_conf, local.admin_users_conf, local.destination_galaxy_conf, var.galaxy_conf)
-  macros = {
+  macros      = {
     "tool_mapping.xml"     = <<-EOF
       <?xml version="1.0"?>
       <macros>
@@ -87,7 +87,7 @@ locals {
     EOF
   }
   configs = {
-    "tool_data_table_conf.xml" = <<-EOF
+    "tool_data_table_conf.xml"     = <<-EOF
       <?xml version="1.0"?>
       <tables>
         %{for table in var.static_tool_data_tables}
