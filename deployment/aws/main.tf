@@ -1,3 +1,7 @@
+locals {
+  cluster_id = module.cloud.eks.cluster_id
+}
+
 provider "aws" {
   region = var.region
 }
@@ -10,11 +14,11 @@ module "cloud" {
 }
 
 data "aws_eks_cluster" "cluster" {
-  name = module.cloud.eks.cluster_id
+  name = local.cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.cloud.eks.cluster_id
+  name = local.cluster_id
 }
 
 provider "kubernetes" {
