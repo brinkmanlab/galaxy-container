@@ -80,20 +80,20 @@ resource "kubernetes_deployment" "galaxy_celery_worker" {
             value = local.root_dir
           }
 
-          liveness_probe {
-            exec {
-              command = [
-                "bash",
-                "-c",
-                "celery -A galaxy.celery inspect ping -d celery@$HOSTNAME"
-              ]
-            }
-            initial_delay_seconds = 2
-            failure_threshold     = 2
-            timeout_seconds       = 2
-            success_threshold     = 1
-            period_seconds        = 200
-          }
+          #liveness_probe { TODO disabled until https://github.com/celery/celery/issues/6727
+          #  exec {
+          #    command = [
+          #      "bash",
+          #      "-c",
+          #      "celery -A galaxy.celery inspect ping -d celery@$HOSTNAME"
+          #    ]
+          #  }
+          #  initial_delay_seconds = 2
+          #  failure_threshold     = 2
+          #  timeout_seconds       = 2
+          #  success_threshold     = 1
+          #  period_seconds        = 200
+          #}
 
           resources {
             #limits = {
