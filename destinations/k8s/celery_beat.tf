@@ -36,6 +36,7 @@ resource "kubernetes_deployment" "galaxy_celery_beat" {
           run_as_user  = local.app_uid
           run_as_group = local.app_gid
         }
+        service_account_name            = kubernetes_service_account.galaxy_app.metadata.0.name
         automount_service_account_token = true
         container {
           image             = "${local.galaxy_app_image}:${var.image_tag}"

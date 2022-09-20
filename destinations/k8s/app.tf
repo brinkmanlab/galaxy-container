@@ -36,7 +36,8 @@ resource "kubernetes_deployment" "galaxy_app" {
         security_context {
           fs_group = local.app_gid
         }
-        automount_service_account_token = false
+        service_account_name            = kubernetes_service_account.galaxy_app.metadata.0.name
+        automount_service_account_token = true  # Used for SQS
         #image_pull_secrets {
         #  # TODO https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
         #  # docker hub is limiting anonymous access
@@ -220,5 +221,21 @@ resource "kubernetes_service" "galaxy_app" {
     }
 
     type = "ClusterIP" # https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  }
+}
+
+resource "kubernetes_service_account" "galaxy_app" {
+  metadata {
+    name      = local.app_name
+    namespace = local.namespace.id
+    labels = {
+      App                          = local.app_name
+      "app.kubernetes.io/name"     = local.app_name
+      "app.kubernetes.io/instance" = local.app_name
+      "app.kubernetes.io/component"  = "app"
+      "app.kubernetes.io/part-of"    = "galaxy"
+      "app.kubernetes.io/managed-by" = "terraform"
+    }
+    annotations = var.service_account_annotations
   }
 }

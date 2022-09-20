@@ -220,6 +220,7 @@ resource "kubernetes_service_account" "galaxy_worker" {
       "app.kubernetes.io/part-of"    = "galaxy"
       "app.kubernetes.io/managed-by" = "terraform"
     }
+    annotations = var.service_account_annotations
   }
 }
 

@@ -62,3 +62,9 @@ variable "tusd_max_replicas" {
   default     = 10
   description = "Maximum number of TUSd replicas"
 }
+
+variable "service_account_annotations" {
+  type        = map(string)
+  default     = {}
+  description = "Annotations to attach to Galaxy app service account"
+}

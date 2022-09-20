@@ -2,9 +2,22 @@ locals {
   instance                = var.instance == "" ? "default" : var.instance
   name_suffix             = var.instance == "" ? "" : "-${var.instance}"
   destination_galaxy_conf = {
-    #TODO AWS SQS amqp_internal_connection: https://docs.celeryproject.org/projects/kombu/en/stable/userguide/connections.html#urls
+    # AWS SQS amqp_internal_connection: https://docs.celeryproject.org/projects/kombu/en/stable/userguide/connections.html#urls
     # https://docs.celeryproject.org/projects/kombu/en/latest/reference/kombu.transport.SQS.html#id1
+    # https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/sqs.html
+    amqp_internal_connection = "sqs://"
   }
+  extra_env = merge({
+    AWS_DEFAULT_REGION           = data.aws_region.current.name
+    CELERY_ENABLE_REMOTE_CONTROL = "False"
+    #BROKER_TRANSPORT_OPTIONS     = jsonencode({ # TODO cant pass this option as env var
+    #  predefined_queues : {
+    #    celery : { url : aws_sqs_queue.celery.url },
+    #    galaxy-internal : { url : aws_sqs_queue.galaxy-internal.url },
+    #    galaxy-external : { url : aws_sqs_queue.galaxy-external.url },
+    #  }
+    #})
+  }, var.extra_env)
 }
 
 variable "eks" {
