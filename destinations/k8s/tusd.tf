@@ -112,55 +112,22 @@ resource "kubernetes_horizontal_pod_autoscaler" "tusd" {
   }
 }
 
-resource "kubernetes_service" "galaxy_web" {
+resource "kubernetes_service" "tusd" {
   metadata {
-    name        = local.web_name
+    name        = local.tusd_name
     namespace   = kubernetes_deployment.galaxy_web.metadata.0.namespace
-    #annotations = var.lb_annotations
   }
   spec {
     selector = {
-      App = local.web_name
+      App = local.tusd_name
     }
     port {
       name        = "http"
       protocol    = "TCP"
-      port        = 80
-      target_port = 80
+      port        = 1080
+      target_port = 1080
     }
-    #port {
-    #  name        = "https"
-    #  protocol    = "TCP"
-    #  port        = 443
-    #  target_port = 80
-    #}
 
-    type = "NodePort" # https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
-  }
-}
-
-resource "kubernetes_ingress" "galaxy_web" {
-  wait_for_load_balancer = true
-  metadata {
-    name        = local.web_name
-    namespace   = kubernetes_deployment.galaxy_web.metadata.0.namespace
-    annotations = var.lb_annotations
-  }
-  spec {
-    backend {
-      service_name = kubernetes_service.galaxy_web.metadata.0.name
-      service_port = 80
-    }
-    rule {
-      http {
-        path {
-          path = "/*"
-          backend {
-            service_name = kubernetes_service.galaxy_web.metadata.0.name
-            service_port = 80
-          }
-        }
-      }
-    }
+    type = "ClusterIP" # https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
   }
 }
