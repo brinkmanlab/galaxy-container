@@ -34,6 +34,7 @@ No modules.
 | <a name="input_db_name"></a> [db\_name](#input\_db\_name) | Database container name | `string` | `null` | no |
 | <a name="input_debug"></a> [debug](#input\_debug) | Enabling will put the deployment into a mode suitable for debugging | `bool` | `false` | no |
 | <a name="input_email"></a> [email](#input\_email) | Email address to send automated emails from | `string` | n/a | yes |
+| <a name="input_extra_env"></a> [extra\_env](#input\_extra\_env) | Additional environment variables for Galaxy containers | `map(any)` | `{}` | no |
 | <a name="input_extra_job_mounts"></a> [extra\_job\_mounts](#input\_extra\_job\_mounts) | Extra mounts passed to job\_conf for jobs | `set(string)` | `[]` | no |
 | <a name="input_extra_mounts"></a> [extra\_mounts](#input\_extra\_mounts) | Map of mount configurations to add to app and worker containers keyed on volume name | <pre>map(object({<br>    claim_name = string<br>    path       = string<br>    read_only  = bool<br>  }))</pre> | `{}` | no |
 | <a name="input_galaxy_app_image"></a> [galaxy\_app\_image](#input\_galaxy\_app\_image) | Galaxy app server image name | `string` | `null` | no |
@@ -54,6 +55,7 @@ No modules.
 | <a name="input_nfs_server"></a> [nfs\_server](#input\_nfs\_server) | URL to NFS server containing user data | `string` | n/a | yes |
 | <a name="input_plugins"></a> [plugins](#input\_plugins) | XML list of <plugin> tags | `string` | `""` | no |
 | <a name="input_root_dir"></a> [root\_dir](#input\_root\_dir) | Path to galaxy root folder within container | `string` | `null` | no |
+| <a name="input_service_account_annotations"></a> [service\_account\_annotations](#input\_service\_account\_annotations) | Annotations to attach to Galaxy app service account | `map(string)` | `{}` | no |
 | <a name="input_static_tool_data_tables"></a> [static\_tool\_data\_tables](#input\_static\_tool\_data\_tables) | List of static tool data table loc files to load. Paths are relative to the value of `tool_data_path` in the galaxy config | <pre>list(object({<br>    name                    = string<br>    path                    = string<br>    allow_duplicate_entries = bool<br>    comment_char            = string<br>    columns                 = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_tool_containers"></a> [tool\_containers](#input\_tool\_containers) | Mapping of tool IDs to tool containers | `map(string)` | `{}` | no |
 | <a name="input_tool_mappings"></a> [tool\_mappings](#input\_tool\_mappings) | Tool ID to destination mappings. See roles/galaxy\_app/defaults/main/job\_conf.yml within the module root for destinations. | `map(string)` | `{}` | no |
@@ -109,6 +111,7 @@ No modules.
 | [kubernetes_horizontal_pod_autoscaler.galaxy_celery_worker](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/horizontal_pod_autoscaler) | resource |
 | [kubernetes_horizontal_pod_autoscaler.galaxy_web](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/horizontal_pod_autoscaler) | resource |
 | [kubernetes_horizontal_pod_autoscaler.tusd](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/horizontal_pod_autoscaler) | resource |
+| [kubernetes_ingress.galaxy_web](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/ingress) | resource |
 | [kubernetes_job.init_db](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
 | [kubernetes_job.init_nfs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
 | [kubernetes_job.upgrade_db](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
@@ -123,6 +126,7 @@ No modules.
 | [kubernetes_service.galaxy_web](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) | resource |
 | [kubernetes_service.galaxy_worker](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) | resource |
 | [kubernetes_service.tusd](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) | resource |
+| [kubernetes_service_account.galaxy_app](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account) | resource |
 | [kubernetes_service_account.galaxy_worker](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account) | resource |
 | [kubernetes_stateful_set.galaxy_worker](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/stateful_set) | resource |
 | [kubernetes_storage_class.nfs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/storage_class) | resource |

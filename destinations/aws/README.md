@@ -40,6 +40,7 @@
 | <a name="input_debug"></a> [debug](#input\_debug) | Enabling will put the deployment into a mode suitable for debugging | `bool` | `false` | no |
 | <a name="input_eks"></a> [eks](#input\_eks) | Instance of EKS module output state | `any` | n/a | yes |
 | <a name="input_email"></a> [email](#input\_email) | Email address to send automated emails from | `string` | n/a | yes |
+| <a name="input_extra_env"></a> [extra\_env](#input\_extra\_env) | Additional environment variables for Galaxy containers | `map(any)` | `{}` | no |
 | <a name="input_extra_job_mounts"></a> [extra\_job\_mounts](#input\_extra\_job\_mounts) | Extra mounts passed to job\_conf for jobs | `set(string)` | `[]` | no |
 | <a name="input_extra_mounts"></a> [extra\_mounts](#input\_extra\_mounts) | Map of mount configurations to add to app and worker containers keyed on volume name | <pre>map(object({<br>    claim_name = string<br>    path       = string<br>    read_only  = bool<br>  }))</pre> | `{}` | no |
 | <a name="input_galaxy_app_image"></a> [galaxy\_app\_image](#input\_galaxy\_app\_image) | Galaxy app server image name | `string` | `null` | no |
@@ -110,6 +111,9 @@
 | [aws_db_instance.galaxy_db](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance) | resource |
 | [aws_iam_access_key.mail](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_access_key) | resource |
 | [aws_iam_policy.mail](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.mq](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role.mq](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.mq](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_user.mail](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user) | resource |
 | [aws_iam_user_policy_attachment.mail](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_policy_attachment) | resource |
 | [aws_ses_email_identity.mail](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ses_email_identity) | resource |
@@ -123,5 +127,7 @@
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.mail](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.mq](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.mq_assume_role_with_oidc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 <!-- END_TF_DOCS -->

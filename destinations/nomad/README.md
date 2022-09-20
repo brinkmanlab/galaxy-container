@@ -32,6 +32,7 @@ No modules.
 | <a name="input_db_name"></a> [db\_name](#input\_db\_name) | Database container name | `string` | `null` | no |
 | <a name="input_debug"></a> [debug](#input\_debug) | Enabling will put the deployment into a mode suitable for debugging | `bool` | `false` | no |
 | <a name="input_email"></a> [email](#input\_email) | Email address to send automated emails from | `string` | n/a | yes |
+| <a name="input_extra_env"></a> [extra\_env](#input\_extra\_env) | Additional environment variables for Galaxy containers | `map(any)` | `{}` | no |
 | <a name="input_extra_job_mounts"></a> [extra\_job\_mounts](#input\_extra\_job\_mounts) | Extra mounts passed to job\_conf for jobs | `set(string)` | `[]` | no |
 | <a name="input_extra_mounts"></a> [extra\_mounts](#input\_extra\_mounts) | Map of mount configurations to add to app and worker containers keyed on volume name | <pre>map(object({<br>    volume_id = string<br>    path = string<br>    read_only = bool<br>  }))</pre> | `{}` | no |
 | <a name="input_galaxy_app_image"></a> [galaxy\_app\_image](#input\_galaxy\_app\_image) | Galaxy app server image name | `string` | `null` | no |

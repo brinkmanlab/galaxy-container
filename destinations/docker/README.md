@@ -36,6 +36,7 @@ No modules.
 | <a name="input_docker_gid"></a> [docker\_gid](#input\_docker\_gid) | GID with write permission to /var/run/docker.sock | `number` | n/a | yes |
 | <a name="input_docker_socket_path"></a> [docker\_socket\_path](#input\_docker\_socket\_path) | Host path to docker socket | `string` | `"/var/run/docker.sock"` | no |
 | <a name="input_email"></a> [email](#input\_email) | Email address to send automated emails from | `string` | n/a | yes |
+| <a name="input_extra_env"></a> [extra\_env](#input\_extra\_env) | Additional environment variables for Galaxy containers | `map(any)` | `{}` | no |
 | <a name="input_extra_job_mounts"></a> [extra\_job\_mounts](#input\_extra\_job\_mounts) | Extra mounts passed to job\_conf for jobs | `set(string)` | `[]` | no |
 | <a name="input_extra_mounts"></a> [extra\_mounts](#input\_extra\_mounts) | Set of mount configurations to add to app and worker containers | <pre>set(object({<br>    source    = string<br>    target    = string<br>    type      = string<br>    read_only = bool<br>  }))</pre> | `[]` | no |
 | <a name="input_galaxy_app_image"></a> [galaxy\_app\_image](#input\_galaxy\_app\_image) | Galaxy app server image name | `string` | `null` | no |
@@ -52,6 +53,9 @@ No modules.
 | <a name="input_mail_port"></a> [mail\_port](#input\_mail\_port) | Port to connect to SMTP server | `number` | `587` | no |
 | <a name="input_managed_config_dir"></a> [managed\_config\_dir](#input\_managed\_config\_dir) | Path to galaxy managed configuration folder on persistent storage | `string` | `null` | no |
 | <a name="input_master_api_key"></a> [master\_api\_key](#input\_master\_api\_key) | Galaxy master API key | `string` | `""` | no |
+| <a name="input_mq_data_volume_name"></a> [mq\_data\_volume\_name](#input\_mq\_data\_volume\_name) | Message queue volume name | `string` | `null` | no |
+| <a name="input_mq_image"></a> [mq\_image](#input\_mq\_image) | Message queue image name | `string` | `null` | no |
+| <a name="input_mq_name"></a> [mq\_name](#input\_mq\_name) | Message queue container name | `string` | `null` | no |
 | <a name="input_network"></a> [network](#input\_network) | Docker network name | `string` | `""` | no |
 | <a name="input_plugins"></a> [plugins](#input\_plugins) | XML list of <plugin> tags | `string` | `""` | no |
 | <a name="input_root_dir"></a> [root\_dir](#input\_root\_dir) | Path to galaxy root folder within container | `string` | `null` | no |
@@ -105,6 +109,7 @@ No modules.
 | [docker_container.galaxy_web](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
 | [docker_container.galaxy_worker](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
 | [docker_container.init_db](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
+| [docker_container.rabbitmq](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
 | [docker_container.tusd](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
 | [docker_container.upgrade_db](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
 | [docker_container.visualizations](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/container) | resource |
@@ -114,10 +119,12 @@ No modules.
 | [docker_image.galaxy_app](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/image) | resource |
 | [docker_image.galaxy_db](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/image) | resource |
 | [docker_image.galaxy_web](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/image) | resource |
+| [docker_image.mq](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/image) | resource |
 | [docker_image.tusd](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/image) | resource |
 | [docker_network.galaxy_network](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/network) | resource |
 | [docker_volume.db_data](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/volume) | resource |
 | [docker_volume.galaxy_root](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/volume) | resource |
+| [docker_volume.mq_data](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/volume) | resource |
 | [docker_volume.user_data](https://registry.terraform.io/providers/kreuzwerker/docker/latest/docs/resources/volume) | resource |
 | [random_password.db_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [random_password.id_secret](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
