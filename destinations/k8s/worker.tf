@@ -29,7 +29,6 @@ resource "kubernetes_service" "galaxy_worker" { # TODO Only required while https
 #resource "kubernetes_deployment" "galaxy_worker" {
 resource "kubernetes_stateful_set" "galaxy_worker" {
   depends_on       = [kubernetes_job.upgrade_db]
-  wait_for_rollout = !var.debug
   metadata {
     name      = local.worker_name
     namespace = local.namespace.metadata.0.name

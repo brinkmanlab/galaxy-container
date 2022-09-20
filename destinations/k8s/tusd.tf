@@ -1,5 +1,4 @@
 resource "kubernetes_deployment" "tusd" {
-  wait_for_rollout = !var.debug
   metadata {
     name      = local.tusd_name
     namespace = local.namespace.metadata.0.name

@@ -2,7 +2,6 @@
 
 resource "kubernetes_deployment" "galaxy_web" {
   depends_on       = [kubernetes_service.galaxy_app]
-  wait_for_rollout = !var.debug
   metadata {
     name      = local.web_name
     namespace = local.namespace.metadata.0.name

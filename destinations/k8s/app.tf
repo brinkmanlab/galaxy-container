@@ -2,7 +2,6 @@
 
 resource "kubernetes_deployment" "galaxy_app" {
   depends_on       = [kubernetes_job.upgrade_db, kubernetes_job.visualizations-fix] # TODO remove '-fix' after https://github.com/galaxyproject/galaxy/issues/11057
-  wait_for_rollout = !var.debug
   metadata {
     name      = local.app_name
     namespace = local.namespace.metadata.0.name

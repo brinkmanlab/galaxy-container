@@ -1,6 +1,5 @@
 resource "kubernetes_deployment" "galaxy_celery_beat" {
   depends_on       = [kubernetes_job.upgrade_db]
-  wait_for_rollout = !var.debug
   metadata {
     name      = local.celery_beat_name
     namespace = local.namespace.metadata.0.name
