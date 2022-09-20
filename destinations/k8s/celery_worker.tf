@@ -45,7 +45,7 @@ resource "kubernetes_deployment" "galaxy_celery_worker" {
             "celery",
             "--app", "galaxy.celery", "worker",
             "--concurrency", "2",
-            "--loglevel", "DEBUG",
+            "--loglevel", "INFO",
             "--pool", "threads",
             "--queues", "celery,galaxy.internal,galaxy.external"
           ]

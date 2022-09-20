@@ -45,7 +45,7 @@ resource "kubernetes_deployment" "galaxy_celery_beat" {
           command           = [
             "celery",
             "--app", "galaxy.celery", "beat",
-            "--loglevel", "DEBUG",
+            "--loglevel", "INFO",
             "--schedule", "${local.data_dir}/database/celery-beat-schedule"
           ]
 
