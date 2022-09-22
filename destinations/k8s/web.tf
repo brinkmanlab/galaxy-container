@@ -1,7 +1,7 @@
 # TODO https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/docs/spot-instances.md
 
 resource "kubernetes_deployment" "galaxy_web" {
-  depends_on       = [kubernetes_service.galaxy_app]
+  depends_on       = [kubernetes_service.galaxy_app, kubernetes_service.tusd]
   metadata {
     name      = local.web_name
     namespace = local.namespace.metadata.0.name

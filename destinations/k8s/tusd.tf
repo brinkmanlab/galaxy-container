@@ -115,7 +115,7 @@ resource "kubernetes_horizontal_pod_autoscaler" "tusd" {
 resource "kubernetes_service" "tusd" {
   metadata {
     name        = local.tusd_name
-    namespace   = kubernetes_deployment.galaxy_web.metadata.0.namespace
+    namespace   = local.namespace.metadata.0.name
   }
   spec {
     selector = {
