@@ -103,11 +103,11 @@ EOF
 %{~if length(var.tool_containers) > 0~}
 - type: mapping
   mappings:
-    %{for k, v in var.tool_containers~}
+    %{~for k, v in var.tool_containers~}
     - container_type: docker
       tool_id: "${k}"
       identifier: "${v}"
-    %{endfor~}
+    %{~endfor~}
 %{endif~}
 - type: explicit
 - type: mulled
