@@ -44,7 +44,7 @@ server {
     include cors.conf;
     include cors_options.conf;
     include master_api_key;
-    proxy_set_header X_API_KEY $api_key;
+    proxy_set_header X-API-KEY $api_key;
     proxy_pass http://app;
   }
 
