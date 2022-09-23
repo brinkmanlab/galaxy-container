@@ -24,6 +24,7 @@
 | <a name="input_app_gid"></a> [app\_gid](#input\_app\_gid) | GID of Galaxy process | `number` | `null` | no |
 | <a name="input_app_group"></a> [app\_group](#input\_app\_group) | Group name of Galaxy process | `string` | `null` | no |
 | <a name="input_app_max_replicas"></a> [app\_max\_replicas](#input\_app\_max\_replicas) | Maximum number of app replicas | `number` | `10` | no |
+| <a name="input_app_min_replicas"></a> [app\_min\_replicas](#input\_app\_min\_replicas) | Minimum number of app replicas | `number` | `1` | no |
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Galaxy application container name | `string` | `null` | no |
 | <a name="input_app_port"></a> [app\_port](#input\_app\_port) | Port Galaxy app server is listening from | `number` | `null` | no |
 | <a name="input_app_uid"></a> [app\_uid](#input\_app\_uid) | UID of Galaxy process | `number` | `null` | no |
