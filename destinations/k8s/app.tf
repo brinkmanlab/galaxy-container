@@ -192,7 +192,7 @@ resource "kubernetes_horizontal_pod_autoscaler" "galaxy_app" {
 
   spec {
     max_replicas = var.app_max_replicas
-    min_replicas = 1
+    min_replicas = var.app_min_replicas
 
     scale_target_ref {
       api_version = "apps/v1"

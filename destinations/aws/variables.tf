@@ -61,6 +61,12 @@ variable "web_max_replicas" {
   description = "Maximum number of web replicas"
 }
 
+variable "app_min_replicas" {
+  type        = number
+  default     = 1
+  description = "Minimum number of app replicas"
+}
+
 variable "app_max_replicas" {
   type        = number
   default     = 10

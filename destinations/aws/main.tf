@@ -76,6 +76,7 @@ module "k8s" {
   visualizations              = var.visualizations
   web_max_replicas            = var.web_max_replicas
   app_max_replicas            = var.app_max_replicas
+  app_min_replicas            = var.app_min_replicas
   worker_max_replicas         = var.worker_max_replicas
   tusd_max_replicas           = var.tusd_max_replicas
   celery_worker_max_replicas  = var.celery_worker_max_replicas
