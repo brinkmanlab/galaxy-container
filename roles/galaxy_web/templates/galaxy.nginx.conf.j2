@@ -17,19 +17,26 @@ map $http_x_forwarded_proto $proxiedscheme {
     "" $scheme;
 }
 
+map $request_method$uri$arg_key$http_x_api_key $api_key {
+    default $http_x_api_key;
+    "POST/api/users/" $master_api_key;
+}
+
 server {
   listen       80 default_server;
   listen       [::]:80 default_server;
   server_name _;
+
+  underscores_in_headers on;
 
   set $galaxy_root {{ nginx.paths.root }};
   set $plugin_root {{ paths.managed_config }};
 
   include cors.conf;
 
-  # proxy all requests not matching other locations to uWSGI
+  # proxy all requests not matching other locations to app
   location / {
-    proxy_pass_request_headers      on;
+    proxy_pass_request_headers on;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $proxiedscheme;
     proxy_set_header Host $http_host;
@@ -37,29 +44,7 @@ server {
     include cors.conf;
     include cors_options.conf;
     include master_api_key;
-    set $test '';
-    set $api_key $http_x_api_key;
-    if ($request_method = POST) {
-        # Limit master api key to only POST requests
-        set $test p$test;
-    }
-    if ($uri = '/api/users/') {
-        # Limit master api key to only /api/users exactly
-        set $test u$test;
-    }
-    if ($arg_key = '') {
-        # Do not overwrite a passed api key
-        set $test k$test;
-    }
-    if ($http_x_api_key = '') {
-        # Do not overwrite a passed api key via header
-        set $test h$test;
-    }
-    if ($test = 'hkup') {
-        # Add master api key to query params if all tests succeed
-        set $api_key $master_api_key;
-    }
-    proxy_set_header HTTP_X_API_KEY "$api_key";
+    proxy_set_header X_API_KEY $api_key;
     proxy_pass http://app;
   }
 
