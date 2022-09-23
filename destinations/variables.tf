@@ -45,70 +45,70 @@ locals {
     admin_users = join(",", var.admin_users)
   }
   galaxy_conf = merge(local.common_galaxy_conf, local.admin_users_conf, local.destination_galaxy_conf, var.galaxy_conf)
-  macros = {
-    "tool_mapping.xml" = <<-EOF
-      <?xml version="1.0"?>
-      <macros>
-          <xml name="tool_mapping">
-          <!--
-          List tool mappings here to be included in the job_conf.xml
-          <tool id="" destination="" />
-          -->
-          %{for k, v in var.tool_mappings}
-            <tool id="${k}" destination="${v}" />
-          %{endfor}
-          </xml>
-      </macros>
-    EOF
-    "job_destinations.xml" = <<-EOF
-      <?xml version="1.0"?>
-      <macros>
-          <xml name="plugins">
-            ${var.plugins}
-          </xml>
-          <xml name="job_destinations">
-            ${var.job_destinations}
-          </xml>
-      </macros>
-    EOF
-    "limits.xml" = <<-EOF
-      <?xml version="1.0"?>
-      <macros>
-          <xml name="limits">
-          %{for limit in var.limits}
-            <limit type="${limit.type}"%{if limit.id != ""} ${limit.id}%{endif}%{if limit.tag != ""} tag="${limit.tag}"%{endif}>${limit.value}</limit>
-          %{endfor}
-          </xml>
-      </macros>
-    EOF
+  macros      = {
+    "tool_mapping.xml"     = <<EOF
+<?xml version="1.0"?>
+<macros>
+    <xml name="tool_mapping">
+    <!--
+    List tool mappings here to be included in the job_conf.xml
+    <tool id="" destination="" />
+    -->
+    %{for k, v in var.tool_mappings}
+      <tool id="${k}" destination="${v}" />
+    %{endfor}
+    </xml>
+</macros>
+EOF
+    "job_destinations.xml" = <<EOF
+<?xml version="1.0"?>
+<macros>
+    <xml name="plugins">
+      ${var.plugins}
+    </xml>
+    <xml name="job_destinations">
+      ${var.job_destinations}
+    </xml>
+</macros>
+EOF
+    "limits.xml"           = <<EOF
+<?xml version="1.0"?>
+<macros>
+    <xml name="limits">
+    %{for limit in var.limits}
+      <limit type="${limit.type}"%{if limit.id != ""} ${limit.id}%{endif}%{if limit.tag != ""} tag="${limit.tag}"%{endif}>${limit.value}</limit>
+    %{endfor}
+    </xml>
+</macros>
+EOF
   }
   configs = {
-    "tool_data_table_conf.xml" = <<-EOF
-      <?xml version="1.0"?>
-      <tables>
-        %{for table in var.static_tool_data_tables}
-        <table name="${table.name}" comment_char="${table.comment_char}" allow_duplicate_entries="${table.allow_duplicate_entries ? "True" : "False"}">
-            <columns>${join(",", table.columns)}</columns>
-            <file path="${table.path}" />
-        </table>
-        %{endfor}
-      </tables>
-    EOF
+    "tool_data_table_conf.xml"     = <<EOF
+<?xml version="1.0"?>
+<tables>
+  %{for table in var.static_tool_data_tables}
+  <table name="${table.name}" comment_char="${table.comment_char}" allow_duplicate_entries="${table.allow_duplicate_entries ? "True" : "False"}">
+      <columns>${join(",", table.columns)}</columns>
+      <file path="${table.path}" />
+  </table>
+  %{endfor}
+</tables>
+EOF
     # See https://github.com/galaxyproject/galaxy/commit/46fc861fb666f698290e6417a640d34626d10629#diff-466bfb1ecf19ceb83fd1f7918e1f087db3013582f5e7dc8f79263d6912dbc4b0R131
-    "container_resolvers_conf.yml" = <<-EOF
-      %{~ if length(var.tool_containers) > 0 ~}
-      - type: mapping
-        mappings:
-          %{for k, v in var.tool_containers ~}
-          - container_type: docker
-            tool_id: "${k}"
-            identifier: "${v}"
-          %{endfor ~}
-      %{endif ~}
-      - type: explicit
-      - type: mulled
-        auto_install: "True"
-    EOF
+    "container_resolvers_conf.yml" = <<EOF
+%{~if length(var.tool_containers) > 0~}
+- type: mapping
+  mappings:
+    %{for k, v in var.tool_containers~}
+    - container_type: docker
+      tool_id: "${k}"
+      identifier: "${v}"
+    %{endfor~}
+%{endif~}
+- type: explicit
+- type: mulled
+  auto_install: "True"
+EOF
   }
   viz_curl_cmd = join(" && ", [for url in var.visualizations : "curl -L '${url}' | tar -xvz -C '${local.managed_config_dir}/visualizations'"])
 }
