@@ -11,7 +11,7 @@ resource "aws_db_instance" "galaxy_db" {
   username                  = local.db_conf.user
   password                  = local.db_conf.pass
   #parameter_group_name = "default.mysql5.7"
-  vpc_security_group_ids    = [var.eks.worker_security_group_id]
+  vpc_security_group_ids    = [var.eks.node_security_group_id]
   db_subnet_group_name      = var.vpc.database_subnet_group
   publicly_accessible       = false
   skip_final_snapshot       = var.debug
